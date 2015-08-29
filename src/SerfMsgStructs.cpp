@@ -1,5 +1,7 @@
 #include "SerfMsgStructs.h"
 
+namespace SerfCpp {
+
 //
 // Debug routine to dump the sequence of encoded msgpack data
 //
@@ -17,3 +19,6 @@ void printMsgPack(std::string const& buf) {
     }
     std::cout << std::dec << std::endl;
 }
+
+
+} // namespace SerfCpp

@@ -16,10 +16,13 @@ IF (GTEST_FOUND)
     OPTION (SERF_CPP_BUILD_TESTS "Build serf-cpp tests." ON)
 ENDIF (GTEST_FOUND)
 
-OPTION (SERF_CPP_BUILD_EXAMPLE "Build example test driver" OFF)
+OPTION (SERF_CPP_BUILD_EXAMPLE "Build example test driver" ON)
 
 add_subdirectory(src)
 
 IF (SERF_CPP_BUILD_TESTS)
     add_subdirectory(tests)
 ENDIF (SERF_CPP_BUILD_TESTS)
+IF (SERF_CPP_BUILD_EXAMPLE)
+    add_subdirectory(example)
+ENDIF (SERF_CPP_BUILD_EXAMPLE)

@@ -8,6 +8,7 @@
 #define MSGPACK_USE_DEFINE_MAP
 #include <msgpack.hpp>
 
+namespace SerfCpp {
 
 struct RequestHeader {
     std::string Command;
@@ -80,25 +81,52 @@ inline bool operator==(JoinResponse const& lhs, JoinResponse const& rhs) {
 
 struct Member {
     std::string Name;
-    std::vector<int> Addr;
+    // In the serf agent, the Go net.ip type is encoded as an array
+    // of 16 bytes (covering IPv6 or IPv4 addr).
+    // For reference: http://golang.org/pkg/net/#IP
+    //
+    // For ipv6 address, all 16 bytes are populated
+    // For ipv4 address, last 4 bytes seem to be populated
+    //
+    // While 'char' is used to match the msgpack encoding, values should
+    // be interpreted as unsigned char.
+    std::vector<char> Addr;
     int Port;
     std::map<std::string,std::string> Tags;
     std::string Status;
-    int ProtocolMin;
-    int ProtocolMax;
-    int ProtocolCur;
-    int DelegateMin;
-    int DelegateMax;
-    int DelegateCur;
+    unsigned char ProtocolMin;
+    unsigned char ProtocolMax;
+    unsigned char ProtocolCur;
+    unsigned char DelegateMin;
+    unsigned char DelegateMax;
+    unsigned char DelegateCur;
+
     MSGPACK_DEFINE(Name,Addr,Port,Tags,Status,
                    ProtocolMin,ProtocolMax,ProtocolCur,
                    DelegateMin,DelegateMax,DelegateCur);
 };
+ inline bool operator==(Member const &lhs, Member const &rhs) {
+     return ((lhs.Name == rhs.Name) &&
+             (lhs.Addr == rhs.Addr) &&
+             (lhs.Port == rhs.Port) &&
+             (lhs.Tags == rhs.Tags) &&
+             (lhs.Status == rhs.Status) &&
+             (lhs.ProtocolMin == rhs.ProtocolMin) &&
+             (lhs.ProtocolMax == rhs.ProtocolMax) &&
+             (lhs.ProtocolCur == rhs.ProtocolCur) &&
+             (lhs.DelegateMin == rhs.DelegateMin) &&
+             (lhs.DelegateMax == rhs.DelegateMax) &&
+             (lhs.DelegateMin == rhs.DelegateMin));
+ }
+             
 
 struct MembersResponse {
     std::vector<Member> Members;
     MSGPACK_DEFINE(Members);
 };
+inline bool operator==(MembersResponse const &lhs, MembersResponse const& rhs) {
+    return (lhs.Members == rhs.Members);
+}
 
 struct MembersFilteredRequest {
     std::map<std::string,std::string> Tags;
@@ -134,3 +162,5 @@ struct StopRequest {
 };
 
 void printMsgPack(std::string const& buf);
+
+};
