@@ -9,7 +9,7 @@ https://www.serfdom.io/docs/agent/rpc.html.
 
 For now the implementation is targeted toward C++03 and uses Boost for
 portable thread support; future support for C++11 using std::thread is
-likely
+likely.
 
 # Dependencies
 

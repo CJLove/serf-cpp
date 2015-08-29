@@ -1,3 +1,9 @@
+# build directory
+build/*
+
+# Xemacs backup files
+*~
+
 # Compiled Object files
 *.slo
 *.lo
