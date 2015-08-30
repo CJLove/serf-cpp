@@ -1,0 +1,5 @@
+2015-08-29  Chris Love  <chris_love@san.rr.com>
+
+	* Initial implementation, including framework for supporting
+	  synchronous methods on SerfClient class
+

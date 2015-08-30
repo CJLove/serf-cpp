@@ -1,0 +1,11 @@
+Short-term
+==========
+o Clean up socket code in SerfIoThread. Consider boost::asio or
+  alternatives for the sync-async pattern implemented for the
+  "synchronous" SerfClient library methods
+
+
+Long-term
+=========
+o Alternative implementation supporting C++11 (or newer), dropping boost
+  dependency
