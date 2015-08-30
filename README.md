@@ -9,7 +9,13 @@ https://www.serfdom.io/docs/agent/rpc.html.
 
 For now the implementation is targeted toward C++03 and uses Boost for
 portable thread support; future support for C++11 using std::thread is
-likely.
+possible.
+
+# Status
+Synchronous RPC methods supported: event, force-leave, join, members,
+members-filtered, tags
+
+See TODO for major functionality remaining and some longer term plans.
 
 # Dependencies
 

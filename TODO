@@ -1,6 +1,8 @@
 Short-term
 ==========
-o Stream and Monitor commands and callbacks to user code
+o Remaining commands supported by serf RPC definition
+o Stream and Monitor commands and callbacks to user code for events
+  and logs
 o Extend SerfClientExample to exercise remaining requests
 o Clean up socket code in SerfIoThread. Consider boost::asio or
   alternatives for the sync-async pattern implemented for the
