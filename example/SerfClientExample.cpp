@@ -7,167 +7,70 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-
+#include "SerfClient.h"
 #include "SerfMsgStructs.h"
 
 using namespace SerfCpp;
 
 int main(int argc, char**argv)
 {
-    std::string ipAddr("127.0.0.1");
-    short port = 7373;
-    int c;
+    SerfClient client;
+    //    bool result = client.Connect(ipAddr,port);
+    bool result = client.Connect();
 
-    while ((c = getopt(argc,argv,"i:p:")) != EOF) {
-        switch(c) {
-        case 'i':
-            ipAddr=optarg;
-            break;
-        case 'p':
-            port = strtoul(optarg,NULL,10);
-            break;
-        }
-    }
-
-    int sock;
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in server;
-
-    if (sock == -1) {
-        perror("Couldn't create socket");
-        exit(1);
-    }
-        
-
-    server.sin_addr.s_addr = inet_addr(ipAddr.c_str());
-    server.sin_family = AF_INET;
-    server.sin_port=htons(port);
-
-    if (connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0) {
-        perror("connect failed");
+    if (argc < 2) {
+        std::cout << "Usage:" << std::endl
+                  << "SerfClientExample <command> [args] ..." << std::endl;
         exit(1);
     }
 
-    {
-        RequestHeader req;
-        HandshakeRequest hs;
+    std::string command = argv[1];
 
-        req.Command="handshake";
-        req.Seq=0;
-        hs.Version=1;
-
-        std::stringstream ss;
-        msgpack::pack(ss,req);
-        msgpack::pack(ss,hs);
-        printMsgPack(ss.str());
-
-
-        if (send(sock,ss.str().data(),ss.str().size(),0) < 0) {
-            perror("send failed");
-            exit(1);
-        }
-    }
-
-    {
-        char buffer[2048];
-        int size;
-        size = recv(sock,buffer,sizeof(buffer), 0);
-        if (size < 0) {
-            perror("recv failed");
-        }
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, buffer,size);
-        msgpack::object obj = unp.get();
-        std::cout << obj << std::endl;
-    }
-
-    {
-        RequestHeader req;
-        JoinRequest join;
-
-        req.Command="join";
-        req.Seq=1;
-        join.Existing.push_back("192.168.0.211");
-        join.Replay = false;
-
-        std::stringstream ss;
-        msgpack::pack(ss,req);
-        msgpack::pack(ss,join);
-        printMsgPack(ss.str());
-
-
-        if (send(sock,ss.str().data(),ss.str().size(),0) < 0) {
-            perror("send failed");
-            exit(1);
-        }
-    }
-    
-    {
-        char buffer[2048];
-        int size;
-        size = recv(sock,buffer,sizeof(buffer), 0);
-        if (size < 0) {
-            perror("recv failed");
-        }
-        msgpack::unpacker pac;
-        pac.reserve_buffer(size);
-        memcpy(pac.buffer(),buffer,size);
-        pac.buffer_consumed(size);
-
-        msgpack::unpacked unp;
-        while(pac.next(&unp)) {
-            msgpack::object obj = unp.get();
-            std::cout << obj << std::endl;
-        }
+    if (command == "join") {
+        std::vector<std::string> addrs;
         
+        for (int i = 2; i < argc; ++i) {
+            addrs.push_back(argv[i]);
+        }
+
+        int count = client.Join(addrs,false);
+
+        std::cout << "Join node count:\n" << count << std::endl;
+
+    } else if (command == "members") {
+
+        MembersResponse resp = client.Members();
+
+        std::cout << "Members:\n" << resp << std::endl;
+
+    } else if (command == "event") {
+        std::string name = argv[2];
+
+        std::vector<char> payload;
+        if (argc > 4) {
+            char *c = argv[3];
+            while (*c != '\0') {
+                payload.push_back(*c);
+                c++;
+            }
+        }
+        result = client.Event(name,payload,false);
+
+        std::cout << "Event " << name << " result: " << (result ? "true" : "false") << std::endl;
+    } else if (command == "force-leave") {
+        std::string name = argv[2];
+
+        result = client.ForceLeave(name);
+
+        std::cout << "ForceLeave " << name << " result: " << (result ? "true" : "false") << std::endl;
     }
 
-    {
-        RequestHeader req;
+    // Close the connection
+    std::cout << "Closing socket connection to serf agent" << std::endl;
+    result = client.Close();
+    std::cout << "Close result: " << (result ? "true" : "false") << std::endl;
 
-        req.Command="members";
-        req.Seq=2;
+    exit(0);
 
-        std::stringstream ss;
-        msgpack::pack(ss,req);
-        printMsgPack(ss.str());
-
-        if (send(sock,ss.str().data(),ss.str().size(),0) < 0) {
-            perror("send failed");
-            exit(1);
-        }
-    }
-    
-    {
-        char buffer[2048];
-        int size;
-        size = recv(sock,buffer,sizeof(buffer), 0);
-        if (size < 0) {
-            perror("recv failed");
-        }
-        msgpack::unpacker pac;
-        pac.reserve_buffer(size);
-        memcpy(pac.buffer(),buffer,size);
-        pac.buffer_consumed(size);
-
-        ResponseHeader h;
-        MembersResponse resp;
-        msgpack::unpacked unp;
-        if (pac.next(&unp)) {
-            msgpack::object obj = unp.get();
-            h = obj.as<ResponseHeader>();
-        }
-        if (pac.next(&unp)) {
-            msgpack::object obj = unp.get();
-            std::cout << obj << std::endl;
-            resp = obj.as<MembersResponse>();
-            Member m = resp.Members[0];
-
-            int a = 5;
-            
-        }
-    }
-    
 }
     

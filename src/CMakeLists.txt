@@ -5,13 +5,10 @@ project (SerfCpp)
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.57.0 COMPONENTS thread system)
+find_package(Boost COMPONENTS thread system REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
-else ()
-    message(FATAL_ERROR0 "boost not found.")    
 endif(Boost_FOUND)
-
 
 find_package(MsgPackC REQUIRED)
 

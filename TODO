@@ -1,9 +1,11 @@
 Short-term
 ==========
+o Stream and Monitor commands and callbacks to user code
+o Extend SerfClientExample to exercise remaining requests
 o Clean up socket code in SerfIoThread. Consider boost::asio or
   alternatives for the sync-async pattern implemented for the
   "synchronous" SerfClient library methods
-
+o More test code
 
 Long-term
 =========

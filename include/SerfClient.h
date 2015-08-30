@@ -8,14 +8,12 @@ public:
     // Default ctor - configured to connect to localhost and default port
     SerfClient();
 
-    // Ctor - configured to connect to specified IP addr and port
-    SerfClient(const std::string&ip, const short &port);
-
     // Dtor
     ~SerfClient();
 
     // Connect to serf agent
-    bool Connect();
+    bool Connect(const std::string &ipAddr = "127.0.0.1",
+                 const short &port = 7373);
 
     // Is the client connected to an agent?
     bool IsConnected();
@@ -29,6 +27,18 @@ public:
     int Join(std::vector<std::string> &addrs,
              bool replay);
 
+    MembersResponse Members();
+
+    MembersResponse MembersFiltered(const std::map<std::string,std::string> & tags,
+                                    const std::string &status,
+                                    const std::string &name);
+
+    bool Event(const std::string &name, const std::vector<char> &payload, bool coalesce);
+
+    bool ForceLeave(const std::string &nodeName);
+
+    bool Tags(const std::map<std::string,std::string> &tags,
+              const std::vector<std::string> &deleteTags);
     
 
 private:

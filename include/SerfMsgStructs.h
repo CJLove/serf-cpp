@@ -10,6 +10,8 @@
 
 namespace SerfCpp {
 
+    const int SerfApiVersion = 1;
+
 struct RequestHeader {
     std::string Command;
     unsigned long Seq;
@@ -20,7 +22,7 @@ inline bool operator==(RequestHeader const& lhs, RequestHeader const& rhs) {
 }
 
 struct ResponseHeader {
-    unsigned long Seq;
+    unsigned long long Seq;
     std::string Error;
     MSGPACK_DEFINE(Seq,Error);
 };
@@ -46,7 +48,7 @@ inline bool operator==(AuthRequest const &lhs, AuthRequest const& rhs) {
 
 struct EventRequest {
     std::string Name;
-    std::string Payload;
+    std::vector<char> Payload;
     bool Coalesce;
     MSGPACK_DEFINE(Name,Payload,Coalesce);
 };
@@ -118,6 +120,8 @@ struct Member {
              (lhs.DelegateMax == rhs.DelegateMax) &&
              (lhs.DelegateMin == rhs.DelegateMin));
  }
+
+std::ostream &operator<<(std::ostream &os, const Member &m); 
              
 
 struct MembersResponse {
@@ -127,7 +131,9 @@ struct MembersResponse {
 inline bool operator==(MembersResponse const &lhs, MembersResponse const& rhs) {
     return (lhs.Members == rhs.Members);
 }
+std::ostream &operator<<(std::ostream &os, const MembersResponse &m);
 
+ 
 struct MembersFilteredRequest {
     std::map<std::string,std::string> Tags;
     std::string Status;

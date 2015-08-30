@@ -75,7 +75,10 @@ TEST(SerfMsgStructTest, EventRequest)
 {
     EventRequest req;
     req.Name="MyEvent";
-    req.Payload="MyEventPayload";
+    req.Payload.push_back('T');
+    req.Payload.push_back('E');
+    req.Payload.push_back('S');
+    req.Payload.push_back('T');    
     req.Coalesce=true;
 
     std::stringstream ss;
