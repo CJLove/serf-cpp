@@ -9,15 +9,19 @@ namespace SerfCpp {
 
 struct ChannelBase
 {
-    ChannelBase();
+    enum ChannelType { REQUEST, LOG, EVENT };
+    
+    ChannelBase(ChannelType type);
 
     virtual ~ChannelBase();
 
     virtual void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker) = 0;
+
+    ChannelType m_type;
 };
 
 template<typename T> struct ResultChannel: ChannelBase {
-	 ResultChannel(): m_dataPending(false)
+     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
      {}
      void consume() {
          boost::unique_lock<boost::mutex> lock(m_mutex);
@@ -52,7 +56,7 @@ template<typename T> struct ResultChannel: ChannelBase {
 
 template<>
 struct ResultChannel<bool>: ChannelBase {
-	 ResultChannel(): m_dataPending(false)
+     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
      {}
      void consume() {
          boost::unique_lock<boost::mutex> lock(m_mutex);

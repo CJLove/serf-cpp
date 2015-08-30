@@ -39,6 +39,8 @@ public:
 
     bool Tags(const std::map<std::string,std::string> &tags,
               const std::vector<std::string> &deleteTags);
+
+	bool Leave();    
     
 
 private:

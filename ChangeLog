@@ -1,4 +1,11 @@
-2015-08-29  Chris Love  <chris_love@san.rr.com>
+2015-08-30  Chris Love  <cjlove@san.rr.com>
+
+	* Added support for 'leave' request
+	* Added ChannelType enum to ChannelBase, added logic to remove
+	  REQUEST channels from the channel map when the (sole) response
+	  is received in processRpc()
+
+2015-08-29  Chris Love  <cjlove@san.rr.com>
 
 	* Initial implementation, including framework for supporting
 	  synchronous methods on SerfClient class

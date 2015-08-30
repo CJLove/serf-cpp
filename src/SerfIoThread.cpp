@@ -8,7 +8,7 @@
 
 namespace SerfCpp {
 
-    ChannelBase::ChannelBase()
+    ChannelBase::ChannelBase(ChannelType type): m_type(type)
     {}
 
     ChannelBase::~ChannelBase()
@@ -129,6 +129,11 @@ namespace SerfCpp {
                         if (channel != NULL) {
                             std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
                             channel->produce(hdr,m_unpacker);
+
+                            // Request channels need to be removed from the channel map
+                            if (channel->m_type == ChannelBase::REQUEST) {
+                                m_channels.erase(hdr.Seq);
+                            }
                         }
                     } catch (std::exception &e) {
                         std::cout << "Unexpected data received from serf agent" << std::endl;
@@ -163,6 +168,8 @@ namespace SerfCpp {
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*);
     
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*);
 
     template<typename T, typename C>
     bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel)

@@ -14,13 +14,18 @@ using namespace SerfCpp;
 
 int main(int argc, char**argv)
 {
+    if (argc < 2) {
+        std::cout << "Usage:" << std::endl
+                  << "SerfClientExample <command> [args] ..." << std::endl;
+        exit(1);
+    }
+    
     SerfClient client;
     //    bool result = client.Connect(ipAddr,port);
     bool result = client.Connect();
 
-    if (argc < 2) {
-        std::cout << "Usage:" << std::endl
-                  << "SerfClientExample <command> [args] ..." << std::endl;
+    if (result == false) {
+        std::cout << "Failed to connect to serf agent" << std::endl;
         exit(1);
     }
 
@@ -63,7 +68,13 @@ int main(int argc, char**argv)
         result = client.ForceLeave(name);
 
         std::cout << "ForceLeave " << name << " result: " << (result ? "true" : "false") << std::endl;
+    } else if (command == "leave") {
+
+        result = client.Leave();
+
+        std::cout << "Leave result: " << (result ? "true" : "false") << std::endl;
     }
+           
 
     // Close the connection
     std::cout << "Closing socket connection to serf agent" << std::endl;

@@ -150,6 +150,21 @@ namespace SerfCpp {
 
         return (channel.m_hdr.Error == "");
     }
+
+	bool SerfClient::Leave()
+    {
+        RequestHeader hdr;
+        hdr.Command = "leave";
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+
+        m_pImpl->m_serfThread.sendData(hdr,&channel);
+
+        channel.consume();
+
+        return (channel.m_hdr.Error == "");
+    }
         
     
 } // namespace SerfCpp

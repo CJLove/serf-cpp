@@ -13,7 +13,7 @@ possible.
 
 # Status
 Synchronous RPC methods supported: event, force-leave, join, members,
-members-filtered, tags
+members-filtered, tags, leave
 
 See TODO for major functionality remaining and some longer term plans.
 
