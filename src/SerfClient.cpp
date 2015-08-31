@@ -1,4 +1,5 @@
 #include "SerfClient.h"
+#include "SerfChannel.h"
 #include "SerfIoThread.h"
 
 namespace SerfCpp {
@@ -164,6 +165,51 @@ namespace SerfCpp {
         channel.consume();
 
         return (channel.m_hdr.Error == "");
+    }
+
+    unsigned long long SerfClient::Monitor(const std::string &level, ISerfLogListener *listener)
+    {
+        RequestHeader hdr;
+        hdr.Command = "monitor";
+        MonitorRequest req;
+        req.LogLevel = level;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+
+        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+
+        channel.consume();
+
+        bool result = (channel.m_hdr.Error == "");
+
+        if (result) {
+            m_pImpl->m_serfThread.addLogChannel(channel.m_hdr.Seq,listener);
+        }
+
+        return channel.m_hdr.Seq;
+    }
+
+    bool SerfClient::Stop(const unsigned long long &seq)
+    {
+        RequestHeader hdr;
+        StopRequest req;
+        hdr.Command = "stop";
+        req.Stop = seq;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+
+        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+
+        channel.consume();
+
+        bool result = (channel.m_hdr.Error == "");
+
+        if (result) {
+            m_pImpl->m_serfThread.removeChannel(seq);
+        }
+        return result;
     }
         
     

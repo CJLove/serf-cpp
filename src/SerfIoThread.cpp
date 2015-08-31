@@ -4,16 +4,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
+#include "SerfChannel.h"
 #include "SerfIoThread.h"
 
+
 namespace SerfCpp {
-
-    ChannelBase::ChannelBase(ChannelType type): m_type(type)
-    {}
-
-    ChannelBase::~ChannelBase()
-    {
-    }
 
     SerfIoThread::SerfIoThread():
         m_socket(-1), m_seq(0), m_shutdown(false)
@@ -127,7 +122,7 @@ namespace SerfCpp {
                         ChannelBase *channel = m_channels[hdr.Seq];
 
                         if (channel != NULL) {
-                            std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
+                            // std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
                             channel->produce(hdr,m_unpacker);
 
                             // Request channels need to be removed from the channel map
@@ -152,24 +147,23 @@ namespace SerfCpp {
     //
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*);
-
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*);
-
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, MembersFilteredRequest &, ResultChannel<MembersResponse>*);
-    
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, EventRequest&, ResultChannel<bool>*);
-
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, ForceLeaveRequest&, ResultChannel<bool>*);
-
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*);
-    
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*);
+    
 
     template<typename T, typename C>
     bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel)
@@ -179,7 +173,7 @@ namespace SerfCpp {
         hdr.Seq = m_seq++;
 
         m_channels[hdr.Seq] = channel;
-        std::cout << "sendData() with sequence=" << hdr.Seq << std::endl;
+        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
 
         std::stringstream ss;
         msgpack::pack(ss,hdr);
@@ -196,7 +190,7 @@ namespace SerfCpp {
         boost::lock_guard<boost::mutex> guard(m_sendMutex);
 
         hdr.Seq = m_seq++;
-        std::cout << "sendData() with sequence=" << hdr.Seq << std::endl;
+        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
         m_channels[hdr.Seq] = channel;
         
         std::stringstream ss;
@@ -206,7 +200,21 @@ namespace SerfCpp {
 
         return result;
     }
-        
-    
+
+    void SerfIoThread::addLogChannel(const unsigned long long &seq, ISerfLogListener *listener)
+    {
+        boost::lock_guard<boost::mutex> guard(m_sendMutex);
+
+        m_channels[seq] = new LogChannel(listener);
+    }
+
+    void SerfIoThread::removeChannel(const unsigned long long &seq)
+    {
+        boost::lock_guard<boost::mutex> guard(m_sendMutex);
+
+        ChannelBase *chan = m_channels[seq];
+        m_channels.erase(seq);
+        delete chan;
+    }
 
 } // namespace SerfCpp

@@ -1,5 +1,8 @@
 2015-08-30  Chris Love  <cjlove@san.rr.com>
 
+	* Added support for 'monitor' command and subsequent async event
+	  handling.  Added initial support for 'stop' command (issues
+  	  remain). 
 	* Added support for 'leave' request
 	* Added ChannelType enum to ChannelBase, added logic to remove
 	  REQUEST channels from the channel map when the (sole) response

@@ -157,14 +157,36 @@ struct MonitorRequest {
     MSGPACK_DEFINE(LogLevel);
 };
 
-struct LogEntry {
+struct StopRequest {
+    unsigned long long Stop;
+    MSGPACK_DEFINE(Stop);
+};
+    
+
+struct LogRecord {
     std::string Log;
     MSGPACK_DEFINE(Log);
 };
 
-struct StopRequest {
-    int Stop;
-    MSGPACK_DEFINE(Stop);
+struct UserEventRecord {
+    std::string Event;
+    unsigned long long LTime;
+    std::string Name;
+    std::vector<char> Payload;
+    bool Coalesce;
+    MSGPACK_DEFINE(Event,LTime,Name,Payload,Coalesce);
+};
+
+struct MemberEventRecord {
+    std::string Event;
+    std::vector<Member> Members;
+    MSGPACK_DEFINE(Event,Members);
+};
+
+struct QueryRecord {
+    std::string Type;
+    std::string From;
+    std::vector<char> Payload;
 };
 
 void printMsgPack(std::string const& buf);

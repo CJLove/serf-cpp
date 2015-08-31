@@ -9,8 +9,26 @@
 
 #include "SerfClient.h"
 #include "SerfMsgStructs.h"
+#include "ISerfListener.h"
 
 using namespace SerfCpp;
+
+class LogListener: public ISerfLogListener {
+public:
+    LogListener()
+    {}
+
+    ~LogListener()
+    {}
+
+    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record);
+};
+
+void
+LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record)
+{
+    std::cout << "Seq: " << hdr.Seq << " " << record.Log << std::endl;
+}
 
 int main(int argc, char**argv)
 {
@@ -73,6 +91,22 @@ int main(int argc, char**argv)
         result = client.Leave();
 
         std::cout << "Leave result: " << (result ? "true" : "false") << std::endl;
+    } else if (command == "monitor") {
+        LogListener listener;
+        unsigned long long seq = client.Monitor("Debug",&listener);
+
+        if (seq != 0) {
+            std::cout << "Listening to events for 30 seconds..." << std::endl;
+            sleep(30);
+#if 1
+            std::cout << "Stopping Monitor registration for Seq=" << seq << std::endl;
+
+            result = client.Stop(seq);
+
+            std::cout << "Stop result: " << (result ? "true" : "false") << std::endl;
+#endif
+        }
+
     }
            
 

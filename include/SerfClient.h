@@ -3,49 +3,54 @@
 
 namespace SerfCpp {
 
-class SerfClient {
-public:
-    // Default ctor - configured to connect to localhost and default port
-    SerfClient();
+    class ISerfLogListener;
 
-    // Dtor
-    ~SerfClient();
+    class SerfClient {
+    public:
+        // Default ctor - configured to connect to localhost and default port
+        SerfClient();
 
-    // Connect to serf agent
-    bool Connect(const std::string &ipAddr = "127.0.0.1",
-                 const short &port = 7373);
+        // Dtor
+        ~SerfClient();
 
-    // Is the client connected to an agent?
-    bool IsConnected();
+        // Connect to serf agent
+        bool Connect(const std::string &ipAddr = "127.0.0.1",
+                     const short &port = 7373);
 
-    // Close the agent connection
-    bool Close();
+        // Is the client connected to an agent?
+        bool IsConnected();
 
-    //
-    // Serf Client RPC methods
-    //
-    int Join(std::vector<std::string> &addrs,
-             bool replay);
+        // Close the agent connection
+        bool Close();
 
-    MembersResponse Members();
+        //
+        // Serf Client RPC methods
+        //
+        int Join(std::vector<std::string> &addrs,
+                 bool replay);
 
-    MembersResponse MembersFiltered(const std::map<std::string,std::string> & tags,
-                                    const std::string &status,
-                                    const std::string &name);
+        MembersResponse Members();
 
-    bool Event(const std::string &name, const std::vector<char> &payload, bool coalesce);
+        MembersResponse MembersFiltered(const std::map<std::string,std::string> & tags,
+                                        const std::string &status,
+                                        const std::string &name);
 
-    bool ForceLeave(const std::string &nodeName);
+        bool Event(const std::string &name, const std::vector<char> &payload, bool coalesce);
 
-    bool Tags(const std::map<std::string,std::string> &tags,
-              const std::vector<std::string> &deleteTags);
+        bool ForceLeave(const std::string &nodeName);
 
-	bool Leave();    
-    
+        bool Tags(const std::map<std::string,std::string> &tags,
+                  const std::vector<std::string> &deleteTags);
 
-private:
-    struct SerfClientImpl;
-    SerfClientImpl *m_pImpl;
-};
+        bool Leave();
+
+        unsigned long long Monitor(const std::string &level, ISerfLogListener *listener);
+
+        bool Stop(const unsigned long long &seq);
+
+    private:
+        struct SerfClientImpl;
+        SerfClientImpl *m_pImpl;
+    };
 
 } 	// namespace SerfCpp

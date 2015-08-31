@@ -1,10 +1,12 @@
 Short-term
 ==========
+o Stream, Monitor, and Respond commands and callbacks to user code for
+  events, logs, and queries
 o Remaining commands supported by serf RPC definition
-o Stream and Monitor commands and callbacks to user code for events
-  and logs
+o Use boost::condition::timed-wait() in Channel classes; need to
+  workout how to cleanup the Channel instance in the timeout case.
 o Extend SerfClientExample to exercise remaining requests
-o Clean up socket code in SerfIoThread. Consider boost::asio or
+o Clean up socket code in SerfIoThread class. Consider boost::asio or
   alternatives for the sync-async pattern implemented for the
   "synchronous" SerfClient library methods
 o More test code

@@ -7,127 +7,59 @@
 
 namespace SerfCpp {
 
-struct ChannelBase
-{
-    enum ChannelType { REQUEST, LOG, EVENT };
+    class ISerfLogListener;
+    class ChannelBase;
     
-    ChannelBase(ChannelType type);
+    class SerfIoThread {
+    public:
+        SerfIoThread();
 
-    virtual ~ChannelBase();
+        ~SerfIoThread();
 
-    virtual void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker) = 0;
+        bool Connect(const std::string &ipAddr, const short& port);
 
-    ChannelType m_type;
-};
+        bool IsConnected();
 
-template<typename T> struct ResultChannel: ChannelBase {
-     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
-     {}
-     void consume() {
-         boost::unique_lock<boost::mutex> lock(m_mutex);
-         while (m_dataPending == false) {
-             m_condition.wait(lock);
-         }
-         // Data is now available
-     }
+        bool Close();
 
-     void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker) {
-         {
-             boost::lock_guard<boost::mutex> lock(m_mutex);
-             m_hdr = hdr;
+        void processRpc(int arg);
 
-             // Unpack the payload
-             msgpack::unpacked unp;
-             if (unpacker.next(&unp)) {
-                 msgpack::object obj = unp.get();
-                 m_data = obj.as<T>();
-             }
-             m_dataPending = true;             
-             m_condition.notify_one();
-         }
-     }
+        template<typename T, typename C>
+            bool sendData(RequestHeader &hdr, T &body, C *channel);
 
-     ResponseHeader m_hdr;
-     T m_data;
-     bool m_dataPending;
-     boost::mutex m_mutex;
-     boost::condition_variable m_condition;
-};
+        template<typename C>
+            bool sendData(RequestHeader &hdr, C* channel);
 
-template<>
-struct ResultChannel<bool>: ChannelBase {
-     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
-     {}
-     void consume() {
-         boost::unique_lock<boost::mutex> lock(m_mutex);
-         while (m_dataPending == false) {
-             m_condition.wait(lock);
-         }
-         // Data is now available
-     }
+        void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
 
-     void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker) {
-         {
-             // No payload to unpack
-             boost::lock_guard<boost::mutex> lock(m_mutex);
-             m_hdr = hdr;
-             m_dataPending = true;             
-             m_condition.notify_one();
-         }
-     }
+        void removeChannel(const unsigned long long &seq);
 
-     ResponseHeader m_hdr;
-     bool m_dataPending;
-     boost::mutex m_mutex;
-     boost::condition_variable m_condition;
-}; 
-    
-class SerfIoThread {
-public:
-    SerfIoThread();
+    private:
+        // I/O thread for receiving data from serf agent
+        boost::thread m_thread;
 
-    ~SerfIoThread();
+        // Mutex for sending data
+        boost::mutex m_sendMutex;
 
-    bool Connect(const std::string &ipAddr, const short& port);
+        // Msgpack decoder
+        msgpack::unpacker m_unpacker;
 
-    bool IsConnected();
+        // IP Address of Serf Agent
+        std::string m_ipAddr;
 
-    bool Close();
+        // Port of Serf Agent
+        short m_port;
 
-    void processRpc(int arg);
+        // Socket for the agent connection
+        int m_socket;
 
-    template<typename T, typename C>
-        bool sendData(RequestHeader &hdr, T &body, C *channel);
+        // Sequence number for outgoing RPC messages
+        unsigned long long m_seq;
 
-    template<typename C>
-        bool sendData(RequestHeader &hdr, C* channel);
+        // Flag to shutdown
+        bool m_shutdown;
 
-private:
-    // I/O thread for receiving data from serf agent
-    boost::thread m_thread;
-
-    // Mutex for sending data
-    boost::mutex m_sendMutex;
-
-    // Msgpack decoder
-    msgpack::unpacker m_unpacker;
-
-    // IP Address of Serf Agent
-    std::string m_ipAddr;
-
-    // Port of Serf Agent
-    short m_port;
-
-    // Socket for the agent connection
-    int m_socket;
-
-    // Sequence number for outgoing RPC messages
-    unsigned long long m_seq;
-
-    // Flag to shutdown
-    bool m_shutdown;
-
-    std::map<unsigned long long, ChannelBase*> m_channels;
-};
+        std::map<unsigned long long, ChannelBase*> m_channels;
+    };
 
 } // namespace SerfCpp

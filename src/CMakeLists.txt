@@ -16,8 +16,10 @@ include_directories( ${CMAKE_SOURCE_DIR}/include )
 include_directories( . )
 
 set (SerfCpp_SRCS
+    ISerfListener.cpp
     SerfMsgStructs.cpp
     SerfClient.cpp
+    SerfChannel.cpp
     SerfIoThread.cpp
 )
 
