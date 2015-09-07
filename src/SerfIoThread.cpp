@@ -50,13 +50,17 @@ namespace SerfCpp {
                 handshake.Version = SerfApiVersion;
 
                 ResultChannel<bool> channel;
+                unsigned long long seq = 0;
 
-                sendData(hdr,handshake, &channel);
+                if (sendData(hdr,handshake, &channel,seq)) {
+                    channel.consume();
 
-                channel.consume();
-
-                return (channel.m_hdr.Error == "");
-
+                    if (channel.m_dataPending) {
+                        return (channel.m_hdr.Error == "");
+                    } else { // Timeout, no response was received
+                        removeChannel(seq);
+                    }
+                }
             }
         }
         return false;
@@ -119,7 +123,11 @@ namespace SerfCpp {
 
                         std::cout << "Hdr:" << obj << std::endl;
 
-                        ChannelBase *channel = m_channels[hdr.Seq];
+                        ChannelBase *channel = NULL;
+                        {
+                            boost::lock_guard<boost::mutex> guard(m_mutex);
+                            channel = m_channels[hdr.Seq];
+                        }
 
                         if (channel != NULL) {
                             // std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
@@ -127,6 +135,7 @@ namespace SerfCpp {
 
                             // Request channels need to be removed from the channel map
                             if (channel->m_type == ChannelBase::REQUEST) {
+                                boost::lock_guard<boost::mutex> guard(m_mutex);
                                 m_channels.erase(hdr.Seq);
                             }
                         }
@@ -146,75 +155,82 @@ namespace SerfCpp {
     // Force template instantiations for request types called from SerfClient
     //
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*);
+    SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, MembersFilteredRequest &, ResultChannel<MembersResponse>*);
+    SerfIoThread::sendData(RequestHeader &hdr, MembersFilteredRequest &, ResultChannel<MembersResponse>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, EventRequest&, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, EventRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ForceLeaveRequest&, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, ForceLeaveRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*);
+    SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*,unsigned long long &seq);
     
 
     template<typename T, typename C>
-    bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel)
+    bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel,unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_sendMutex);
-
-        hdr.Seq = m_seq++;
-
-        m_channels[hdr.Seq] = channel;
-        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
-
+        boost::lock_guard<boost::mutex> guard(m_mutex);
+        hdr.Seq = m_seq++;        
         std::stringstream ss;
         msgpack::pack(ss,hdr);
         msgpack::pack(ss,body);
 
-        bool result = (send(m_socket,ss.str().data(),ss.str().size(),0) == 0);
-
+        bool result = (send(m_socket,ss.str().data(),ss.str().size(),0) != -1);
+        if (result) {
+            m_channels[hdr.Seq] = channel;
+            std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
+            seq = hdr.Seq;
+        }
+        
         return result;
     }
 
     template<typename C>
-    bool SerfIoThread::sendData(RequestHeader &hdr, C *channel)
+    bool SerfIoThread::sendData(RequestHeader &hdr, C *channel,unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_sendMutex);
+        boost::lock_guard<boost::mutex> guard(m_mutex);
 
-        hdr.Seq = m_seq++;
-        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
-        m_channels[hdr.Seq] = channel;
-        
+        hdr.Seq = m_seq++;        
         std::stringstream ss;
         msgpack::pack(ss,hdr);
 
-        bool result = (send(m_socket,ss.str().data(),ss.str().size(),0) == 0);
+        bool result = (send(m_socket,ss.str().data(),ss.str().size(),0) != -1);
+        if (result) {
+            m_channels[hdr.Seq] = channel;        
+            std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
+            seq = hdr.Seq;
+        }
 
         return result;
     }
 
     void SerfIoThread::addLogChannel(const unsigned long long &seq, ISerfLogListener *listener)
     {
-        boost::lock_guard<boost::mutex> guard(m_sendMutex);
+        boost::lock_guard<boost::mutex> guard(m_mutex);
 
         m_channels[seq] = new LogChannel(listener);
     }
 
     void SerfIoThread::removeChannel(const unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_sendMutex);
+        boost::lock_guard<boost::mutex> guard(m_mutex);
 
         ChannelBase *chan = m_channels[seq];
         m_channels.erase(seq);
-        delete chan;
+
+        // For dynamically allocated channels, delete the channel instance
+        // as well
+        if (chan->m_type != ChannelBase::REQUEST) {
+            delete chan;
+        }
     }
 
 } // namespace SerfCpp

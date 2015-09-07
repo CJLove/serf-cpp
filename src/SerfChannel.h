@@ -36,9 +36,13 @@ namespace SerfCpp {
     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
             {}
         void consume() {
+            boost::posix_time::milliseconds timeoutDuration( 10000 ); //wait for 10 seconds
             boost::unique_lock<boost::mutex> lock(m_mutex);
             while (m_dataPending == false) {
-                m_condition.wait(lock);
+                if (!m_condition.timed_wait(lock,timeoutDuration)) {
+                    // Timeout
+                    break;
+                }
             }
             // Data is now available
         }
@@ -71,9 +75,13 @@ namespace SerfCpp {
     ResultChannel(): ChannelBase(ChannelBase::REQUEST), m_dataPending(false)
             {}
         void consume() {
+            boost::posix_time::milliseconds timeoutDuration( 10000 ); //wait for 10 seconds
             boost::unique_lock<boost::mutex> lock(m_mutex);
             while (m_dataPending == false) {
-                m_condition.wait(lock);
+                if (!m_condition.timed_wait(lock,timeoutDuration)) {
+                    // Timeout
+                    break;
+                }
             }
             // Data is now available
         }

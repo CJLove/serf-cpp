@@ -25,10 +25,10 @@ namespace SerfCpp {
         void processRpc(int arg);
 
         template<typename T, typename C>
-            bool sendData(RequestHeader &hdr, T &body, C *channel);
+            bool sendData(RequestHeader &hdr, T &body, C *channel, unsigned long long &seq);
 
         template<typename C>
-            bool sendData(RequestHeader &hdr, C* channel);
+            bool sendData(RequestHeader &hdr, C* channel, unsigned long long &seq);
 
         void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
 
@@ -38,8 +38,8 @@ namespace SerfCpp {
         // I/O thread for receiving data from serf agent
         boost::thread m_thread;
 
-        // Mutex for sending data
-        boost::mutex m_sendMutex;
+        // Mutex for sending data and channel data
+        boost::mutex m_mutex;
 
         // Msgpack decoder
         msgpack::unpacker m_unpacker;

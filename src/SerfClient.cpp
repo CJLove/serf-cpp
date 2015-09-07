@@ -24,6 +24,22 @@ namespace SerfCpp {
     //
     // Public Implementation
     //
+    std::ostream &operator<<(std::ostream &os, const SerfClient::SerfResponse &r)
+    {
+        switch(r) {
+        case SerfClient::SUCCESS:
+            os << "SUCCESS";
+            break;
+        case SerfClient::FAILURE:
+            os << "FAILURE";
+            break;
+        case SerfClient::TIMEOUT:
+            os << "TIMEOUT";
+            break;
+        }
+        return os;
+    }
+    
     SerfClient::SerfClient(): m_pImpl(new SerfClientImpl(*this))
     {
     }
@@ -32,18 +48,21 @@ namespace SerfCpp {
     {
     }
 
-    bool SerfClient::Connect(const std::string &ipAddr, const short &port)
+    SerfClient::SerfResponse
+    SerfClient::Connect(const std::string &ipAddr, const short &port)
     {
-        return m_pImpl->m_serfThread.Connect(ipAddr,port);
+        return (m_pImpl->m_serfThread.Connect(ipAddr,port)) ? SerfClient::SUCCESS : SerfClient::FAILURE;
     }
 
-    bool SerfClient::Close()
+    SerfClient::SerfResponse
+    SerfClient::Close()
     {
-        return m_pImpl->m_serfThread.Close();
+        return (m_pImpl->m_serfThread.Close()) ? SerfClient::SUCCESS : SerfClient::FAILURE;
     }
 
-    int SerfClient::Join(std::vector<std::string> &addrs,
-             bool replay)
+    SerfClient::SerfResponse
+    SerfClient::Join(std::vector<std::string> &addrs,
+                     bool replay, int &nodeCount)
     {
         RequestHeader hdr;
         hdr.Command = "join";
@@ -53,32 +72,51 @@ namespace SerfCpp {
 
         // Channel for receiving response
         ResultChannel<JoinResponse> channel;
+        unsigned long long seq = 0;
         
-        m_pImpl->m_serfThread.sendData(hdr,join, &channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,join, &channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return channel.m_data.Num;
+            if (channel.m_dataPending) {
+                nodeCount = channel.m_data.Num;
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+		        return SerfClient::TIMEOUT;                
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-    MembersResponse SerfClient::Members()
+    SerfClient::SerfResponse
+    SerfClient::Members(MembersResponse &members)
     {
         RequestHeader hdr;
         hdr.Command = "members";
 
         // Channel for receiving response
         ResultChannel<MembersResponse> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return channel.m_data;
+        	if (channel.m_dataPending) {
+                members = channel.m_data;
+                return( channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+		        return SerfClient::TIMEOUT;                
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-    MembersResponse SerfClient::MembersFiltered(const std::map<std::string,std::string> & tags,
-                                                const std::string &status,
-                                                const std::string &name)
+    SerfClient::SerfResponse
+    SerfClient::MembersFiltered(const std::map<std::string,std::string> & tags,
+                                const std::string &status,
+                                const std::string &name,
+                                MembersResponse &members)
     {
         RequestHeader hdr;
         hdr.Command = "members-filtered";
@@ -89,15 +127,24 @@ namespace SerfCpp {
 
         // Channel for receiving response
         ResultChannel<MembersResponse> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return channel.m_data;
+	        if (channel.m_dataPending) {
+                members = channel.m_data;
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-    bool SerfClient::Event(const std::string &name, const std::vector<char> &payload, bool coalesce)
+    SerfClient::SerfResponse
+    SerfClient::Event(const std::string &name, const std::vector<char> &payload, bool coalesce)
     {
         RequestHeader hdr;
         EventRequest event;
@@ -108,15 +155,23 @@ namespace SerfCpp {
         
         // Channel for receiving response
         ResultChannel<bool> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,event,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,event,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return (channel.m_hdr.Error == "");
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-    bool SerfClient::ForceLeave(const std::string &nodeName)
+    SerfClient::SerfResponse
+    SerfClient::ForceLeave(const std::string &nodeName)
     {
         RequestHeader hdr;
         ForceLeaveRequest req;
@@ -125,16 +180,24 @@ namespace SerfCpp {
         
         // Channel for receiving response
         ResultChannel<bool> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return (channel.m_hdr.Error == "");
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
     }
     
-    bool SerfClient::Tags(const std::map<std::string,std::string> &tags,
-                          const std::vector<std::string> &deleteTags)
+    SerfClient::SerfResponse
+    SerfClient::Tags(const std::map<std::string,std::string> &tags,
+                     const std::vector<std::string> &deleteTags)
     {
         RequestHeader hdr;
         TagsRequest req;
@@ -144,30 +207,46 @@ namespace SerfCpp {
 
         // Channel for receiving response
         ResultChannel<bool> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return (channel.m_hdr.Error == "");
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-	bool SerfClient::Leave()
+    SerfClient::SerfResponse
+    SerfClient::Leave()
     {
         RequestHeader hdr;
         hdr.Command = "leave";
 
         // Channel for receiving response
         ResultChannel<bool> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
-
-        return (channel.m_hdr.Error == "");
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+		        return SerfClient::TIMEOUT;                
+            }
+        }
+        return SerfClient::FAILURE;
     }
 
-    unsigned long long SerfClient::Monitor(const std::string &level, ISerfLogListener *listener)
+    SerfClient::SerfResponse
+    SerfClient::Monitor(const std::string &level, ISerfLogListener *listener,unsigned long long &seq)
     {
         RequestHeader hdr;
         hdr.Command = "monitor";
@@ -177,39 +256,54 @@ namespace SerfCpp {
         // Channel for receiving response
         ResultChannel<bool> channel;
 
-        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
 
-        channel.consume();
+	        if (channel.m_dataPending) {
+                SerfClient::SerfResponse resp = (channel.m_hdr.Error == "") ? SerfClient::SUCCESS : SerfClient::FAILURE;
 
-        bool result = (channel.m_hdr.Error == "");
-
-        if (result) {
-            m_pImpl->m_serfThread.addLogChannel(channel.m_hdr.Seq,listener);
+                if (resp == SerfClient::SUCCESS) {
+                    m_pImpl->m_serfThread.addLogChannel(channel.m_hdr.Seq,listener);
+                    seq = channel.m_hdr.Seq;
+                }
+                return resp;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
         }
-
-        return channel.m_hdr.Seq;
+        return SerfClient::FAILURE;
     }
 
-    bool SerfClient::Stop(const unsigned long long &seq)
+    SerfClient::SerfResponse
+    SerfClient::Stop(const unsigned long long &stopSeq)
     {
         RequestHeader hdr;
         StopRequest req;
         hdr.Command = "stop";
-        req.Stop = seq;
+        req.Stop = stopSeq;
 
         // Channel for receiving response
         ResultChannel<bool> channel;
+        unsigned long long seq = 0;
 
-        m_pImpl->m_serfThread.sendData(hdr,req,&channel);
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
 
-        channel.consume();
+            channel.consume();
 
-        bool result = (channel.m_hdr.Error == "");
+	        if (channel.m_dataPending) {
+                SerfClient::SerfResponse resp = (channel.m_hdr.Error == "") ? SerfClient::SUCCESS : SerfClient::FAILURE;
 
-        if (result) {
-            m_pImpl->m_serfThread.removeChannel(seq);
+                if (resp == SerfClient::SUCCESS) {
+                    m_pImpl->m_serfThread.removeChannel(stopSeq);
+                }
+                return resp;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
         }
-        return result;
+        return SerfClient::FAILURE;
     }
         
     

@@ -40,9 +40,9 @@ int main(int argc, char**argv)
     
     SerfClient client;
     //    bool result = client.Connect(ipAddr,port);
-    bool result = client.Connect();
+    SerfClient::SerfResponse resp = client.Connect();
 
-    if (result == false) {
+    if (resp != SerfClient::SUCCESS) {
         std::cout << "Failed to connect to serf agent" << std::endl;
         exit(1);
     }
@@ -51,20 +51,25 @@ int main(int argc, char**argv)
 
     if (command == "join") {
         std::vector<std::string> addrs;
+        int count = 0;
         
         for (int i = 2; i < argc; ++i) {
             addrs.push_back(argv[i]);
         }
 
-        int count = client.Join(addrs,false);
+        resp = client.Join(addrs,false,count);
 
-        std::cout << "Join node count:\n" << count << std::endl;
+        std::cout << "Join response:" << resp << std::endl
+                  << "Join node count: " << count << std::endl;
 
     } else if (command == "members") {
 
-        MembersResponse resp = client.Members();
+        MembersResponse members;
 
-        std::cout << "Members:\n" << resp << std::endl;
+        resp = client.Members(members);
+
+        std::cout << "Members response:" << resp << std::endl
+                  << "Members:\n" << members << std::endl;
 
     } else if (command == "event") {
         std::string name = argv[2];
@@ -77,23 +82,28 @@ int main(int argc, char**argv)
                 c++;
             }
         }
-        result = client.Event(name,payload,false);
 
-        std::cout << "Event " << name << " result: " << (result ? "true" : "false") << std::endl;
+        resp = client.Event(name,payload,false);
+
+        std::cout << "Event response:" << resp << std::endl
+                  << "Event:" << name << std::endl;
     } else if (command == "force-leave") {
         std::string name = argv[2];
 
-        result = client.ForceLeave(name);
+        resp = client.ForceLeave(name);
 
-        std::cout << "ForceLeave " << name << " result: " << (result ? "true" : "false") << std::endl;
+        std::cout << "ForceLeave response:" << resp << std::endl
+                  << "ForceLeave:" << name << std::endl;
     } else if (command == "leave") {
 
-        result = client.Leave();
+        resp = client.Leave();
 
-        std::cout << "Leave result: " << (result ? "true" : "false") << std::endl;
+        std::cout << "Leave result:" << resp << std::endl;
     } else if (command == "monitor") {
         LogListener listener;
-        unsigned long long seq = client.Monitor("Debug",&listener);
+        unsigned long long seq = 0ULL;
+
+        resp = client.Monitor("Debug",&listener,seq);
 
         if (seq != 0) {
             std::cout << "Listening to events for 30 seconds..." << std::endl;
@@ -101,9 +111,9 @@ int main(int argc, char**argv)
 #if 1
             std::cout << "Stopping Monitor registration for Seq=" << seq << std::endl;
 
-            result = client.Stop(seq);
+            resp = client.Stop(seq);
 
-            std::cout << "Stop result: " << (result ? "true" : "false") << std::endl;
+            std::cout << "Stop result: " << resp << std::endl;
 #endif
         }
 
@@ -112,8 +122,8 @@ int main(int argc, char**argv)
 
     // Close the connection
     std::cout << "Closing socket connection to serf agent" << std::endl;
-    result = client.Close();
-    std::cout << "Close result: " << (result ? "true" : "false") << std::endl;
+    resp = client.Close();
+    std::cout << "Close result:" << resp << std::endl;
 
     exit(0);
 
