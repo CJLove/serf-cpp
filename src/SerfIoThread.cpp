@@ -101,7 +101,7 @@ namespace SerfCpp {
             if (FD_ISSET(m_socket,&read_flags)) {
                 FD_CLR(m_socket,&read_flags);
 
-                m_unpacker.reserve_buffer(2048);
+                m_unpacker.reserve_buffer(4096);
                 ssize_t count = read(m_socket,m_unpacker.buffer(),
                                      m_unpacker.buffer_capacity());
                 if (count <= 0) {
@@ -116,7 +116,8 @@ namespace SerfCpp {
                 m_unpacker.buffer_consumed(count);
 
                 msgpack::unpacked result;
-                if (m_unpacker.next(&result)) {
+                while (m_unpacker.next(&result)) {
+                    //                if (m_unpacker.next(&result)) {
                     msgpack::object obj = result.get();
                     try {
                         ResponseHeader hdr = obj.as<ResponseHeader>();
