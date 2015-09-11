@@ -7,7 +7,7 @@
 namespace SerfCpp {
 
     class ISerfLogListener;
-    
+	class ISerfEventListener;    
 
     struct ChannelBase
     {
@@ -30,6 +30,16 @@ namespace SerfCpp {
         void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker);
 
         ISerfLogListener *m_listener;
+    };
+
+    struct EventChannel: public ChannelBase {
+        EventChannel(ISerfEventListener *);
+
+        ~EventChannel();
+
+        void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker);
+
+        ISerfEventListener *m_listener;
     };
 
     template<typename T> struct ResultChannel: ChannelBase {

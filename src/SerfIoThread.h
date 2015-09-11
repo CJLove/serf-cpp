@@ -32,6 +32,8 @@ namespace SerfCpp {
 
         void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
 
+        void addEventChannel(const unsigned long long &seq, ISerfEventListener *listener);        
+
         void removeChannel(const unsigned long long &seq);
 
     private:

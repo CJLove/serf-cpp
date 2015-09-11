@@ -13,6 +13,40 @@
 
 using namespace SerfCpp;
 
+class EventListener: public ISerfEventListener {
+public:
+    EventListener()
+    {}
+
+    ~EventListener()
+    {}
+
+    void onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record);
+
+    void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record);
+
+    void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record);
+};
+
+void
+EventListener::onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record)
+{
+    std::cout << "UserEvent Hdr: " << hdr << std::endl << record;
+}
+
+void
+EventListener::onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record)
+{
+    std::cout << "MemberEvent Hdr: " << hdr << std::endl << record;
+}
+
+void
+EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record)
+{
+    std::cout << "QueryEvent Hdr: " << hdr << std::endl << record;
+}
+        
+
 class LogListener: public ISerfLogListener {
 public:
     LogListener()
@@ -106,7 +140,7 @@ int main(int argc, char**argv)
         resp = client.Monitor("Debug",&listener,seq);
 
         if (seq != 0) {
-            std::cout << "Listening to events for 30 seconds..." << std::endl;
+            std::cout << "Listening to log records for 30 seconds..." << std::endl;
             sleep(30);
 #if 1
             std::cout << "Stopping Monitor registration for Seq=" << seq << std::endl;
@@ -117,6 +151,22 @@ int main(int argc, char**argv)
 #endif
         }
 
+    } else if (command == "stream") {
+        EventListener listener;
+        unsigned long long seq = 0ULL;
+
+        resp = client.Stream("*",&listener,seq);
+
+        if (seq != 0) {
+            std::cout << "Listening to events for 60 seconds..." << std::endl;
+            sleep(60);
+
+            std::cout << "Stopping Stream registration for Seq=" << seq << std::endl;
+
+            resp = client.Stop(seq);
+
+            std::cout << "Stop result: " << resp << std::endl;
+        }
     }
            
 

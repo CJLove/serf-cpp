@@ -30,6 +30,8 @@ inline bool operator==(ResponseHeader const& lhs, ResponseHeader const& rhs) {
     return ((lhs.Seq == rhs.Seq) && (lhs.Error == rhs.Error));
 }
 
+std::ostream &operator<<(std::ostream &os, const ResponseHeader &m);     
+
 struct HandshakeRequest {
     int Version;
     MSGPACK_DEFINE(Version);
@@ -177,17 +179,29 @@ struct UserEventRecord {
     MSGPACK_DEFINE(Event,LTime,Name,Payload,Coalesce);
 };
 
+std::ostream &operator<<(std::ostream &os, const UserEventRecord &m);     
+
 struct MemberEventRecord {
     std::string Event;
     std::vector<Member> Members;
     MSGPACK_DEFINE(Event,Members);
 };
 
+std::ostream &operator<<(std::ostream &os, const MemberEventRecord &m);         
+
 struct QueryRecord {
-    std::string Type;
+    std::string Event;
     std::string From;
     std::vector<char> Payload;
+    MSGPACK_DEFINE(Event,From,Payload);
 };
+
+struct RecordBase {
+    std::string Event;
+    MSGPACK_DEFINE(Event);
+};
+
+std::ostream &operator<<(std::ostream &os, const QueryRecord &m);             
 
 void printMsgPack(std::string const& buf);
 

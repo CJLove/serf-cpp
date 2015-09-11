@@ -276,6 +276,36 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
+    SerfClient::Stream(const std::string &type, ISerfEventListener *listener, unsigned long long &seq)
+    {
+        RequestHeader hdr;
+        hdr.Command = "stream";
+        StreamRequest req;
+        req.Type = type;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                SerfClient::SerfResponse resp = (channel.m_hdr.Error == "") ? SerfClient::SUCCESS : SerfClient::FAILURE;
+
+                if (resp == SerfClient::SUCCESS) {
+                    m_pImpl->m_serfThread.addEventChannel(channel.m_hdr.Seq,listener);
+                    seq = channel.m_hdr.Seq;
+                }
+                return resp;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+
+    SerfClient::SerfResponse
     SerfClient::Stop(const unsigned long long &stopSeq)
     {
         RequestHeader hdr;

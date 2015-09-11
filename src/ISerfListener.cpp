@@ -9,7 +9,13 @@ namespace SerfCpp {
     ISerfLogListener::~ISerfLogListener()
     {
     }
-    
 
+    ISerfEventListener::ISerfEventListener()
+    {
+    }
+
+    ISerfEventListener::~ISerfEventListener()
+    {
+    }
 
 } // namespace SerfCpp

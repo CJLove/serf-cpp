@@ -4,6 +4,7 @@
 namespace SerfCpp {
 
     class ISerfLogListener;
+    class ISerfEventListener;
 
     class SerfClient {
     public:
@@ -48,6 +49,8 @@ namespace SerfCpp {
         SerfResponse Leave();
 
         SerfResponse Monitor(const std::string &level, ISerfLogListener *listener, unsigned long long &seq);
+
+        SerfResponse Stream(const std::string &type, ISerfEventListener *listener, unsigned long long &seq);
 
         SerfResponse Stop(const unsigned long long &seq);
 

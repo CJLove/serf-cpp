@@ -172,6 +172,8 @@ namespace SerfCpp {
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
+    SerfIoThread::sendData(RequestHeader &hdr, StreamRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    template bool
     SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*,unsigned long long &seq);
     
 
@@ -218,6 +220,13 @@ namespace SerfCpp {
         boost::lock_guard<boost::mutex> guard(m_mutex);
 
         m_channels[seq] = new LogChannel(listener);
+    }
+
+    void SerfIoThread::addEventChannel(const unsigned long long &seq, ISerfEventListener *listener)
+    {
+        boost::lock_guard<boost::mutex> guard(m_mutex);
+
+        m_channels[seq] = new EventChannel(listener);
     }
 
     void SerfIoThread::removeChannel(const unsigned long long &seq)

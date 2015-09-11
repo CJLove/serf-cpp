@@ -1,4 +1,9 @@
-2015-09-07  Chris Love  <chris_love@san.rr.com>
+2015-09-10  Chris Love  <cjlove@san.rr.com>
+
+	* Added support for 'stream' command and subsequent async event
+  	  handling.
+
+2015-09-07  Chris Love  <cjlove@san.rr.com>
 
 	* src/SerfIoThread.cpp: fixed receive logic to handle additional
 	  msgpack object encodings in a single block of data received from
