@@ -7,6 +7,8 @@ o Clean up socket code in SerfIoThread class. Consider boost::asio or
   alternatives for the sync-async pattern implemented for the
   "synchronous" SerfClient library methods
 o More test code
+o Consider using exceptions for error returns rather than the
+  SerfResponse enum
 
 Long-term
 =========

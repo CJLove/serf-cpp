@@ -12,9 +12,6 @@ portable thread support; future support for C++11 using std::thread is
 possible.
 
 # Status
-Synchronous RPC methods supported: event, force-leave, join, members,
-members-filtered, tags, leave
-
 See TODO for major functionality remaining and some longer term plans.
 
 # Dependencies
