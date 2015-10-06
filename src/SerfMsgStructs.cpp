@@ -45,6 +45,57 @@ namespace SerfCpp {
         return os;
     }
 
+    std::ostream &operator<<(std::ostream &os, const MembersFilteredRequest &r)
+    {
+        std::map<std::string,std::string>::const_iterator i = r.Tags.begin();
+        os << "Tags: ";
+        for (; i != r.Tags.end(); ++i) {
+            os << (*i).first << ":" << (*i).second << " ";
+        }
+        os << "Status:" << r.Status << " Name:" << r.Name << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const TagsRequest &r)
+    {
+        std::map<std::string,std::string>::const_iterator i = r.Tags.begin();
+        os << "Tags: ";
+        for (; i != r.Tags.end(); ++i) {
+            os << (*i).first << ":" << (*i).second << " ";
+        }
+        std::vector<std::string>::const_iterator ii = r.DeleteTags.begin();
+        os << "Delete Tags: ";
+        for (; ii != r.DeleteTags.end(); ++ii) {
+            os << (*ii) << " ";
+        }
+        os << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const StreamRequest &r)
+    {
+        os << "StreamRequest " << r.Type << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const MonitorRequest &r)
+    {
+        os << "MonitorRequest " << r.LogLevel << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const StopRequest &r)
+    {
+        os << "StopRequest " << r.Stop << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const LogRecord &r)
+    {
+        os << "LogRecord: " << r.Log << std::endl;
+        return os;
+    }
+
     std::ostream &operator<<(std::ostream &os, const UserEventRecord &r)
     {
         os << "Event: " << r.Event << " Time: " << r.LTime
@@ -69,8 +120,30 @@ namespace SerfCpp {
         // TODO: payload
         return os;
     }
-    
-    
+
+    std::ostream &operator<<(std::ostream &os, const StatsResponse &r)
+    {
+        os << "Agent: " << std::endl
+           << "  name: " << r.agent.name << std::endl
+           << "Runtime: " << std::endl
+           << "  os: " << r.runtime.os << std::endl
+           << "  arch: " << r.runtime.arch << std::endl
+           << "  version: " << r.runtime.version << std::endl
+           << "  max_procs: " << r.runtime.max_procs << std::endl
+           << "  goroutines: " << r.runtime.goroutines << std::endl
+           << "Serf:" << std::endl
+           << "  failed: " << r.serf.failed << std::endl
+           << "  left: " << r.serf.left << std::endl
+           << "  event_time: " << r.serf.event_time << std::endl
+           << "  query_time: " << r.serf.query_time << std::endl
+           << "  event_queue: " << r.serf.event_queue << std::endl
+           << "  members: " << r.serf.members << std::endl
+           << "  member_time: " << r.serf.member_time << std::endl
+           << "  intent_queue: " << r.serf.intent_queue << std::endl
+           << "  query_queue: " << r.serf.query_queue << std::endl;
+        return os;
+    }
+
     //
     // Debug routine to dump the sequence of encoded msgpack data
     //
@@ -88,6 +161,5 @@ namespace SerfCpp {
         }
         std::cout << std::dec << std::endl;
     }
-
 
 } // namespace SerfCpp

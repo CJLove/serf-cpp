@@ -11,7 +11,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src )
 
 
 
-add_executable( SerfCppTests SerfMsgStructTests.cpp )
+add_executable( SerfCppTests SerfMsgStructTests.cpp SerfChannelTests.cpp )
 
 target_link_libraries( SerfCppTests gtest gtest_main )
 target_link_libraries( SerfCppTests SerfCpp )

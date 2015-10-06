@@ -142,13 +142,13 @@ int main(int argc, char**argv)
         if (seq != 0) {
             std::cout << "Listening to log records for 30 seconds..." << std::endl;
             sleep(30);
-#if 1
+
             std::cout << "Stopping Monitor registration for Seq=" << seq << std::endl;
 
             resp = client.Stop(seq);
 
             std::cout << "Stop result: " << resp << std::endl;
-#endif
+
         }
 
     } else if (command == "stream") {
@@ -167,8 +167,12 @@ int main(int argc, char**argv)
 
             std::cout << "Stop result: " << resp << std::endl;
         }
-    }
-           
+    } else if (command == "stats") {
+        StatsResponse stats;
+        resp = client.Stats(stats);
+
+        std::cout << "Stats result:" << resp << std::endl << stats;
+    }           
 
     // Close the connection
     std::cout << "Closing socket connection to serf agent" << std::endl;

@@ -335,6 +335,32 @@ namespace SerfCpp {
         }
         return SerfClient::FAILURE;
     }
+
+    SerfClient::SerfResponse
+    SerfClient::Stats(StatsResponse &stats)
+    {
+        RequestHeader hdr;
+        TagsRequest req;
+        hdr.Command = "stats";
+
+        // Channel for receiving response
+        ResultChannel<StatsResponse> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                stats = channel.m_data;
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+    
         
     
 } // namespace SerfCpp

@@ -1,3 +1,7 @@
+2015-10-05  Chris Love  <cjlove@san.rr.com>
+
+	* Added support for 'stats' command
+
 2015-09-10  Chris Love  <cjlove@san.rr.com>
 
 	* Added support for 'stream' command and subsequent async event

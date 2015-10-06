@@ -54,6 +54,8 @@ namespace SerfCpp {
 
         SerfResponse Stop(const unsigned long long &seq);
 
+        SerfResponse Stats(StatsResponse &stats);
+
     private:
         struct SerfClientImpl;
         SerfClientImpl *m_pImpl;

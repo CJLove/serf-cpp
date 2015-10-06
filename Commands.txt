@@ -1,0 +1,25 @@
+Serf RPC Commands
+
+See https://www.serfdom.io/docs/agent/rpc.html
+
+RPC Command		Supported
+===========		=========
+handshake		implicit
+auth
+event			yes
+force-leave		yes
+join			yes
+members			yes
+members-filtered	yes
+tags			yes
+stream			yes
+monitor			yes
+stop			yes
+leave			yes
+query			
+respond
+install-key
+use-key
+remove-key
+list-keys
+stats			yes	
