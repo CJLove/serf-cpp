@@ -1,3 +1,10 @@
+2015-10-10  Chris Love  <cjlove@san.rr.com>
+
+	* Restructure SerfClientExample as "CLI" to better exercise
+	  commands and event and log monitoring.  Resolved issue with
+	  reception of user events (msgpack-c usage problem)
+
+
 2015-10-05  Chris Love  <cjlove@san.rr.com>
 
 	* Added support for 'stats' command

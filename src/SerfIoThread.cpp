@@ -113,7 +113,9 @@ namespace SerfCpp {
                     }
                     // Other error
                 }
+
                 m_unpacker.buffer_consumed(count);
+
 
                 msgpack::unpacked result;
                 while (m_unpacker.next(&result)) {
@@ -122,7 +124,7 @@ namespace SerfCpp {
                     try {
                         ResponseHeader hdr = obj.as<ResponseHeader>();
 
-                        std::cout << "Hdr:" << obj << std::endl;
+                        // std::cout << "Hdr:" << obj << std::endl;
 
                         ChannelBase *channel = NULL;
                         {
