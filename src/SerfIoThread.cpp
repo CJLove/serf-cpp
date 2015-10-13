@@ -114,6 +114,14 @@ namespace SerfCpp {
                     // Other error
                 }
 
+                char *cur = m_unpacker.buffer();
+                printf("Received:\n");
+                for (int i = 0; i < count; ++i) {
+                    printf("0x%02x,",(int)(*cur & 0xff));
+                    cur++;
+                }
+                printf("\n");
+
                 m_unpacker.buffer_consumed(count);
 
 

@@ -143,17 +143,17 @@ int main(int argc, char**argv)
         } else if (command == "event") {
             std::string name = args[0];
 
-            std::vector<char> payload;
+            std::vector<signed char> payload;
 
-            if (args.size() > 2) {
-                const char *c = args[1].c_str();
+            if (args.size() > 1) {
+                const signed char *c = (signed char*)args[1].c_str();
                 while (*c != '\0') {
                     payload.push_back(*c);
                     c++;
                 }
             }
 
-            resp = client.Event(name,payload,false);
+            resp = client.Event(name,payload,true);
 
             std::cout << "Event response:" << resp << std::endl
                       << "Event:" << name << std::endl;

@@ -77,7 +77,7 @@ namespace SerfCpp {
                     return;
                 }
             } catch (std::exception &e) {
-                std::cout << "Unexpected event type " << type.Event << e.what() << std::endl;
+                std::cout << "Unexpected event type " << type.Event << " " << e.what() << std::endl;
             }
         }
     }

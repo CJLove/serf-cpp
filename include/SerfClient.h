@@ -39,7 +39,7 @@ namespace SerfCpp {
                                      const std::string &name,
                                      MembersResponse &members);
 
-        SerfResponse Event(const std::string &name, const std::vector<char> &payload, bool coalesce);
+        SerfResponse Event(const std::string &name, const std::vector<signed char> &payload, bool coalesce);
 
         SerfResponse ForceLeave(const std::string &nodeName);
 

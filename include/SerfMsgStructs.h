@@ -55,7 +55,7 @@ namespace SerfCpp {
     // --------------------------    
     struct EventRequest {
         std::string Name;
-        std::vector<char> Payload;
+        std::vector<signed char> Payload;
         bool Coalesce;
         MSGPACK_DEFINE(Name,Payload,Coalesce);
     };

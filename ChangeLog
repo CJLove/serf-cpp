@@ -1,3 +1,8 @@
+2015-10-12  Chris Love  <chris_love@san.rr.com>
+
+	* example/SerfClientExample.cpp (main): Fixed bug in populating
+	  the payload of the event request message.
+
 2015-10-10  Chris Love  <cjlove@san.rr.com>
 
 	* Restructure SerfClientExample as "CLI" to better exercise

@@ -144,7 +144,7 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::Event(const std::string &name, const std::vector<char> &payload, bool coalesce)
+    SerfClient::Event(const std::string &name, const std::vector<signed char> &payload, bool coalesce)
     {
         RequestHeader hdr;
         EventRequest event;
