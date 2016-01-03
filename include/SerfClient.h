@@ -32,6 +32,16 @@ namespace SerfCpp {
         SerfResponse Join(std::vector<std::string> &addrs,
                           bool replay, int &nodeCount);
 
+        SerfResponse Auth(std::string &authKey);
+
+        SerfResponse InstallKey(std::string &key, KeyResponse &keys);
+
+        SerfResponse UseKey(std::string &key);
+
+        SerfResponse RemoveKey(std::string &key, KeyResponse &keys);
+
+        SerfResponse ListKeys(KeyListResponse &keys);        
+
         SerfResponse Members(MembersResponse &members);
 
         SerfResponse MembersFiltered(const std::map<std::string,std::string> & tags,

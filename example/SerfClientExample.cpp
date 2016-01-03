@@ -116,6 +116,11 @@ int main(int argc, char**argv)
         } else if (command == "help") {
             std::cout << "Commands:" << std::endl
                       << "    join <addr> <addr> <addr> ..." << std::endl
+                      << "    auth <key>" << std::endl
+                      << "    install <key>" << std::endl
+                      << "    use <key>" << std::endl
+                      << "    remove <key>" << std::endl
+                      << "    list" << std::endl
                       << "    members" << std::endl
                       << "    event <name> <payload>" << std::endl
                       << "    force-leave" << std::endl
@@ -131,6 +136,37 @@ int main(int argc, char**argv)
             std::cout << "Join response:" << resp << std::endl
                       << "Join node count: " << count << std::endl;
 
+        } else if (command == "auth") {
+            std::string key = args[1];
+
+            resp = client.Auth(key);
+            std::cout << "Auth response:" << resp << std::endl;
+        } else if (command == "use") {
+            std::string key = args[1];
+            resp = client.UseKey(key);
+
+            std::cout << "Use Key response:" << resp << std::endl;
+        } else if (command == "install") {
+            std::string key = args[1];
+            KeyResponse keys;
+            resp = client.InstallKey(key,keys);
+
+            std::cout << "Install response:" << resp << std::endl
+                      << "Keys: " << keys << std::endl;
+        } else if (command == "remove") {
+            std::string key = args[1];
+            KeyResponse keys;
+            resp = client.RemoveKey(key,keys);
+
+            std::cout << "Remove response:" << resp << std::endl
+                      << "Keys: " << keys << std::endl;
+        } else if (command == "list") {
+            KeyListResponse keys;
+
+            resp = client.ListKeys(keys);
+
+            std::cout << "List Keys response:" << resp << std::endl
+                      << "Keys:\n" << keys << std::endl;
         } else if (command == "members") {
 
             MembersResponse members;

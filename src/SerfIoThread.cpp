@@ -114,13 +114,13 @@ namespace SerfCpp {
                     // Other error
                 }
 
-                char *cur = m_unpacker.buffer();
-                printf("Received:\n");
-                for (int i = 0; i < count; ++i) {
-                    printf("0x%02x,",(int)(*cur & 0xff));
-                    cur++;
-                }
-                printf("\n");
+                //                char *cur = m_unpacker.buffer();
+                //                printf("Received:\n");
+                //                for (int i = 0; i < count; ++i) {
+                //                    printf("0x%02x,",(int)(*cur & 0xff));
+                //                    cur++;
+                //                }
+                //                printf("\n");
 
                 m_unpacker.buffer_consumed(count);
 
@@ -167,6 +167,15 @@ namespace SerfCpp {
     //
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*,unsigned long long &seq);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, AuthRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<KeyResponse>*,unsigned long long &seq);
+    template bool
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<KeyListResponse>*,unsigned long long &seq);
+    
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*,unsigned long long &seq);
     template bool

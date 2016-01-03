@@ -5,7 +5,7 @@ See https://www.serfdom.io/docs/agent/rpc.html
 RPC Command		Supported
 ===========		=========
 handshake		implicit
-auth
+auth			yes
 event			yes
 force-leave		yes
 join			yes
@@ -18,8 +18,9 @@ stop			yes
 leave			yes
 query			
 respond
-install-key
-use-key
-remove-key
-list-keys
+get-coordinate
+install-key		yes
+use-key			yes
+remove-key		yes
+list-keys		yes
 stats			yes	

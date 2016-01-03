@@ -8,6 +8,37 @@ namespace SerfCpp {
         return os;
     }
 
+    std::ostream &operator<<(std::ostream &os, const KeyResponse &m)
+    {
+        std::map<std::string,std::string>::const_iterator i = m.Messages.begin();
+        os << "Messages:" << std::endl;
+        for (; i != m.Messages.end(); ++i) {
+            os << "Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
+        }
+        os << "NumErr: " << m.NumErr << std::endl
+           << "NumNodes: " << m.NumNodes << std::endl
+           << "NumResp: " << m.NumResp << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const KeyListResponse &m)
+    {
+        std::map<std::string,std::string>::const_iterator i = m.Messages.begin();
+        os << "Messages:" << std::endl;
+        for (; i != m.Messages.end(); ++i) {
+            os << "Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
+        }
+        os << "Keys:" << std::endl;
+        std::map<std::string,int>::const_iterator ii = m.Keys.begin();
+        for (; ii != m.Keys.end(); ++ii) {
+            os << "Key: " << (*ii).first << " : " << (*ii).second << std::endl;
+        }
+        os << "NumErr: " << m.NumErr << std::endl
+           << "NumNodes: " << m.NumNodes << std::endl
+           << "NumResp: " << m.NumResp << std::endl;
+        return os;
+    }
+    
     std::ostream &operator<<(std::ostream &os, const Member &m)
     {
         os << std::setw(10) << m.Name << " ";
@@ -69,6 +100,18 @@ namespace SerfCpp {
             os << (*ii) << " ";
         }
         os << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const AuthRequest &r)
+    {
+        os << "AuthKey: " << r.AuthKey;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const KeyRequest &r)
+    {
+        os << "Key: " << r.Key;
         return os;
     }
 

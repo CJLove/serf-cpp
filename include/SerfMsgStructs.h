@@ -52,7 +52,56 @@ namespace SerfCpp {
         return (lhs.AuthKey == rhs.AuthKey);
     }
 
-    // --------------------------    
+    std::ostream &operator<<(std::ostream &os, const AuthRequest &m);     
+
+    // --------------------------
+    // Used for install-key, use-key, and remove-key requests
+    struct KeyRequest {
+        std::string Key;
+        MSGPACK_DEFINE(Key);
+    };
+    inline bool operator==(KeyRequest const &lhs, KeyRequest const& rhs) {
+        return (lhs.Key == rhs.Key);
+    }
+
+    std::ostream &operator<<(std::ostream &os, const KeyRequest &m);     
+    // --------------------------
+    // Used for install-key and remove-key responses
+    struct KeyResponse {
+        std::map<std::string,std::string> Messages;
+        int NumErr;
+        int NumNodes;
+        int NumResp;
+        MSGPACK_DEFINE(Messages,NumErr,NumNodes,NumResp);
+    };
+    inline bool operator==(KeyResponse const &lhs, KeyResponse const& rhs) {
+        return (lhs.Messages == rhs.Messages &&
+                lhs.NumErr == rhs.NumErr &&
+                lhs.NumNodes == rhs.NumNodes &&
+                lhs.NumResp == rhs.NumResp);
+    }
+    std::ostream &operator<<(std::ostream &os, const KeyResponse &m);
+
+    // --------------------------
+    struct KeyListResponse {
+        std::map<std::string,std::string> Messages;
+        std::map<std::string,int> Keys;
+        int NumErr;
+        int NumNodes;
+        int NumResp;
+        MSGPACK_DEFINE(Messages,Keys,NumErr,NumNodes,NumResp);
+    };
+    inline bool operator==(KeyListResponse const &lhs, KeyListResponse const& rhs) {
+        return (lhs.Messages == rhs.Messages &&
+                lhs.Keys == rhs.Keys &&
+                lhs.NumErr == rhs.NumErr &&
+                lhs.NumNodes == rhs.NumNodes &&
+                lhs.NumResp == rhs.NumResp);
+    }
+    std::ostream &operator<<(std::ostream &os, const KeyListResponse &m);
+        
+    
+    // --------------------------
     struct EventRequest {
         std::string Name;
         std::vector<signed char> Payload;

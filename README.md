@@ -13,6 +13,7 @@ possible.
 
 # Status
 See TODO for major functionality remaining and some longer term plans.
+See Commands.txt for status of individual RPC commands
 
 # Dependencies
 

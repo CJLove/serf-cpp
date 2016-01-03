@@ -89,6 +89,134 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
+    SerfClient::Auth(std::string &token)
+    {
+        RequestHeader hdr;
+        hdr.Command = "auth";
+        AuthRequest req;
+        req.AuthKey = token;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+
+    SerfClient::SerfResponse
+    SerfClient::InstallKey(std::string &key, KeyResponse &keys)
+    {
+        RequestHeader hdr;
+        hdr.Command = "install-key";
+        KeyRequest req;
+        req.Key = key;
+
+        // Channel for receiving response
+        ResultChannel<KeyResponse> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                keys = channel.m_data;                
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+
+    SerfClient::SerfResponse
+    SerfClient::ListKeys(KeyListResponse &keys)
+    {
+        RequestHeader hdr;
+        hdr.Command = "list-keys";
+
+        // Channel for receiving response
+        ResultChannel<KeyListResponse> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                keys = channel.m_data;                
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+    
+    SerfClient::SerfResponse
+    SerfClient::UseKey(std::string &token)
+    {
+        RequestHeader hdr;
+        hdr.Command = "use-key";
+        KeyRequest req;
+        req.Key = token;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+    
+
+    SerfClient::SerfResponse
+    SerfClient::RemoveKey(std::string &key, KeyResponse &keys)
+    {
+        RequestHeader hdr;
+        hdr.Command = "remove-key";
+        KeyRequest req;
+        req.Key = key;
+
+        // Channel for receiving response
+        ResultChannel<KeyResponse> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                keys = channel.m_data;                
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+    
+
+    SerfClient::SerfResponse
     SerfClient::Members(MembersResponse &members)
     {
         RequestHeader hdr;
