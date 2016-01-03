@@ -66,6 +66,8 @@ namespace SerfCpp {
 
         SerfResponse Stats(StatsResponse &stats);
 
+        SerfResponse Respond(const unsigned long long &id, const std::vector<signed char> &payload);
+
         SerfResponse GetCoordinate(std::string node, CoordResponse &coordinate);
 
     private:

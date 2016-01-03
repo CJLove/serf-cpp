@@ -102,7 +102,20 @@ namespace SerfCpp {
         return (lhs.Key == rhs.Key);
     }
 
-    std::ostream &operator<<(std::ostream &os, const KeyRequest &m);     
+    std::ostream &operator<<(std::ostream &os, const KeyRequest &m);
+
+    // --------------------------
+    struct RespondRequest {
+        unsigned long long ID;
+        std::vector<signed char> Payload;
+        MSGPACK_DEFINE(ID,Payload);
+    };
+    inline bool operator==(RespondRequest const &lhs, RespondRequest const &rhs) {
+        return (lhs.ID == rhs.ID &&
+                lhs.Payload == rhs.Payload);
+    }
+    std::ostream &operator<<(std::ostream &os, const RespondRequest &m);    
+    
     // --------------------------
     // Used for install-key and remove-key responses
     struct KeyResponse {
@@ -352,15 +365,19 @@ namespace SerfCpp {
     // --------------------------    
     struct QueryRecord {
         std::string Event;
-        std::string From;
+        unsigned long long ID;
+        std::string Name;
         std::vector<char> Payload;
-        MSGPACK_DEFINE(Event,From,Payload);
+        unsigned long long LTime;        
+        MSGPACK_DEFINE(Event,ID,Name,Payload,LTime);
     };
 
     inline bool operator==(QueryRecord const &lhs, QueryRecord const &rhs)
     {
         return (lhs.Event == rhs.Event &&
-                lhs.From == rhs.From &&
+                lhs.ID == rhs.ID &&
+                lhs.Name == rhs.Name &&
+                lhs.LTime == rhs.LTime &&
                 lhs.Payload == rhs.Payload);
     }
 

@@ -326,7 +326,9 @@ TEST(SerfMsgStructTest, QueryRecord)
 {
     QueryRecord rec;
     rec.Event="query";
-    rec.From="nodeA";
+    rec.ID = 6666ULL;
+    rec.LTime = 444ULL;
+    rec.Name="test-event";
     rec.Payload.push_back('a');
     rec.Payload.push_back('b');
     rec.Payload.push_back('c');

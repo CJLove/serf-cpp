@@ -299,6 +299,31 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
+    SerfClient::Respond(const unsigned long long &id, const std::vector<signed char> &payload)
+    {
+        RequestHeader hdr;
+        hdr.Command="respond";
+        RespondRequest req;
+        req.ID = id;
+        req.Payload = payload;
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+
+    SerfClient::SerfResponse
     SerfClient::ForceLeave(const std::string &nodeName)
     {
         RequestHeader hdr;

@@ -127,6 +127,13 @@ namespace SerfCpp {
         return os;
     }
 
+    std::ostream &operator<<(std::ostream &os, const RespondRequest &r)
+    {
+        os << "ID: " << r.ID << std::endl;
+        // TODO: payload        
+        return os;
+    }
+
     std::ostream &operator<<(std::ostream &os, const StopRequest &r)
     {
         os << "StopRequest " << r.Stop << std::endl;
@@ -159,7 +166,9 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const QueryRecord &r)
     {
-        os << "Event: " << r.Event << " From: " << r.From;
+        os << "Event: " << r.Event 
+           << " ID: " << r.ID << " Name: " << r.Name
+           << " LTime: " << r.LTime << std::endl;
         // TODO: payload
         return os;
     }

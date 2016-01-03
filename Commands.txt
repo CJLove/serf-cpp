@@ -17,7 +17,7 @@ monitor			yes
 stop			yes
 leave			yes
 query			
-respond
+respond			yes
 get-coordinate		yes
 install-key		yes
 use-key			yes

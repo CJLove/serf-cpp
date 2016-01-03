@@ -195,6 +195,8 @@ namespace SerfCpp {
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*,unsigned long long &seq);
     template bool
+    SerfIoThread::sendData(RequestHeader &hdr, RespondRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    template bool
     SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<StatsResponse>*, unsigned long long &seq);
     template bool
     SerfIoThread::sendData(RequestHeader &hdr, CoordRequest&, ResultChannel<CoordResponse>*, unsigned long long &seq);

@@ -61,6 +61,7 @@ void
 EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record)
 {
     std::cout << "QueryEvent Hdr: " << hdr << std::endl << record;
+    
 }
         
 
@@ -127,6 +128,7 @@ int main(int argc, char**argv)
                       << "    leave" << std::endl
                       << "    coord <name>" << std::endl
                       << "    stop <seq>" << std::endl
+                      << "    reqpond <id> <payload>" << std::endl
                       << "    monitor" << std::endl
                       << "    stream" << std::endl
                       << "    stats" << std::endl;
@@ -200,6 +202,20 @@ int main(int argc, char**argv)
 
             std::cout << "Event response:" << resp << std::endl
                       << "Event:" << name << std::endl;
+        } else if (command == "respond") {
+            unsigned long long id = strtoull(args[0].c_str(),NULL,10);
+            std::vector<signed char> payload;
+
+            if (args.size() > 1) {
+                const signed char *c = (signed char*)args[1].c_str();
+                while (*c != '\0') {
+                    payload.push_back(*c);
+                    c++;
+                }
+            }
+            resp = client.Respond(id,payload);
+            std::cout << "Respond response:" << resp << " for ID: " << id << std::endl;
+
         } else if (command == "force-leave") {
             std::string name = args[0];
 
