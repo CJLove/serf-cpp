@@ -488,7 +488,36 @@ namespace SerfCpp {
         }
         return SerfClient::FAILURE;
     }
-    
+
+    SerfClient::SerfResponse
+    SerfClient::GetCoordinate(std::string node, CoordResponse &coordinate)
+    {
+        RequestHeader hdr;
+        hdr.Command = "get-coordinate";
+        CoordRequest req;
+        req.Node = node;
+
+        // Channel for receiving response
+        ResultChannel<CoordResponse> channel;
+        unsigned long long seq = 0;
+
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                coordinate = channel.m_data;
+
+                return (channel.m_hdr.Error == "") ? SerfClient::SUCCESS: SerfClient::FAILURE;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+        
+
+
         
     
 } // namespace SerfCpp

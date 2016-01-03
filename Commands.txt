@@ -18,7 +18,7 @@ stop			yes
 leave			yes
 query			
 respond
-get-coordinate
+get-coordinate		yes
 install-key		yes
 use-key			yes
 remove-key		yes

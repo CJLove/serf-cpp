@@ -125,6 +125,7 @@ int main(int argc, char**argv)
                       << "    event <name> <payload>" << std::endl
                       << "    force-leave" << std::endl
                       << "    leave" << std::endl
+                      << "    coord <name>" << std::endl
                       << "    stop <seq>" << std::endl
                       << "    monitor" << std::endl
                       << "    stream" << std::endl
@@ -175,7 +176,13 @@ int main(int argc, char**argv)
 
             std::cout << "Members response:" << resp << std::endl
                       << "Members:\n" << members << std::endl;
+        } else if (command == "coord") {
+            std::string node = args[1];
+            CoordResponse coord;
 
+            resp = client.GetCoordinate(node,coord);
+            std::cout << "GetCoordinate response:" << resp << std::endl
+                      << "Coordinate:\n" << coord << std::endl;
         } else if (command == "event") {
             std::string name = args[0];
 

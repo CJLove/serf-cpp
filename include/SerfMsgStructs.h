@@ -53,7 +53,45 @@ namespace SerfCpp {
     }
 
     std::ostream &operator<<(std::ostream &os, const AuthRequest &m);     
+    // --------------------------
+    struct CoordRequest {
+        std::string Node;
+        MSGPACK_DEFINE(Node);
+    };
+    inline bool operator==(CoordRequest const &lhs, CoordRequest const& rhs) {
+        return (lhs.Node == rhs.Node);
+    }
 
+    std::ostream &operator<<(std::ostream &os, const CoordRequest &m);     
+
+    struct Coordinate {
+        std::vector<double> Vec;
+        double Error;        
+        double Adjustment;
+        double Height;
+
+        MSGPACK_DEFINE(Adjustment,Error,Height,Vec);
+        //        MSGPACK_DEFINE(Vec,Error,Adjustment,Height);
+    };
+    inline bool operator==(Coordinate const &lhs, Coordinate const& rhs) {
+        return (lhs.Adjustment == rhs.Adjustment &&
+                lhs.Error == rhs.Error &&
+                lhs.Height == rhs.Height &&
+                lhs.Vec == rhs.Vec);
+    }
+    std::ostream &operator<<(std::ostream &os, const Coordinate &m);         
+    
+    struct CoordResponse {
+        Coordinate Coord;
+        bool Ok;
+        MSGPACK_DEFINE(Coord,Ok);
+    };
+    inline bool operator==(CoordResponse const &lhs, CoordResponse const& rhs) {
+        return (lhs.Coord == rhs.Coord &&
+                lhs.Ok == rhs.Ok);
+    }
+    std::ostream &operator<<(std::ostream &os, const CoordResponse &m);                 
+        
     // --------------------------
     // Used for install-key, use-key, and remove-key requests
     struct KeyRequest {

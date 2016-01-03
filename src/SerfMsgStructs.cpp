@@ -164,6 +164,33 @@ namespace SerfCpp {
         return os;
     }
 
+    std::ostream &operator<<(std::ostream &os, const CoordRequest &r)
+    {
+        os << "Node: " << r.Node << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Coordinate &r)
+    {
+        os << "Adjustment: " << r.Adjustment << std::endl
+           << "Error: " << r.Error << std::endl
+           << "Height: " << r.Height << std::endl
+           << "Vec: ";
+        std::vector<double>::const_iterator i = r.Vec.begin();
+        for (; i != r.Vec.end(); i++) {
+            os << (*i) << " ";
+        }
+        os << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const CoordResponse &r)
+    {
+        os << r.Coord
+           << "Ok: " << r.Ok << std::endl;
+        return os;
+    }
+
     std::ostream &operator<<(std::ostream &os, const StatsResponse &r)
     {
         os << "Agent: " << std::endl

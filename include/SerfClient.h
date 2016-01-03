@@ -40,7 +40,7 @@ namespace SerfCpp {
 
         SerfResponse RemoveKey(std::string &key, KeyResponse &keys);
 
-        SerfResponse ListKeys(KeyListResponse &keys);        
+        SerfResponse ListKeys(KeyListResponse &keys);
 
         SerfResponse Members(MembersResponse &members);
 
@@ -65,6 +65,8 @@ namespace SerfCpp {
         SerfResponse Stop(const unsigned long long &seq);
 
         SerfResponse Stats(StatsResponse &stats);
+
+        SerfResponse GetCoordinate(std::string node, CoordResponse &coordinate);
 
     private:
         struct SerfClientImpl;
