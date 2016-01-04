@@ -10,7 +10,7 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const KeyResponse &m)
     {
-        std::map<std::string,std::string>::const_iterator i = m.Messages.begin();
+        SerfStringMap::const_iterator i = m.Messages.begin();
         os << "Messages:" << std::endl;
         for (; i != m.Messages.end(); ++i) {
             os << "Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
@@ -23,13 +23,13 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const KeyListResponse &m)
     {
-        std::map<std::string,std::string>::const_iterator i = m.Messages.begin();
+        SerfStringMap::const_iterator i = m.Messages.begin();
         os << "Messages:" << std::endl;
         for (; i != m.Messages.end(); ++i) {
             os << "Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
         }
         os << "Keys:" << std::endl;
-        std::map<std::string,int>::const_iterator ii = m.Keys.begin();
+        SerfStringIntMap::const_iterator ii = m.Keys.begin();
         for (; ii != m.Keys.end(); ++ii) {
             os << "Key: " << (*ii).first << " : " << (*ii).second << std::endl;
         }
@@ -59,7 +59,7 @@ namespace SerfCpp {
             os << std::dec << std::setfill(' ') << m.Port;
         }
         os << " " << m.Status;
-        std::map<std::string,std::string>::const_iterator ii = m.Tags.begin();
+        SerfStringMap::const_iterator ii = m.Tags.begin();
         for (; ii != m.Tags.end(); ++ii) {
             os << " " << (*ii).first << ":" << (*ii).second;
         }
@@ -78,7 +78,7 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const MembersFilteredRequest &r)
     {
-        std::map<std::string,std::string>::const_iterator i = r.Tags.begin();
+        SerfStringMap::const_iterator i = r.Tags.begin();
         os << "Tags: ";
         for (; i != r.Tags.end(); ++i) {
             os << (*i).first << ":" << (*i).second << " ";
@@ -89,12 +89,12 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const TagsRequest &r)
     {
-        std::map<std::string,std::string>::const_iterator i = r.Tags.begin();
+        SerfStringMap::const_iterator i = r.Tags.begin();
         os << "Tags: ";
         for (; i != r.Tags.end(); ++i) {
             os << (*i).first << ":" << (*i).second << " ";
         }
-        std::vector<std::string>::const_iterator ii = r.DeleteTags.begin();
+        SerfStringArray::const_iterator ii = r.DeleteTags.begin();
         os << "Delete Tags: ";
         for (; ii != r.DeleteTags.end(); ++ii) {
             os << (*ii) << " ";

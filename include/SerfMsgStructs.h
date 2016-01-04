@@ -8,9 +8,24 @@
 #define MSGPACK_USE_DEFINE_MAP
 #include <msgpack.hpp>
 
+//
+// Structs used with msgpack-c for messages exchanged with serf agent.
+//
+// For reference, see https://www.serfdom.io/docs/agent/rpc.html for the
+// corresponding JSON representation and
+// https://github.com/hashicorp/serf/blob/master/client/const.go for the
+// reference implementation in golang (helpful in discerning types)
+//
+
 namespace SerfCpp {
 
     const int SerfApiVersion = 1;
+
+    // Convenience typedefs for types used in Serf RPC messages
+    typedef std::vector<signed char> SerfPayload;
+    typedef std::vector<std::string> SerfStringArray;
+    typedef std::map<std::string,std::string> SerfStringMap;
+    typedef std::map<std::string,int> SerfStringIntMap;
 
     // --------------------------
     struct RequestHeader {
@@ -107,7 +122,7 @@ namespace SerfCpp {
     // --------------------------
     struct RespondRequest {
         unsigned long long ID;
-        std::vector<signed char> Payload;
+        SerfPayload Payload;
         MSGPACK_DEFINE(ID,Payload);
     };
     inline bool operator==(RespondRequest const &lhs, RespondRequest const &rhs) {
@@ -119,7 +134,7 @@ namespace SerfCpp {
     // --------------------------
     // Used for install-key and remove-key responses
     struct KeyResponse {
-        std::map<std::string,std::string> Messages;
+        SerfStringMap Messages;
         int NumErr;
         int NumNodes;
         int NumResp;
@@ -135,8 +150,8 @@ namespace SerfCpp {
 
     // --------------------------
     struct KeyListResponse {
-        std::map<std::string,std::string> Messages;
-        std::map<std::string,int> Keys;
+        SerfStringMap Messages;
+        SerfStringIntMap Keys;
         int NumErr;
         int NumNodes;
         int NumResp;
@@ -155,7 +170,7 @@ namespace SerfCpp {
     // --------------------------
     struct EventRequest {
         std::string Name;
-        std::vector<signed char> Payload;
+        SerfPayload Payload;
         bool Coalesce;
         MSGPACK_DEFINE(Name,Payload,Coalesce);
     };
@@ -165,12 +180,12 @@ namespace SerfCpp {
 
     // --------------------------
     struct QueryRequest {
-        std::vector<std::string> FilterNodes;
-        std::map<std::string,std::string> FilterTags;
+        SerfStringArray FilterNodes;
+        SerfStringMap FilterTags;
         bool RequestAck;
         unsigned long long Timeout;
         std::string Name;
-        std::vector<signed char> Payload;
+        SerfPayload Payload;
         MSGPACK_DEFINE(FilterNodes,FilterTags,RequestAck,Timeout,Name,Payload);
     };
     inline bool operator==(QueryRequest const& lhs, QueryRequest const& rhs) {
@@ -193,7 +208,7 @@ namespace SerfCpp {
 
     // --------------------------    
     struct JoinRequest {
-        std::vector<std::string> Existing;
+        SerfStringArray Existing;
         bool Replay;
         MSGPACK_DEFINE(Existing,Replay);
     };
@@ -224,7 +239,7 @@ namespace SerfCpp {
         // be interpreted as unsigned char.
         std::vector<char> Addr;
         int Port;
-        std::map<std::string,std::string> Tags;
+        SerfStringMap Tags;
         std::string Status;
         unsigned char ProtocolMin;
         unsigned char ProtocolMax;
@@ -265,7 +280,7 @@ namespace SerfCpp {
 
     // -------------------------- 
     struct MembersFilteredRequest {
-        std::map<std::string,std::string> Tags;
+        SerfStringMap Tags;
         std::string Status;
         std::string Name;
         MSGPACK_DEFINE(Tags,Status,Name);
@@ -281,8 +296,8 @@ namespace SerfCpp {
     
     // --------------------------
     struct TagsRequest {
-        std::map<std::string,std::string> Tags;
-        std::vector<std::string> DeleteTags;
+        SerfStringMap Tags;
+        SerfStringArray DeleteTags;
         MSGPACK_DEFINE(Tags,DeleteTags);
     };
     inline bool operator==(TagsRequest const &lhs, TagsRequest const &rhs)
@@ -419,7 +434,7 @@ namespace SerfCpp {
     struct NodeResponse {
         std::string Type;        
         std::string From;
-        std::vector<signed char> Payload;
+        SerfPayload Payload;
         MSGPACK_DEFINE(Type,From,Payload);
     };
     

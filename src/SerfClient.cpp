@@ -61,7 +61,7 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::Join(std::vector<std::string> &addrs,
+    SerfClient::Join(SerfStringArray &addrs,
                      bool replay, int &nodeCount)
     {
         RequestHeader hdr;
@@ -241,7 +241,7 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::MembersFiltered(const std::map<std::string,std::string> & tags,
+    SerfClient::MembersFiltered(const SerfStringMap & tags,
                                 const std::string &status,
                                 const std::string &name,
                                 MembersResponse &members)
@@ -272,7 +272,7 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::Event(const std::string &name, const std::vector<signed char> &payload, bool coalesce)
+    SerfClient::Event(const std::string &name, const SerfPayload &payload, bool coalesce)
     {
         RequestHeader hdr;
         EventRequest event;
@@ -299,7 +299,7 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::Respond(const unsigned long long &id, const std::vector<signed char> &payload)
+    SerfClient::Respond(const unsigned long long &id, const SerfPayload &payload)
     {
         RequestHeader hdr;
         hdr.Command="respond";
@@ -349,8 +349,8 @@ namespace SerfCpp {
     }
     
     SerfClient::SerfResponse
-    SerfClient::Tags(const std::map<std::string,std::string> &tags,
-                     const std::vector<std::string> &deleteTags)
+    SerfClient::Tags(const SerfStringMap &tags,
+                     const SerfStringArray &deleteTags)
     {
         RequestHeader hdr;
         TagsRequest req;
@@ -429,12 +429,12 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
-    SerfClient::Query(const std::string &name, const std::vector<signed char> &payload,
+    SerfClient::Query(const std::string &name, const SerfPayload &payload,
                       ISerfQueryListener *listener,
                       // Following args are optional
                       bool requestAck, unsigned long long timeout,
-                      std::vector<std::string> *filterNodes,
-                      std::map<std::string,std::string> *filterTags)
+                      SerfStringArray *filterNodes,
+                      SerfStringMap *filterTags)
     {
         RequestHeader hdr;
         hdr.Command = "query";

@@ -16,9 +16,9 @@
 using namespace SerfCpp;
 
 
-std::vector<std::string>
+SerfStringArray
 split(const std::string &str, char delimiter) {
-    std::vector<std::string> internal;
+    SerfStringArray internal;
     std::stringstream ss(str); // Turn the string into a stream.
     std::string tok;
   
@@ -67,7 +67,7 @@ EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRe
 
     // Auto respond to "testQuery"
     if (record.Name == "testQuery") {
-        std::vector<signed char> payload;
+        SerfPayload payload;
         payload.push_back('T');
         payload.push_back('E');
         payload.push_back('S');
@@ -165,7 +165,7 @@ int main(int argc, char**argv)
         std::cout << "Command > ";
         getline(std::cin,line);
 
-        std::vector<std::string> args = ::split(line,' ');
+        SerfStringArray args = ::split(line,' ');
         if (args.empty()) continue;
         
         std::string command = args[0];
@@ -240,7 +240,7 @@ int main(int argc, char**argv)
                       << "Members:\n" << members << std::endl;
         } else if (command == "query") {
             std::string name = args[0];
-            std::vector<signed char> payload;
+            SerfPayload payload;
             
             if (args.size() > 1) {
                 const signed char *c = (signed char*)args[1].c_str();
@@ -263,7 +263,7 @@ int main(int argc, char**argv)
         } else if (command == "event") {
             std::string name = args[0];
 
-            std::vector<signed char> payload;
+            SerfPayload payload;
 
             if (args.size() > 1) {
                 const signed char *c = (signed char*)args[1].c_str();
@@ -279,7 +279,7 @@ int main(int argc, char**argv)
                       << "Event:" << name << std::endl;
         } else if (command == "respond") {
             unsigned long long id = strtoull(args[0].c_str(),NULL,10);
-            std::vector<signed char> payload;
+            SerfPayload payload;
 
             if (args.size() > 1) {
                 const signed char *c = (signed char*)args[1].c_str();
