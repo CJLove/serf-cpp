@@ -142,12 +142,6 @@ LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &recor
 
 int main(int argc, char**argv)
 {
-    //    if (argc < 2) {
-    //        std::cout << "Usage:" << std::endl
-    //                  << "SerfClientExample <command> [args] ..." << std::endl;
-    //        exit(1);
-    //    }
-    
     SerfClient client;
     LogListener logListener;
     EventListener eventListener(client);
@@ -187,7 +181,7 @@ int main(int argc, char**argv)
                       << "    leave" << std::endl
                       << "    coord <name>" << std::endl
                       << "    stop <seq>" << std::endl
-                      << "    reqpond <id> <payload>" << std::endl
+                      << "    respond <id> <payload>" << std::endl
                       << "    monitor" << std::endl
                       << "    stream" << std::endl
                       << "    query <name> <payload>" << std::endl
@@ -215,21 +209,21 @@ int main(int argc, char**argv)
             resp = client.InstallKey(key,keys);
 
             std::cout << "Install response:" << resp << std::endl
-                      << "Keys: " << keys << std::endl;
+                      << keys << std::endl;
         } else if (command == "remove") {
             std::string key = args[1];
             KeyResponse keys;
             resp = client.RemoveKey(key,keys);
 
             std::cout << "Remove response:" << resp << std::endl
-                      << "Keys: " << keys << std::endl;
+                      << keys << std::endl;
         } else if (command == "list") {
             KeyListResponse keys;
 
             resp = client.ListKeys(keys);
 
             std::cout << "List Keys response:" << resp << std::endl
-                      << "Keys:\n" << keys << std::endl;
+                      << keys << std::endl;
         } else if (command == "members") {
 
             MembersResponse members;
@@ -237,7 +231,7 @@ int main(int argc, char**argv)
             resp = client.Members(members);
 
             std::cout << "Members response:" << resp << std::endl
-                      << "Members:\n" << members << std::endl;
+                      << members << std::endl;
         } else if (command == "query") {
             std::string name = args[0];
             SerfPayload payload;
@@ -259,7 +253,7 @@ int main(int argc, char**argv)
 
             resp = client.GetCoordinate(node,coord);
             std::cout << "GetCoordinate response:" << resp << std::endl
-                      << "Coordinate:\n" << coord << std::endl;
+                      << coord << std::endl;
         } else if (command == "event") {
             std::string name = args[0];
 

@@ -22,7 +22,7 @@ namespace SerfCpp {
     const int SerfApiVersion = 1;
 
     // Convenience typedefs for types used in Serf RPC messages
-    typedef std::vector<signed char> SerfPayload;
+    typedef std::vector<char> SerfPayload;
     typedef std::vector<std::string> SerfStringArray;
     typedef std::map<std::string,std::string> SerfStringMap;
     typedef std::map<std::string,int> SerfStringIntMap;
@@ -365,7 +365,7 @@ namespace SerfCpp {
         std::string Event;
         unsigned long long LTime;
         std::string Name;
-        std::vector<char> Payload;
+        SerfPayload Payload;
         bool Coalesce;
         MSGPACK_DEFINE(Event,LTime,Name,Payload,Coalesce);
     };
@@ -401,7 +401,7 @@ namespace SerfCpp {
         std::string Event;
         unsigned long long ID;
         std::string Name;
-        std::vector<char> Payload;
+        SerfPayload Payload;
         unsigned long long LTime;        
         MSGPACK_DEFINE(Event,ID,Name,Payload,LTime);
     };

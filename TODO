@@ -1,8 +1,8 @@
 Short-term
 ==========
-o Respond commands 
-o Remaining commands supported by serf RPC definition
-o Extend SerfClientExample to exercise remaining requests
+o Library versioning
+o Code cleanup; additional refactoring for methods in SerfClient class
+o Support different log levels
 o Clean up socket code in SerfIoThread class. Consider boost::asio or
   alternatives for the sync-async pattern implemented for the
   "synchronous" SerfClient library methods
