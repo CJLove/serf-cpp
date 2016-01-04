@@ -18,4 +18,12 @@ namespace SerfCpp {
     {
     }
 
+    ISerfQueryListener::ISerfQueryListener()
+    {
+    }
+
+    ISerfQueryListener::~ISerfQueryListener()
+    {
+    }
+
 } // namespace SerfCpp

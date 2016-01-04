@@ -5,6 +5,7 @@ namespace SerfCpp {
 
     class ISerfLogListener;
     class ISerfEventListener;
+    class ISerfQueryListener;
 
     class SerfClient {
     public:
@@ -69,6 +70,13 @@ namespace SerfCpp {
         SerfResponse Respond(const unsigned long long &id, const std::vector<signed char> &payload);
 
         SerfResponse GetCoordinate(std::string node, CoordResponse &coordinate);
+
+        SerfResponse Query(const std::string &name, const std::vector<signed char> &payload,
+                           ISerfQueryListener *listener,                           
+                           // Following args are optional
+                           bool requestAck = false, unsigned long long timeout = 15000000000ULL,
+                           std::vector<std::string> *filterNodes = NULL,
+                           std::map<std::string,std::string> *filterTags = NULL);
 
     private:
         struct SerfClientImpl;

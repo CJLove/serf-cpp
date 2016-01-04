@@ -4,7 +4,7 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const ResponseHeader &m)
     {
-        os << "Seq: " << m.Seq << " Error: " << m.Error << std::endl;
+        os << "[ Seq: " << m.Seq << " Error: \"" << m.Error << "\"]" << std::endl;
         return os;
     }
 
@@ -148,15 +148,16 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const UserEventRecord &r)
     {
-        os << "Event: " << r.Event << " Time: " << r.LTime
-           << "\nName: " << r.Name << std::endl;
+        os << "==> Event: " << r.Event << " Time: " << r.LTime
+           << "Name: " << r.Name << std::endl
+           << "    Payload: " << std::endl;
         // TODO: payload
         return os;
     }
 
     std::ostream &operator<<(std::ostream &os, const MemberEventRecord &r)
     {
-        os << "Event: " << r.Event << std::endl;
+        os << "==> Event: " << r.Event << std::endl;
         std::vector<Member>::const_iterator i = r.Members.begin();
         for (; i != r.Members.end(); ++i) {
             os << *i;
@@ -166,9 +167,30 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const QueryRecord &r)
     {
-        os << "Event: " << r.Event 
+        os << "==> Event: " << r.Event 
            << " ID: " << r.ID << " Name: " << r.Name
-           << " LTime: " << r.LTime << std::endl;
+           << " LTime: " << r.LTime << std::endl
+           << "    Payload: " << std::endl;
+        // TODO: payload
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const NodeResponseBase &r)
+    {
+        os << "    Type: " << r.Type << std::endl;
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const NodeAck &r)
+    {
+        os << "    Type: " << r.Type << " From: " << r.From << std::endl;
+        return os;
+    }
+    
+    std::ostream &operator<<(std::ostream &os, const NodeResponse &r)
+    {
+        os << "    Type: " << r.Type << " From: " << r.From << std::endl
+           << "    Payload: " << std::endl;
         // TODO: payload
         return os;
     }

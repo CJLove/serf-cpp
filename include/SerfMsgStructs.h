@@ -15,7 +15,7 @@ namespace SerfCpp {
     // --------------------------
     struct RequestHeader {
         std::string Command;
-        unsigned long Seq;
+        unsigned long long Seq;
         MSGPACK_DEFINE(Command,Seq);
     };
     inline bool operator==(RequestHeader const& lhs, RequestHeader const& rhs) {
@@ -161,6 +161,25 @@ namespace SerfCpp {
     };
     inline bool operator==(EventRequest const& lhs, EventRequest const& rhs) {
         return ((lhs.Name == rhs.Name) && (lhs.Payload == rhs.Payload) && (lhs.Coalesce == rhs.Coalesce));
+    }
+
+    // --------------------------
+    struct QueryRequest {
+        std::vector<std::string> FilterNodes;
+        std::map<std::string,std::string> FilterTags;
+        bool RequestAck;
+        unsigned long long Timeout;
+        std::string Name;
+        std::vector<signed char> Payload;
+        MSGPACK_DEFINE(FilterNodes,FilterTags,RequestAck,Timeout,Name,Payload);
+    };
+    inline bool operator==(QueryRequest const& lhs, QueryRequest const& rhs) {
+        return ((lhs.FilterNodes == rhs.FilterNodes) &&
+                (lhs.FilterTags == rhs.FilterTags) &&
+                (lhs.RequestAck == rhs.RequestAck) &&
+                (lhs.Timeout == rhs.Timeout) &&
+                (lhs.Name == rhs.Name) &&
+                (lhs.Payload == rhs.Payload));
     }
 
     // --------------------------    
@@ -382,6 +401,30 @@ namespace SerfCpp {
     }
 
     std::ostream &operator<<(std::ostream &os, const QueryRecord &m);
+
+    // --------------------------
+    // Response to query from individual node
+    struct NodeResponseBase {
+        std::string Type;
+        MSGPACK_DEFINE(Type);
+    };
+    struct NodeAck {
+        std::string Type;        
+        std::string From;
+        MSGPACK_DEFINE(Type,From);
+    };
+
+    std::ostream &operator<<(std::ostream &os, const NodeAck &m);    
+
+    struct NodeResponse {
+        std::string Type;        
+        std::string From;
+        std::vector<signed char> Payload;
+        MSGPACK_DEFINE(Type,From,Payload);
+    };
+    
+
+    std::ostream &operator<<(std::ostream &os, const NodeResponse &m);
     
     // --------------------------
     struct RecordBase {

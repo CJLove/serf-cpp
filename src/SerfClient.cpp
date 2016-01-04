@@ -429,6 +429,48 @@ namespace SerfCpp {
     }
 
     SerfClient::SerfResponse
+    SerfClient::Query(const std::string &name, const std::vector<signed char> &payload,
+                      ISerfQueryListener *listener,
+                      // Following args are optional
+                      bool requestAck, unsigned long long timeout,
+                      std::vector<std::string> *filterNodes,
+                      std::map<std::string,std::string> *filterTags)
+    {
+        RequestHeader hdr;
+        hdr.Command = "query";
+        QueryRequest req;
+        req.Name = name;
+        req.Payload = payload;
+        req.RequestAck = requestAck;
+        req.Timeout = timeout;
+        if (filterNodes) req.FilterNodes = *filterNodes;
+        if (filterTags) req.FilterTags = *filterTags;
+
+        // Channel for receiving response
+        ResultChannel<bool> channel;
+        unsigned long long seq = 0;
+        
+        if (m_pImpl->m_serfThread.sendData(hdr,req,&channel,seq)) {
+            channel.consume();
+
+	        if (channel.m_dataPending) {
+                SerfClient::SerfResponse resp = (channel.m_hdr.Error == "") ? SerfClient::SUCCESS : SerfClient::FAILURE;
+
+                if (resp == SerfClient::SUCCESS) {
+                    m_pImpl->m_serfThread.addQueryChannel(channel.m_hdr.Seq,listener);
+                    seq = channel.m_hdr.Seq;
+                }
+                return resp;
+            } else {
+                m_pImpl->m_serfThread.removeChannel(seq);
+                return SerfClient::TIMEOUT;
+            }
+        }
+        return SerfClient::FAILURE;
+    }
+
+
+    SerfClient::SerfResponse
     SerfClient::Stream(const std::string &type, ISerfEventListener *listener, unsigned long long &seq)
     {
         RequestHeader hdr;

@@ -32,7 +32,7 @@ split(const std::string &str, char delimiter) {
 
 class EventListener: public ISerfEventListener {
 public:
-    EventListener()
+    EventListener(SerfClient &client): m_client(client)
     {}
 
     ~EventListener()
@@ -43,27 +43,85 @@ public:
     virtual void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record);
 
     virtual void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record);
+
+private:
+    SerfClient m_client;
 };
 
 void
 EventListener::onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record)
 {
-    std::cout << "UserEvent Hdr: " << hdr << std::endl << record;
+    std::cout << "\n==> Received UserEvent Hdr: " << hdr << record;
 }
 
 void
 EventListener::onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record)
 {
-    std::cout << "MemberEvent Hdr: " << hdr << std::endl << record;
+    std::cout << "\n==> Received MemberEvent Hdr: " << hdr << record;
 }
 
 void
 EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record)
 {
-    std::cout << "QueryEvent Hdr: " << hdr << std::endl << record;
-    
-}
+    std::cout << "\n==> Received QueryEvent Hdr: " << hdr << record;
+
+    // Auto respond to "testQuery"
+    if (record.Name == "testQuery") {
+        std::vector<signed char> payload;
+        payload.push_back('T');
+        payload.push_back('E');
+        payload.push_back('S');
+        payload.push_back('T');
+
+        SerfClient::SerfResponse resp = m_client.Respond(record.ID,payload);
+        std::cout << "\n==> Auto response: " << resp << std::endl;
         
+    }
+}
+
+class QueryListener: public ISerfQueryListener {
+public:
+    QueryListener(): m_acks(0),m_responses(0)
+    {
+    }
+
+    ~QueryListener()
+    {
+    }
+
+    void onQueryAck(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeAck &resp);
+
+    void onQueryResponse(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeResponse &resp);
+
+    void onQueryComplete(SerfCpp::ResponseHeader &hdr);
+
+private:
+    int m_acks;
+    int m_responses;
+};
+
+void
+QueryListener::onQueryAck(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeAck &ack)
+{
+    std::cout << "\n==> NodeResponse Hdr: " << hdr << ack;
+    m_acks++;
+}
+
+void
+QueryListener::onQueryResponse(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeResponse &resp)
+{
+    std::cout << "\n==> NodeResponse Hdr: " << hdr << resp;
+    m_responses++;
+}
+
+void
+QueryListener::onQueryComplete(SerfCpp::ResponseHeader &hdr)
+{
+    std::cout << "\n==> Query Complete:  Acks: " << m_acks
+              << " Responses: " << m_responses << std::endl;
+    m_acks = 0;
+    m_responses = 0;
+}
 
 class LogListener: public ISerfLogListener {
 public:
@@ -79,7 +137,7 @@ public:
 void
 LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record)
 {
-    std::cout << "Seq: " << hdr.Seq << " " << record.Log << std::endl;
+    std::cout << "\n==> Log Record Seq: " << hdr.Seq << " " << record.Log << std::endl;
 }
 
 int main(int argc, char**argv)
@@ -92,7 +150,8 @@ int main(int argc, char**argv)
     
     SerfClient client;
     LogListener logListener;
-    EventListener eventListener;    
+    EventListener eventListener(client);
+    QueryListener queryListener;
     SerfClient::SerfResponse resp = client.Connect();
 
     if (resp != SerfClient::SUCCESS) {
@@ -131,6 +190,7 @@ int main(int argc, char**argv)
                       << "    reqpond <id> <payload>" << std::endl
                       << "    monitor" << std::endl
                       << "    stream" << std::endl
+                      << "    query <name> <payload>" << std::endl
                       << "    stats" << std::endl;
         } else if (command == "join") {
             int count = 0;        
@@ -178,8 +238,23 @@ int main(int argc, char**argv)
 
             std::cout << "Members response:" << resp << std::endl
                       << "Members:\n" << members << std::endl;
+        } else if (command == "query") {
+            std::string name = args[0];
+            std::vector<signed char> payload;
+            
+            if (args.size() > 1) {
+                const signed char *c = (signed char*)args[1].c_str();
+                while (*c != '\0') {
+                    payload.push_back(*c);
+                    c++;
+                }
+            }
+
+            // Expect acks, 120 second timeout
+            resp = client.Query(name,payload,&queryListener,true,120000000000ULL);
+            std::cout << "Query response:" << resp << std::endl;
         } else if (command == "coord") {
-            std::string node = args[1];
+            std::string node = args[0];
             CoordResponse coord;
 
             resp = client.GetCoordinate(node,coord);

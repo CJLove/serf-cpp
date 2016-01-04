@@ -1,5 +1,6 @@
 
 #include "SerfChannel.h"
+#include "SerfIoThread.h"
 #include "ISerfListener.h"
 
 namespace SerfCpp {
@@ -35,8 +36,51 @@ namespace SerfCpp {
         m_listener->onLogRecord(hdr,record);
     }
 
+    QueryChannel::QueryChannel(SerfIoThread &ioThread,
+                               ISerfQueryListener* listener):
+        ChannelBase(ChannelBase::QUERY), m_ioThread(ioThread), m_listener(listener)
+    {
+    }
+
+    QueryChannel::~QueryChannel()
+    {
+    }
+
+    void QueryChannel::produce(ResponseHeader &hdr, msgpack::unpacker &unpacker)
+    {
+        // Unpack the payload
+        msgpack::unpacked unp;
+        if (unpacker.next(&unp)) {
+            msgpack::object obj = unp.get();
+
+            NodeResponseBase type;
+
+            try {
+                obj.convert(type);
+                if (type.Type == "ack") {
+                    NodeAck ack;
+                    obj.convert(ack);
+                    m_listener->onQueryAck(hdr,ack);
+                } else if (type.Type == "response") {
+                    NodeResponse resp;
+                    obj.convert(resp);
+                    m_listener->onQueryResponse(hdr,resp);
+                } else if (type.Type == "done") {
+                    m_listener->onQueryComplete(hdr);
+
+                    // deregister this channel
+                    m_ioThread.removeChannel(hdr.Seq);
+                }
+            } catch (std::exception &e) {
+                std::cout << "Unexpected node response type " << type.Type << " "
+                          << e.what() << std::endl;
+            }
+        }
+
+    }
+
     EventChannel::EventChannel(ISerfEventListener* listener):
-        ChannelBase(ChannelBase::LOG), m_listener(listener)
+        ChannelBase(ChannelBase::EVENT), m_listener(listener)
     {
     }
 

@@ -7,11 +7,13 @@
 namespace SerfCpp {
 
     class ISerfLogListener;
-	class ISerfEventListener;    
+	class ISerfEventListener;
+    class ISerfQueryListener;
+    class SerfIoThread;
 
     struct ChannelBase
     {
-        enum ChannelType { REQUEST, LOG, EVENT };
+        enum ChannelType { REQUEST, LOG, EVENT, QUERY };
     
         ChannelBase(ChannelType type);
 
@@ -40,6 +42,17 @@ namespace SerfCpp {
         void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker);
 
         ISerfEventListener *m_listener;
+    };
+
+    struct QueryChannel: public ChannelBase {
+        QueryChannel(SerfIoThread &, ISerfQueryListener *);
+
+        ~QueryChannel();
+
+        void produce(ResponseHeader &hdr, msgpack::unpacker &unpacker);
+
+        SerfIoThread &m_ioThread;
+        ISerfQueryListener *m_listener;
     };
 
     template<typename T> struct ResultChannel: ChannelBase {

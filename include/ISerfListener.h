@@ -26,4 +26,17 @@ namespace SerfCpp {
         virtual void onQueryEventRecord(ResponseHeader &hdr, QueryRecord &record) = 0;
     };
 
+    class ISerfQueryListener {
+    public:
+        ISerfQueryListener();
+
+        virtual ~ISerfQueryListener();
+
+        virtual void onQueryAck(ResponseHeader &hdr, NodeAck &resp) = 0;
+
+        virtual void onQueryResponse(ResponseHeader &hdr, NodeResponse &resp) = 0;
+
+        virtual void onQueryComplete(ResponseHeader &hdr) = 0;
+    };
+
 } // namespace SerfCpp

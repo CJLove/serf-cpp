@@ -16,7 +16,7 @@ stream			yes
 monitor			yes
 stop			yes
 leave			yes
-query			
+query			yes	
 respond			yes
 get-coordinate		yes
 install-key		yes
