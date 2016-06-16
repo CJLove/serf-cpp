@@ -140,7 +140,7 @@ namespace SerfCpp {
         os << std::setw(16) << m.Name << " ";
         // Handle ipv4 vs ipv6 address in the Addr vector
         size_t size = m.Addr.size();
-        if (size == 4 || (size == 16 && m.Addr[0] == 0x0) {
+        if (size == 4 || (size == 16 && m.Addr[0] == 0x0)) {
             // IPv4 address has been observed to be in bytes 12-15
             // of a 16-byte vector or bytes 0-3 of 4-byte vector
             size_t offset = (size == 4) ? 0 : 12;
