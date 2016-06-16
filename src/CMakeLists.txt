@@ -25,3 +25,4 @@ set (SerfCpp_SRCS
 
 
 add_library (SerfCpp SHARED ${SerfCpp_SRCS})
+target_link_libraries( SerfCpp boost_thread boost_system)
