@@ -88,7 +88,8 @@ namespace SerfCpp {
             fd_set read_flags, write_flags;
             struct timeval waitd;
 
-            waitd.tv_sec = 10;
+            waitd.tv_sec = 0;
+            waitd.tv_usec = 10000;
             FD_ZERO(&read_flags);
             FD_ZERO(&write_flags);
             FD_SET(m_socket, &read_flags);
