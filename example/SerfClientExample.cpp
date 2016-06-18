@@ -9,9 +9,9 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include "SerfClient.h"
-#include "SerfMsgStructs.h"
-#include "ISerfListener.h"
+#include "serf-cpp/SerfClient.h"
+#include "serf-cpp/SerfMsgStructs.h"
+#include "serf-cpp/ISerfListener.h"
 
 using namespace SerfCpp;
 

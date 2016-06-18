@@ -2,10 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 
 project (SerfClientExample)
 
-
-include_directories( ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-include_directories( ${CMAKE_SOURCE_DIR}/include )
-include_directories( ${CMAKE_SOURCE_DIR}/src )
+ include_directories( ${CMAKE_SOURCE_DIR}/include )
 
 add_executable( SerfClientExample SerfClientExample.cpp )
 

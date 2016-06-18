@@ -26,3 +26,8 @@ set (SerfCpp_SRCS
 
 add_library (SerfCpp SHARED ${SerfCpp_SRCS})
 target_link_libraries( SerfCpp boost_thread boost_system)
+
+install(TARGETS SerfCpp DESTINATION lib)
+install(FILES ../include/serf-cpp/SerfClient.h DESTINATION include/serf-cpp)
+install(FILES ../include/serf-cpp/SerfMsgStructs.h DESTINATION include/serf-cpp)
+install(FILES ../include/serf-cpp/ISerfListener.h DESTINATION include/serf-cpp)

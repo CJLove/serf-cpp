@@ -1,5 +1,7 @@
-#include "SerfMsgStructs.h"
 #include <iomanip>
+
+#include "serf-cpp/SerfMsgStructs.h"
+
 
 namespace SerfCpp {
 

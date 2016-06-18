@@ -1,8 +1,9 @@
 #include <iostream>
+#include "gtest/gtest.h"
 
 #include "SerfChannel.h"
-#include "ISerfListener.h"
-#include "gtest/gtest.h"
+#include "serf-cpp/ISerfListener.h"
+
 
 using namespace SerfCpp;
 

@@ -1,7 +1,8 @@
 #include <iostream>
-
-#include "SerfMsgStructs.h"
 #include "gtest/gtest.h"
+
+#include "serf-cpp/SerfMsgStructs.h"
+
 
 using namespace SerfCpp;
 

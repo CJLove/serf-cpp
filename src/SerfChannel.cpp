@@ -1,7 +1,7 @@
 
 #include "SerfChannel.h"
 #include "SerfIoThread.h"
-#include "ISerfListener.h"
+#include "serf-cpp/ISerfListener.h"
 
 namespace SerfCpp {
 

@@ -1,4 +1,4 @@
-#include "SerfClient.h"
+#include "serf-cpp/SerfClient.h"
 #include "SerfChannel.h"
 #include "SerfIoThread.h"
 

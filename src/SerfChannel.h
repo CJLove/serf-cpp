@@ -2,7 +2,7 @@
 
 #include <boost/thread.hpp>
 
-#include "SerfMsgStructs.h"
+#include "serf-cpp/SerfMsgStructs.h"
 
 namespace SerfCpp {
 
