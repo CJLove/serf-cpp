@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/CJLove/serf-cpp.svg?branch=master)](https://travis-ci.org/CJLove/serf-cpp) 
+
 # serf-cpp
 C++ implementation of serf client (http://www.serfdom.io)
 
