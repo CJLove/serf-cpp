@@ -1,0 +1,45 @@
+# Build matrix / environment variable are explained on:
+# http://about.travis-ci.org/docs/user/build-configuration/
+# This file can be validated on:
+# http://lint.travis-ci.org/
+# travis-ci.org specification for serf-cpp
+# 
+language: cpp
+compiler:
+  - gcc
+  - clang
+os:
+  - linux
+
+sudo: required
+dist: trusty
+
+before_install:
+  # Install boost
+  - sudo apt-get install libboost-all-dev
+
+  # Install google test (gtest)
+  - sudo apt-get install libgtest-dev
+
+  # Install msgpack-c
+  - wget https://github.com/msgpack/msgpack-c/releases/download/cpp-1.4.2/msgpack-1.4.2.tar.gz -o /tmp/msgpack-c.tar.gz
+  - tar zxf /tmp/msgpack-c.tar.gz
+  - pushd msgpack-1.4.2 && ./configure --prefix=/usr && make && sudo make install && popd
+
+script:
+  - mkdir build
+  - cd build
+  - cmake .. && make
+
+notifications:
+  email:
+    recipients:
+      - cjlove@san.rr.com
+    on_success: change
+    on_failure: always
+
+    
+    
+  
+  
+
