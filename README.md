@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/CJLove/serf-cpp.svg?branch=master)](https://travis-ci.org/CJLove/serf-cpp) 
+[![Coverage Status](https://coveralls.io/repos/github/CJLove/serf-cpp/badge.svg?branch=master)](https://coveralls.io/github/CJLove/serf-cpp?branch=master)
+
 
 # serf-cpp
 C++ implementation of serf client (http://www.serfdom.io)
