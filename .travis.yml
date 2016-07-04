@@ -18,6 +18,13 @@ before_install:
   # Install boost
   - sudo apt-get install -y libboost-all-dev
 
+  # Install lcov
+  - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz
+  - tar xf lcov_1.11.orig.tar.gz
+  - sudo make -C lcov-1.11/ install
+  # install lcov to coveralls conversion + upload tool
+  - gem install coveralls-lcov
+
   # Install google test (gtest)
   - sudo apt-get install -y libgtest-dev
 
@@ -31,11 +38,14 @@ before_install:
 script:
   - mkdir build
   - cd build
-  - cmake .. && make
+  - cmake -D SERF_CPP_BUILD_COVERAGE=TRUE .. && make
   - ./tests/SerfCppTests
 
 after_success:
-  - coveralls  
+  - lcov --directory . --capture --output-file coverage.info # capture coverage info
+  - lcov --remove coverage.info 'tests/*' '/usr/*' --output-file coverage.info # filter out system and test code
+  - lcov --list coverage.info # debug before upload
+  - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info # uploads to coveral
 
 notifications:
   email:
