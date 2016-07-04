@@ -34,6 +34,9 @@ script:
   - cmake .. && make
   - ./tests/SerfCppTests
 
+after_success:
+  - coveralls  
+
 notifications:
   email:
     recipients:
