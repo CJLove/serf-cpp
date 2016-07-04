@@ -1,3 +1,11 @@
+2016-07-04  Chris Love  <chris_love@san.rr.com>
+
+	* Add to unit tests, and added the ability to build/run and
+     	  generate unit test code coverage.
+
+2016-06-18  Chris Love <chris_love@san.rr.com>
+	* SerfCpp 0.1.0 release
+	
 2015-10-12  Chris Love  <chris_love@san.rr.com>
 
 	* example/SerfClientExample.cpp (main): Fixed bug in populating

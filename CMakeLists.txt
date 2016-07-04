@@ -12,17 +12,25 @@ set (CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}
 
 find_package (GTest)
 
-IF (GTEST_FOUND)
+if (GTEST_FOUND)
     OPTION (SERF_CPP_BUILD_TESTS "Build serf-cpp tests." ON)
-ENDIF (GTEST_FOUND)
+endif (GTEST_FOUND)
 
 OPTION (SERF_CPP_BUILD_EXAMPLE "Build example test driver" ON)
 
+set(SERF_CPP_BUILD_COVERAGE false CACHE BOOL "Build for code coverage")
+ 
 add_subdirectory(src)
 
-IF (SERF_CPP_BUILD_TESTS)
-    add_subdirectory(tests)
-ENDIF (SERF_CPP_BUILD_TESTS)
-IF (SERF_CPP_BUILD_EXAMPLE)
+if (SERF_CPP_BUILD_TESTS)
+  if (SERF_CPP_BUILD_COVERAGE)
+    include (CodeCoverage)
+    setup_target_for_coverage( SerfCppCoverage tests/SerfCppTests coverage )
+  endif (SERF_CPP_BUILD_COVERAGE)
+
+  add_subdirectory(tests)
+endif (SERF_CPP_BUILD_TESTS)
+
+if (SERF_CPP_BUILD_EXAMPLE)
     add_subdirectory(example)
-ENDIF (SERF_CPP_BUILD_EXAMPLE)
+endif (SERF_CPP_BUILD_EXAMPLE)

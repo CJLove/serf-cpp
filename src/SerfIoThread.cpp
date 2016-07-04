@@ -61,6 +61,9 @@ namespace SerfCpp {
                         removeChannel(seq);
                     }
                 }
+            } else {
+                close(m_socket);
+                m_socket=-1;
             }
         }
         return false;
@@ -272,7 +275,7 @@ namespace SerfCpp {
 
         // For dynamically allocated channels, delete the channel instance
         // as well
-        if (chan->m_type != ChannelBase::REQUEST) {
+        if (chan && chan->m_type != ChannelBase::REQUEST) {
             delete chan;
         }
     }

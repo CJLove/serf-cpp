@@ -8,6 +8,8 @@
 namespace SerfCpp {
 
     class ISerfLogListener;
+    class ISerfEventListener;
+    class ISerfQueryListener;
     class ChannelBase;
     
     class SerfIoThread {

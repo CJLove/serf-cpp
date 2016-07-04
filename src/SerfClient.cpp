@@ -46,12 +46,20 @@ namespace SerfCpp {
 
     SerfClient::~SerfClient()
     {
+        m_pImpl->m_serfThread.Close();
+        delete m_pImpl;
     }
 
     SerfClient::SerfResponse
     SerfClient::Connect(const std::string &ipAddr, const short &port)
     {
         return (m_pImpl->m_serfThread.Connect(ipAddr,port)) ? SerfClient::SUCCESS : SerfClient::FAILURE;
+    }
+
+    bool
+    SerfClient::IsConnected()
+    {
+        return (m_pImpl->m_serfThread.IsConnected());
     }
 
     SerfClient::SerfResponse
@@ -582,9 +590,5 @@ namespace SerfCpp {
         }
         return SerfClient::FAILURE;
     }
-        
 
-
-        
-    
 } // namespace SerfCpp

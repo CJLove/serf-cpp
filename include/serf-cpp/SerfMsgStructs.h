@@ -423,11 +423,25 @@ namespace SerfCpp {
         std::string Type;
         MSGPACK_DEFINE(Type);
     };
+
+    inline bool operator==(NodeResponseBase const &lhs, NodeResponseBase const &rhs)
+    {
+        return (lhs.Type == rhs.Type);
+    }
+
+    std::ostream &operator<<(std::ostream &os, const NodeResponseBase &r);
+
     struct NodeAck {
         std::string Type;        
         std::string From;
         MSGPACK_DEFINE(Type,From);
     };
+
+    inline bool operator==(NodeAck const &lhs, NodeAck const &rhs)
+    {
+        return (lhs.Type == rhs.Type &&
+                lhs.From == rhs.From);
+    }
 
     std::ostream &operator<<(std::ostream &os, const NodeAck &m);    
 
@@ -437,8 +451,14 @@ namespace SerfCpp {
         SerfPayload Payload;
         MSGPACK_DEFINE(Type,From,Payload);
     };
-    
 
+    inline bool operator==(NodeResponse const &lhs, NodeResponse const &rhs)
+    {
+        return (lhs.Type == rhs.Type &&
+                lhs.From == rhs.From &&
+                lhs.Payload == rhs.Payload);
+    }
+        
     std::ostream &operator<<(std::ostream &os, const NodeResponse &m);
     
     // --------------------------
