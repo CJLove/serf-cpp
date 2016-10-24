@@ -81,6 +81,8 @@ namespace SerfCpp {
         m_shutdown = true;
         m_thread.join();
 
+	m_shutdown = false;
+	m_seq = 0;
         return true;
     }
 
