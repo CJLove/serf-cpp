@@ -147,14 +147,14 @@ namespace SerfCpp {
                         }
 
                         if (channel != NULL) {
-                            // std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
-                            channel->produce(hdr,m_unpacker);
-
                             // Request channels need to be removed from the channel map
                             if (channel->m_type == ChannelBase::REQUEST) {
                                 boost::lock_guard<boost::mutex> guard(m_mutex);
                                 m_channels.erase(hdr.Seq);
                             }
+
+                            // std::cout << "Signalling response for seq " << hdr.Seq << std::endl;
+                            channel->produce(hdr,m_unpacker);
                         }
                     } catch (std::exception &e) {
                         std::cout << "Unexpected data received from serf agent" << std::endl;
