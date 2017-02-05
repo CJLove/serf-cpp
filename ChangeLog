@@ -1,3 +1,8 @@
+2017-01-26  Chris Love  <christopher.love@Teradata.com>
+	* SerfCpp 0.3.0 release
+
+	* Fixed race condition in handling user events
+
 2016-10-24  Chris Love  <christopher.love@Teradata.com>
 
 	* SerfCpp 0.2.0 release

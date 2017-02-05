@@ -11,9 +11,9 @@ using the msgpack RPC system it supports.
 The Serf RPC interface is defined here:
 https://www.serfdom.io/docs/agent/rpc.html.
 
-For now the implementation is targeted toward C++03 and uses Boost for
-portable thread support; future support for C++11 using std::thread is
-possible.
+The 'cpp03' branch targets C++03 compilers and uses Boost for
+portable thread support; the 'cpp11' branch targets modern compilers
+suppporting C++11 without the Boost dependency.
 
 # Status
 See TODO for major functionality remaining and some longer term plans.
