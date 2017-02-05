@@ -4,6 +4,7 @@ project (SerfCppTests)
 
 enable_testing()
 
+add_definitions( -std=c++11 )
 if (SERF_CPP_BUILD_COVERAGE)
   add_definitions( --coverage )
 endif (SERF_CPP_BUILD_COVERAGE)

@@ -1,3 +1,7 @@
+2017-02-04  Chris Love  <chris_love@san.rr.com>
+
+	* New cpp11 branch with changes to build in C++11 mode w/o Boost dependency
+
 2016-10-24  Chris Love  <christopher.love@Teradata.com>
 
 	* SerfCpp 0.2.0 release

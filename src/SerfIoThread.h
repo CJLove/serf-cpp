@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 
-#include <boost/thread.hpp>
+#include <mutex>
+#include <thread>
 
 #include "serf-cpp/SerfMsgStructs.h"
 
@@ -42,10 +43,10 @@ namespace SerfCpp {
 
     private:
         // I/O thread for receiving data from serf agent
-        boost::thread m_thread;
+        std::thread m_thread;
 
         // Mutex for sending data and channel data
-        boost::mutex m_mutex;
+        std::mutex m_mutex;
 
         // Msgpack decoder
         msgpack::unpacker m_unpacker;

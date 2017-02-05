@@ -41,7 +41,7 @@ namespace SerfCpp {
 
                 
                 // Connected to the serf agent, so start the I/O thread
-                m_thread = boost::thread(&SerfIoThread::processRpc, this, 0);
+                m_thread = std::thread(&SerfIoThread::processRpc, this, 0);
 
                 // Send the handshake message
                 RequestHeader hdr;
@@ -78,11 +78,13 @@ namespace SerfCpp {
     bool
     SerfIoThread::Close()
     {
-        m_shutdown = true;
-        m_thread.join();
+        if (IsConnected()) {
+            m_shutdown = true;
+            m_thread.join();
+        }
 
-	m_shutdown = false;
-	m_seq = 0;
+        m_shutdown = false;
+        m_seq = 0;
         return true;
     }
 
@@ -142,14 +144,14 @@ namespace SerfCpp {
 
                         ChannelBase *channel = NULL;
                         {
-                            boost::lock_guard<boost::mutex> guard(m_mutex);
+                            std::lock_guard<std::mutex> guard(m_mutex);
                             channel = m_channels[hdr.Seq];
                         }
 
                         if (channel != NULL) {
                             // Request channels need to be removed from the channel map
                             if (channel->m_type == ChannelBase::REQUEST) {
-                                boost::lock_guard<boost::mutex> guard(m_mutex);
+                                std::lock_guard<std::mutex> guard(m_mutex);
                                 m_channels.erase(hdr.Seq);
                             }
 
@@ -212,7 +214,7 @@ namespace SerfCpp {
     template<typename T, typename C>
     bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel,unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
         hdr.Seq = m_seq++;        
         std::stringstream ss;
         msgpack::pack(ss,hdr);
@@ -231,7 +233,7 @@ namespace SerfCpp {
     template<typename C>
     bool SerfIoThread::sendData(RequestHeader &hdr, C *channel,unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
 
         hdr.Seq = m_seq++;        
         std::stringstream ss;
@@ -249,28 +251,28 @@ namespace SerfCpp {
 
     void SerfIoThread::addLogChannel(const unsigned long long &seq, ISerfLogListener *listener)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new LogChannel(listener);
     }
 
     void SerfIoThread::addEventChannel(const unsigned long long &seq, ISerfEventListener *listener)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new EventChannel(listener);
     }
 
     void SerfIoThread::addQueryChannel(const unsigned long long &seq, ISerfQueryListener *listener)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new QueryChannel(*this,listener);
     }
 
     void SerfIoThread::removeChannel(const unsigned long long &seq)
     {
-        boost::lock_guard<boost::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(m_mutex);
 
         ChannelBase *chan = m_channels[seq];
         m_channels.erase(seq);
