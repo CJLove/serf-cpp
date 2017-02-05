@@ -11,9 +11,9 @@ using the msgpack RPC system it supports.
 The Serf RPC interface is defined here:
 https://www.serfdom.io/docs/agent/rpc.html.
 
-The Master branch builds with C++03 compilers using Boost for portable
-thread support.  The cpp11 branch builds with modern compilers in
-C++11 mode and does not require Boost.
+The Master branch builds with modern compilers supporting C++11, with
+no Boost dependency.  The cpp03 branch contains the last release built
+for C++03 using Boost for portable thread support.
 
 # Status
 See TODO for major functionality remaining and some longer term plans.
