@@ -2,17 +2,18 @@ cmake_minimum_required (VERSION 2.8)
 
 project (SerfCpp)
 
+add_definitions( -std=c++11 )
 if (SERF_CPP_BUILD_COVERAGE)
   add_definitions( --coverage )
 endif (SERF_CPP_BUILD_COVERAGE)
 
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost COMPONENTS thread system REQUIRED)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-endif(Boost_FOUND)
+#set(Boost_USE_STATIC_LIBS OFF) 
+#set(Boost_USE_MULTITHREADED ON)  
+#set(Boost_USE_STATIC_RUNTIME OFF) 
+#find_package(Boost COMPONENTS thread system REQUIRED)
+#if(Boost_FOUND)
+#    include_directories(${Boost_INCLUDE_DIRS})
+#endif(Boost_FOUND)
 
 find_package(MsgPackC REQUIRED)
 
