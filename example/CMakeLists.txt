@@ -7,3 +7,4 @@ project (SerfClientExample)
 add_executable( SerfClientExample SerfClientExample.cpp )
 
 target_link_libraries( SerfClientExample SerfCpp )
+target_link_libraries( SerfClientExample pthread )

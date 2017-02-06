@@ -22,7 +22,6 @@ add_executable( SerfCppTests Listeners.cpp SerfMsgStructTests.cpp SerfChannelTes
 
 target_link_libraries( SerfCppTests gtest gtest_main )
 target_link_libraries( SerfCppTests SerfCpp )
-target_link_libraries( SerfCppTests boost_thread boost_system)
 target_link_libraries( SerfCppTests pthread m )
 if ( SERF_CPP_BUILD_COVERAGE )
   target_link_libraries( SerfCppTests gcov )

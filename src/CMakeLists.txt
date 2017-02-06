@@ -7,14 +7,6 @@ if (SERF_CPP_BUILD_COVERAGE)
   add_definitions( --coverage )
 endif (SERF_CPP_BUILD_COVERAGE)
 
-#set(Boost_USE_STATIC_LIBS OFF) 
-#set(Boost_USE_MULTITHREADED ON)  
-#set(Boost_USE_STATIC_RUNTIME OFF) 
-#find_package(Boost COMPONENTS thread system REQUIRED)
-#if(Boost_FOUND)
-#    include_directories(${Boost_INCLUDE_DIRS})
-#endif(Boost_FOUND)
-
 find_package(MsgPackC REQUIRED)
 
 include_directories( ${CMAKE_SOURCE_DIR}/include )
@@ -30,7 +22,6 @@ set (SerfCpp_SRCS
 
 
 add_library (SerfCpp SHARED ${SerfCpp_SRCS})
-target_link_libraries( SerfCpp boost_thread boost_system)
 if (SERF_CPP_BUILD_COVERAGE)
   target_link_libraries( SerfCpp gcov )
 endif (SERF_CPP_BUILD_COVERAGE)
