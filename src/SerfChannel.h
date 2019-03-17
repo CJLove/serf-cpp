@@ -78,9 +78,10 @@ namespace SerfCpp {
                 m_hdr = hdr;
 
                 // Unpack the payload
-                msgpack::unpacked unp;
-                if (unpacker.next(&unp)) {
-                    msgpack::object obj = unp.get();
+                //msgpack::unpacked unp;
+                msgpack::object_handle oh;
+                if (unpacker.next(oh)) {
+                    msgpack::object obj = oh.get();
                     m_data = obj.as<T>();
                 }
                 m_dataPending = true;             

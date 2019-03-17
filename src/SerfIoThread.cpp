@@ -133,10 +133,10 @@ namespace SerfCpp {
                 m_unpacker.buffer_consumed(count);
 
 
-                msgpack::unpacked result;
-                while (m_unpacker.next(&result)) {
-                    //                if (m_unpacker.next(&result)) {
-                    msgpack::object obj = result.get();
+                msgpack::object_handle oh;
+
+                while (m_unpacker.next(oh)) {
+                    msgpack::object obj = oh.get();
                     try {
                         ResponseHeader hdr = obj.as<ResponseHeader>();
 

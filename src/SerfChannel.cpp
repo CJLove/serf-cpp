@@ -27,9 +27,9 @@ namespace SerfCpp {
         LogRecord record;
 
         // Unpack the payload
-        msgpack::unpacked unp;
-        if (unpacker.next(&unp)) {
-            msgpack::object obj = unp.get();
+        msgpack::object_handle oh;
+        if (unpacker.next(oh)) {
+            msgpack::object obj = oh.get();
             record = obj.as<LogRecord>();
         }
 
@@ -49,9 +49,9 @@ namespace SerfCpp {
     void QueryChannel::produce(ResponseHeader &hdr, msgpack::unpacker &unpacker)
     {
         // Unpack the payload
-        msgpack::unpacked unp;
-        if (unpacker.next(&unp)) {
-            msgpack::object obj = unp.get();
+        msgpack::object_handle oh;
+        if (unpacker.next(oh)) {
+            msgpack::object obj = oh.get();
 
             NodeResponseBase type;
 
@@ -92,9 +92,9 @@ namespace SerfCpp {
     {
 
         // Unpack the payload
-        msgpack::unpacked unp;
-        if (unpacker.next(&unp)) {
-            msgpack::object obj = unp.get();
+        msgpack::object_handle oh;
+        if (unpacker.next(oh)) {
+            msgpack::object obj = oh.get();
             RecordBase type;
 
             try {
