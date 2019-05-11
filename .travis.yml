@@ -31,9 +31,9 @@ before_install:
   - pushd /usr/src/gtest && sudo cmake . && sudo make && sudo mv libg* /usr/lib && sudo ldconfig && popd
 
   # Install msgpack-c
-  - wget https://github.com/msgpack/msgpack-c/releases/download/cpp-1.4.2/msgpack-1.4.2.tar.gz -O /tmp/msgpack-c.tar.gz
+  - wget https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz -O /tmp/msgpack-c.tar.gz
   - tar zxf /tmp/msgpack-c.tar.gz
-  - pushd msgpack-1.4.2 && ./configure --prefix=/usr && make && sudo make install && popd
+  - pushd msgpack-3.1.1 && ./configure --prefix=/usr && make && sudo make install && popd
 
 script:
   - mkdir build
@@ -50,7 +50,7 @@ after_success:
 notifications:
   email:
     recipients:
-      - cjlove@san.rr.com
+      - christopherlove68@gmail.com
     on_success: change
     on_failure: always
 

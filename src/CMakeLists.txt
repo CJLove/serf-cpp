@@ -1,13 +1,11 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.1)
 
 project (SerfCpp)
 
-add_definitions( -std=c++11 )
 if (SERF_CPP_BUILD_COVERAGE)
   add_definitions( --coverage )
 endif (SERF_CPP_BUILD_COVERAGE)
 
-find_package(MsgPackC REQUIRED)
 
 include_directories( ${CMAKE_SOURCE_DIR}/include )
 include_directories( . )
