@@ -23,6 +23,6 @@ See Commands.txt for status of individual RPC commands
 
 1. CMake used for building
 2. Google Test (gtest) for unit tests
-3. msgpack-c (https://github.com/msgpack/msgpack-c)
+3. msgpack-c (https://github.com/msgpack/msgpack-c) 3.1.1 or later
 
 

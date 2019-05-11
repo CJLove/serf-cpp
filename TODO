@@ -3,14 +3,7 @@ Short-term
 o Library versioning
 o Code cleanup; additional refactoring for methods in SerfClient class
 o Support different log levels
-o Clean up socket code in SerfIoThread class. Consider boost::asio or
-  alternatives for the sync-async pattern implemented for the
-  "synchronous" SerfClient library methods
+o Clean up socket code in SerfIoThread class. 
 o More test code
 o Consider using exceptions for error returns rather than the
   SerfResponse enum
-
-Long-term
-=========
-o Alternative implementation supporting C++11 (or newer), dropping boost
-  dependency
