@@ -106,20 +106,28 @@ TEST(SerfIoThreadTest, nonThreadTests)
 
     ASSERT_EQ(io.Close(),true);
 
+    ISerfLogListener *logListener = new MyLogListener();
+    ISerfEventListener *eventListener = new MyEventListener();
+    ISerfQueryListener *queryListener = new MyQueryListener();
+
     unsigned long long seq = 12345ULL;
-    io.addLogChannel(seq,new MyLogListener());
+    io.addLogChannel(seq,logListener);
 
     io.removeChannel(seq);
 
     seq = 666666ULL;
-    io.addEventChannel(seq, new MyEventListener());
+    io.addEventChannel(seq, eventListener);
 
     io.removeChannel(seq);
 
     seq = 44444ULL;
-    io.addQueryChannel(seq, new MyQueryListener());
+    io.addQueryChannel(seq, queryListener);
 
-    io.removeChannel(seq);    
+    io.removeChannel(seq);   
+
+    delete logListener; 
+    delete eventListener;
+    delete queryListener;
 
 }
 

@@ -41,6 +41,7 @@ TEST(SerfChannelTest, LogChannel)
 TEST(SerfChannelTest, UserEventChannel)
 {
     UserEventRecord rec;
+    rec.Coalesce = false;
     rec.Event="user";
     EventListener listener;
     EventChannel channel(&listener);
