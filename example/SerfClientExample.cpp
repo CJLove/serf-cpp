@@ -15,7 +15,7 @@
 
 using namespace SerfCpp;
 
-SerfStringArray split(const std::string &str, char delimiter) {
+static SerfStringArray split(const std::string &str, char delimiter) {
     SerfStringArray internal;
     std::stringstream ss(str);  // Turn the string into a stream.
     std::string tok;
@@ -29,18 +29,24 @@ SerfStringArray split(const std::string &str, char delimiter) {
 
 class EventListener : public ISerfEventListener {
 public:
-    EventListener(SerfClient &client) : m_client(client) {}
+    EventListener() = delete;
+    explicit EventListener(SerfClient &client) : m_client(client) {}
 
-    ~EventListener() {}
+    ~EventListener() override = default;
 
-    virtual void onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record);
+    EventListener(const EventListener &) = delete;
+    EventListener(const EventListener &&) = delete;
+    void operator=(const EventListener &) = delete;
+    void operator=(const EventListener &&) = delete;
 
-    virtual void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record);
+    void onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record) override;
 
-    virtual void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record);
+    void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record) override;
+
+    void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record) override;
 
 private:
-    SerfClient m_client;
+    SerfClient & m_client;
 };
 
 void EventListener::onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record) {
@@ -69,19 +75,24 @@ void EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::Qu
 
 class QueryListener : public ISerfQueryListener {
 public:
-    QueryListener() : m_acks(0), m_responses(0) {}
+    QueryListener() = default;
+    QueryListener(const QueryListener &) = delete;
+    QueryListener(const QueryListener &&) = delete;
 
-    ~QueryListener() {}
+    ~QueryListener() override = default;
 
-    void onQueryAck(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeAck &resp);
+    void operator=(const QueryListener &) = delete;
+    void operator=(const QueryListener &&) = delete;
 
-    void onQueryResponse(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeResponse &resp);
+    void onQueryAck(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeAck &ack) override;
 
-    void onQueryComplete(SerfCpp::ResponseHeader &hdr);
+    void onQueryResponse(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeResponse &resp) override;
+
+    void onQueryComplete(SerfCpp::ResponseHeader &hdr) override;
 
 private:
-    int m_acks;
-    int m_responses;
+    int m_acks = 0;
+    int m_responses = 0;
 };
 
 void QueryListener::onQueryAck(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeAck &ack) {
@@ -102,11 +113,16 @@ void QueryListener::onQueryComplete(SerfCpp::ResponseHeader &) {
 
 class LogListener : public ISerfLogListener {
 public:
-    LogListener() {}
+    LogListener() = default;
+    LogListener(const LogListener &) = delete;
+    LogListener(const LogListener &&) = delete;
 
-    ~LogListener() {}
+    ~LogListener() override = default;
 
-    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record);
+    void operator=(const LogListener &) = delete;
+    void operator=(const LogListener &&) = delete;
+
+    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record) override;
 };
 
 void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record) {
@@ -116,7 +132,7 @@ void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &
 int main(int argc, char **argv) {
     int c = 0;
     std::string host = "127.0.0.1";
-    short port = 7373;
+    int16_t port = 7373;
 
     while ((c = getopt(argc, argv, "h:p:?")) != EOF) {
         switch (c) {
@@ -124,10 +140,11 @@ int main(int argc, char **argv) {
                 host = optarg;
                 break;
             case 'p':
-                port = static_cast<short>(std::stoi(optarg));
+                port = static_cast<int16_t>(std::stoi(optarg));
                 break;
             case '?':
-                std::cerr << argv[0] << " [-h <host>][-p <port>]\n";
+            default:
+                std::cerr << argv[0] << " [-h <host>][-p <port>]\n"; // NOLINT - clang-tidy ignore
                 exit(1);
         }
     }
@@ -150,8 +167,9 @@ int main(int argc, char **argv) {
         getline(std::cin, line);
 
         SerfStringArray args = ::split(line, ' ');
-        if (args.empty())
+        if (args.empty()) {
             continue;
+        }
 
         std::string command = args[0];
         args.erase(args.begin());
@@ -223,10 +241,8 @@ int main(int argc, char **argv) {
             SerfPayload payload;
 
             if (args.size() > 1) {
-                const signed char *c = (signed char *)args[1].c_str();
-                while (*c != '\0') {
-                    payload.push_back(*c);
-                    c++;
+                for (const auto &ch: args[1]) {
+                    payload.push_back(ch);
                 }
             }
 
@@ -245,10 +261,8 @@ int main(int argc, char **argv) {
             SerfPayload payload;
 
             if (args.size() > 1) {
-                const signed char *c = (signed char *)args[1].c_str();
-                while (*c != '\0') {
-                    payload.push_back(*c);
-                    c++;
+                for (const auto &ch: args[1]) {
+                    payload.push_back(ch);
                 }
             }
 
@@ -256,14 +270,12 @@ int main(int argc, char **argv) {
 
             std::cout << "Event response:" << resp << std::endl << "Event:" << name << std::endl;
         } else if (command == "respond") {
-            unsigned long long id = strtoull(args[0].c_str(), NULL, 10);
+            uint64_t id = strtoull(args[0].c_str(), nullptr, 10);
             SerfPayload payload;
 
             if (args.size() > 1) {
-                const signed char *c = (signed char *)args[1].c_str();
-                while (*c != '\0') {
-                    payload.push_back(*c);
-                    c++;
+                for (const auto &ch: args[1]) {
+                    payload.push_back(ch);
                 }
             }
             resp = client.Respond(id, payload);
@@ -281,7 +293,7 @@ int main(int argc, char **argv) {
 
             std::cout << "Leave result:" << resp << std::endl;
         } else if (command == "stop") {
-            unsigned long long seq = strtoull(args[0].c_str(), NULL, 10);
+            uint64_t seq = strtoull(args[0].c_str(), nullptr, 10);
 
             std::cout << "Stopping Monitor/Stream registration for Seq=" << seq << std::endl;
 
@@ -291,7 +303,7 @@ int main(int argc, char **argv) {
 
         } else if (command == "monitor") {
 
-            unsigned long long seq = 0ULL;
+            uint64_t seq = 0ULL;
 
             resp = client.Monitor("Debug", &logListener, seq);
 
@@ -300,7 +312,7 @@ int main(int argc, char **argv) {
             }
 
         } else if (command == "stream") {
-            unsigned long long seq = 0ULL;
+            uint64_t seq = 0ULL;
 
             resp = client.Stream("*", &eventListener, seq);
 

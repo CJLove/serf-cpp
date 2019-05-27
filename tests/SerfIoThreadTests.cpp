@@ -12,10 +12,9 @@ public:
     MyLogListener(): m_count(0)
     {}
 
-    ~MyLogListener()
-    {}
+    ~MyLogListener() = default;
 
-    void onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record);
+    void onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record) override;
 
     int m_count;
     std::string m_log;
@@ -33,14 +32,13 @@ public:
     MyEventListener(): m_userCount(0),m_memberCount(0),m_queryCount(0)
     {}
 
-    ~MyEventListener()
-    {}
+    ~MyEventListener() = default;
 
-    void onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record);
+    void onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record) override;
 
-    void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record);
+    void onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record) override;
 
-    void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record);
+    void onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record) override;
 
     int m_userCount;
     int m_memberCount;
@@ -68,19 +66,15 @@ MyEventListener::onQueryEventRecord(SerfCpp::ResponseHeader &, SerfCpp::QueryRec
 class MyQueryListener: public ISerfQueryListener
 {
 public:
-    MyQueryListener();
+    MyQueryListener() = default;
 
-    void onQueryAck(ResponseHeader &, NodeAck &);
+    void onQueryAck(ResponseHeader &, NodeAck &) override;
 
-    void onQueryResponse(ResponseHeader &, NodeResponse &);
+    void onQueryResponse(ResponseHeader &, NodeResponse &) override;
 
-    void onQueryComplete(ResponseHeader &);
+    void onQueryComplete(ResponseHeader &) override;
 
 };
-
-MyQueryListener::MyQueryListener()
-{
-}
 
 void
 MyQueryListener::onQueryAck(ResponseHeader &, NodeAck &)
@@ -110,7 +104,7 @@ TEST(SerfIoThreadTest, nonThreadTests)
     ISerfEventListener *eventListener = new MyEventListener();
     ISerfQueryListener *queryListener = new MyQueryListener();
 
-    unsigned long long seq = 12345ULL;
+    uint64_t seq = 12345ULL;
     io.addLogChannel(seq,logListener);
 
     io.removeChannel(seq);

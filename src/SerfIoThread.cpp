@@ -1,19 +1,15 @@
-#include <iostream>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <fcntl.h>
 #include "SerfChannel.h"
 #include "SerfIoThread.h"
+#include <arpa/inet.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <iostream>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 
 namespace SerfCpp {
-
-    SerfIoThread::SerfIoThread():
-        m_socket(-1), m_seq(0), m_shutdown(false)
-    {
-    }
 
     SerfIoThread::~SerfIoThread()
     {
@@ -22,19 +18,19 @@ namespace SerfCpp {
 
     bool
     SerfIoThread::Connect(const std::string &ipAddr,
-                          const short &port)
+                          const int16_t &port)
     {
         m_ipAddr = ipAddr;
         m_port = port;
         m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
         if (m_socket != -1) {
-            struct sockaddr_in server;
+            struct sockaddr_in server {};
             server.sin_addr.s_addr=inet_addr(m_ipAddr.c_str());
             server.sin_family = AF_INET;
             server.sin_port=htons(m_port);
 
-            if (connect(m_socket, (struct sockaddr*)&server,sizeof(server)) == 0) {
+            if (connect(m_socket, reinterpret_cast<struct sockaddr*>(&server),sizeof(server)) == 0) { // NOLINT clang-tidy ignore
                 // Set to non-blocking
                 int flags = fcntl(m_socket,F_GETFL,0);
                 fcntl(m_socket,F_SETFL, flags | O_NONBLOCK);
@@ -50,13 +46,13 @@ namespace SerfCpp {
                 handshake.Version = SerfApiVersion;
 
                 ResultChannel<bool> channel;
-                unsigned long long seq = 0;
+                uint64_t seq = 0;
 
                 if (sendData(hdr,handshake, &channel,seq)) {
                     channel.consume();
 
                     if (channel.m_dataPending) {
-                        return (channel.m_hdr.Error == "");
+                        return (channel.m_hdr.Error.empty());
                     } else { // Timeout, no response was received
                         removeChannel(seq);
                     }
@@ -93,15 +89,15 @@ namespace SerfCpp {
     {
         while (!m_shutdown) {
             fd_set read_flags, write_flags;
-            struct timeval waitd;
-
+            struct timeval waitd {};
             waitd.tv_sec = 0;
             waitd.tv_usec = 10000;
+            
             FD_ZERO(&read_flags);
             FD_ZERO(&write_flags);
             FD_SET(m_socket, &read_flags);
 
-            int sel = select(m_socket+1,&read_flags, &write_flags, NULL,&waitd);
+            int sel = select(m_socket+1,&read_flags, &write_flags, nullptr ,&waitd);
             if (sel < 0) {
                 continue;
             }
@@ -142,13 +138,15 @@ namespace SerfCpp {
 
                         // std::cout << "Hdr:" << obj << std::endl;
 
-                        ChannelBase *channel = NULL;
+                        ChannelBase *channel = nullptr 
+        ;
                         {
                             std::lock_guard<std::mutex> guard(m_mutex);
                             channel = m_channels[hdr.Seq];
                         }
 
-                        if (channel != NULL) {
+                        if (channel != nullptr 
+        ) {
                             // Request channels need to be removed from the channel map
                             if (channel->m_type == ChannelBase::REQUEST) {
                                 std::lock_guard<std::mutex> guard(m_mutex);
@@ -174,45 +172,45 @@ namespace SerfCpp {
     // Force template instantiations for request types called from SerfClient
     //
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, JoinRequest&, ResultChannel<JoinResponse>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, AuthRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, AuthRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<KeyResponse>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, KeyRequest&, ResultChannel<KeyResponse>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<KeyListResponse>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<KeyListResponse>*,uint64_t &seq);
     
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<MembersResponse>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, MembersFilteredRequest &, ResultChannel<MembersResponse>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, MembersFilteredRequest &, ResultChannel<MembersResponse>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, EventRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, EventRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ForceLeaveRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, ForceLeaveRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, TagsRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, QueryRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, QueryRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, MonitorRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, StreamRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, StreamRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, StopRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, RespondRequest&, ResultChannel<bool>*,unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, RespondRequest&, ResultChannel<bool>*,uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<StatsResponse>*, unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, ResultChannel<StatsResponse>*, uint64_t &seq);
     template bool
-    SerfIoThread::sendData(RequestHeader &hdr, CoordRequest&, ResultChannel<CoordResponse>*, unsigned long long &seq);
+    SerfIoThread::sendData(RequestHeader &hdr, CoordRequest&, ResultChannel<CoordResponse>*, uint64_t &seq);
 
     template<typename T, typename C>
-    bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel,unsigned long long &seq)
+    bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel,uint64_t &seq)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
         hdr.Seq = m_seq++;        
@@ -231,7 +229,7 @@ namespace SerfCpp {
     }
 
     template<typename C>
-    bool SerfIoThread::sendData(RequestHeader &hdr, C *channel,unsigned long long &seq)
+    bool SerfIoThread::sendData(RequestHeader &hdr, C *channel,uint64_t &seq)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
 
@@ -249,28 +247,28 @@ namespace SerfCpp {
         return result;
     }
 
-    void SerfIoThread::addLogChannel(const unsigned long long &seq, ISerfLogListener *listener)
+    void SerfIoThread::addLogChannel(const uint64_t &seq, ISerfLogListener *listener)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new LogChannel(listener);
     }
 
-    void SerfIoThread::addEventChannel(const unsigned long long &seq, ISerfEventListener *listener)
+    void SerfIoThread::addEventChannel(const uint64_t &seq, ISerfEventListener *listener)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new EventChannel(listener);
     }
 
-    void SerfIoThread::addQueryChannel(const unsigned long long &seq, ISerfQueryListener *listener)
+    void SerfIoThread::addQueryChannel(const uint64_t &seq, ISerfQueryListener *listener)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
 
         m_channels[seq] = new QueryChannel(*this,listener);
     }
 
-    void SerfIoThread::removeChannel(const unsigned long long &seq)
+    void SerfIoThread::removeChannel(const uint64_t &seq)
     {
         std::lock_guard<std::mutex> guard(m_mutex);
 
@@ -279,7 +277,7 @@ namespace SerfCpp {
 
         // For dynamically allocated channels, delete the channel instance
         // as well
-        if (chan && chan->m_type != ChannelBase::REQUEST) {
+        if ((chan != nullptr) && chan->m_type != ChannelBase::REQUEST) {
             delete chan;
         }
     }

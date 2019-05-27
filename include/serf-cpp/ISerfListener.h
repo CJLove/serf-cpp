@@ -6,18 +6,28 @@ namespace SerfCpp {
 
 class ISerfLogListener {
 public:
-    ISerfLogListener();
+    ISerfLogListener() = default;
+    ISerfLogListener(const ISerfLogListener&) = delete;
+    ISerfLogListener(const ISerfLogListener&&) = delete;
 
-    virtual ~ISerfLogListener();
+    virtual ~ISerfLogListener() = default;
+
+    void operator=(const ISerfLogListener &) = delete;
+    void operator=(const ISerfLogListener &&) = delete;
 
     virtual void onLogRecord(ResponseHeader &hdr, LogRecord &record) = 0;
 };
 
 class ISerfEventListener {
 public:
-    ISerfEventListener();
+    ISerfEventListener() = default;
+    ISerfEventListener(const ISerfEventListener &) = delete;
+    ISerfEventListener(const ISerfEventListener &&) = delete;
 
-    virtual ~ISerfEventListener();
+    virtual ~ISerfEventListener() = default;
+    
+    void operator=(const ISerfEventListener &) = delete;
+    void operator=(const ISerfEventListener &&) = delete;
 
     virtual void onUserEventRecord(ResponseHeader &hdr, UserEventRecord &record) = 0;
 
@@ -28,9 +38,14 @@ public:
 
 class ISerfQueryListener {
 public:
-    ISerfQueryListener();
+    ISerfQueryListener() = default;
+    ISerfQueryListener(const ISerfQueryListener &) = delete;
+    ISerfQueryListener(const ISerfQueryListener &&) = delete;
 
-    virtual ~ISerfQueryListener();
+    virtual ~ISerfQueryListener() = default;
+
+    void operator=(const ISerfQueryListener &) = delete;
+    void operator=(const ISerfQueryListener &&) = delete;
 
     virtual void onQueryAck(ResponseHeader &hdr, NodeAck &resp) = 0;
 

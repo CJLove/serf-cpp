@@ -11,12 +11,14 @@ namespace SerfCpp {
     static void dumpPayload(std::ostream &os, const SerfPayload &p)
     {
         int count = 0;
-        std::ios init(NULL);
+        std::ios init(nullptr);
 	    init.copyfmt(os);
         os << std::hex << std::setfill('0') << std::setw(2);
-        SerfPayload::const_iterator i = p.begin();
+        auto i = p.begin();
         for (; i != p.end(); ++i, ++count) {
-            if (count && (count % 8) == 0) os << "\n             ";            
+            if ((count != 0) && (count % 8) == 0) {
+                os << "\n             ";
+            }
             os << "0x" << (static_cast<int>(*i) & 0xff) << " ";
         }
         os.copyfmt(init);
@@ -28,7 +30,7 @@ namespace SerfCpp {
     //
     std::ostream &operator<<(std::ostream &os, const MembersFilteredRequest &r)
     {
-        SerfStringMap::const_iterator i = r.Tags.begin();
+        auto i = r.Tags.begin();
         os << "Tags: ";
         for (; i != r.Tags.end(); ++i) {
             os << (*i).first << ":" << (*i).second << " ";
@@ -39,12 +41,12 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const TagsRequest &r)
     {
-        SerfStringMap::const_iterator i = r.Tags.begin();
+        auto i = r.Tags.begin();
         os << "Tags: ";
         for (; i != r.Tags.end(); ++i) {
             os << (*i).first << ":" << (*i).second << " ";
         }
-        SerfStringArray::const_iterator ii = r.DeleteTags.begin();
+        auto ii = r.DeleteTags.begin();
         os << "Delete Tags: ";
         for (; ii != r.DeleteTags.end(); ++ii) {
             os << (*ii) << " ";
@@ -77,9 +79,9 @@ namespace SerfCpp {
         return os;
     }
 
-    std::ostream &operator<<(std::ostream &os, const RespondRequest &r)
+    std::ostream &operator<<(std::ostream &os, const RespondRequest &m)
     {
-        os << "ID: " << r.ID << std::endl;
+        os << "ID: " << m.ID << std::endl;
         // TODO: payload        
         return os;
     }
@@ -108,7 +110,7 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const KeyResponse &m)
     {
-        SerfStringMap::const_iterator i = m.Messages.begin();
+        auto i = m.Messages.begin();
         os << "    Messages:" << std::endl;
         for (; i != m.Messages.end(); ++i) {
             os << "      Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
@@ -121,13 +123,13 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const KeyListResponse &m)
     {
-        SerfStringMap::const_iterator i = m.Messages.begin();
+        auto i = m.Messages.begin();
         os << "    Messages:" << std::endl;
         for (; i != m.Messages.end(); ++i) {
             os << "      Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
         }
         os << "    Keys:" << std::endl;
-        SerfStringIntMap::const_iterator ii = m.Keys.begin();
+        auto ii = m.Keys.begin();
         for (; ii != m.Keys.end(); ++ii) {
             os << "      Key: " << (*ii).first << " : " << (*ii).second << std::endl;
         }
@@ -147,22 +149,24 @@ namespace SerfCpp {
             // of a 16-byte vector or bytes 0-3 of 4-byte vector
             size_t offset = (size == 4) ? 0 : 12;
 
-            os << (unsigned int)(m.Addr[offset] & 0xff) << "."
-               << (unsigned int)(m.Addr[offset+1] & 0xff) << "."
-               << (unsigned int)(m.Addr[offset+2] & 0xff) << "."
-               << (unsigned int)(m.Addr[offset+3] & 0xff) << ":" << m.Port;
+            os << static_cast<unsigned>(m.Addr[offset] & 0xff) << "."
+               << static_cast<unsigned>(m.Addr[offset+1] & 0xff) << "."
+               << static_cast<unsigned>(m.Addr[offset+2] & 0xff) << "."
+               << static_cast<unsigned>(m.Addr[offset+3] & 0xff) << ":" << m.Port;
         } else {
-            std::vector<char>::const_iterator i = m.Addr.begin();
+            auto i = m.Addr.begin();
             bool colon = false;
             for (; i != m.Addr.end(); i++) {
                 os << std::setw(2) << std::hex << std::setfill('0') << static_cast<int>((*i) & 0xff);
-                if (colon) os << ":";
+                if (colon) {
+                    os << ":";
+                }
                 colon = !colon;
             }
             os << std::dec << std::setfill(' ') << m.Port;
         }
         os << " " << m.Status;
-        SerfStringMap::const_iterator ii = m.Tags.begin();
+        auto ii = m.Tags.begin();
         for (; ii != m.Tags.end(); ++ii) {
             os << " " << (*ii).first << ":" << (*ii).second;
         }
@@ -172,7 +176,7 @@ namespace SerfCpp {
 
     std::ostream &operator<<(std::ostream &os, const MembersResponse &m)
     {
-        std::vector<Member>::const_iterator i = m.Members.begin();
+        auto i = m.Members.begin();
         os << "    Members:" << std::endl;
         for (; i != m.Members.end(); ++i) {
             os << *i;
@@ -188,9 +192,11 @@ namespace SerfCpp {
            << "      Height: " << r.Height << std::endl
            << "      Vec: ";
         int count=0;
-        std::vector<double>::const_iterator i = r.Vec.begin();
+        auto i = r.Vec.begin();
         for (; i != r.Vec.end(); i++, ++count) {
-            if (count && ((count % 4)==0)) os << "\n          ";            
+            if ((count != 0) && ((count % 4)==0)) {
+                os << "\n          ";
+            }
             os << (*i) << " ";
         }
         os << std::endl;
@@ -249,7 +255,7 @@ namespace SerfCpp {
     std::ostream &operator<<(std::ostream &os, const MemberEventRecord &r)
     {
         os << "    MemberEvent: " << r.Event << std::endl;
-        std::vector<Member>::const_iterator i = r.Members.begin();
+        auto i = r.Members.begin();
         for (; i != r.Members.end(); ++i) {
             os << *i;
         }

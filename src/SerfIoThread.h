@@ -15,11 +15,17 @@ class ChannelBase;
 
 class SerfIoThread {
 public:
-    SerfIoThread();
+    SerfIoThread() = default;
 
     ~SerfIoThread();
 
-    bool Connect(const std::string &ipAddr, const short &port);
+    SerfIoThread(const SerfIoThread &) = delete;
+    SerfIoThread(const SerfIoThread &&) = delete;
+
+    void operator=(const SerfIoThread &) = delete;
+    void operator=(const SerfIoThread &&) = delete;
+
+    bool Connect(const std::string &ipAddr, const int16_t &port);
 
     bool IsConnected();
 
@@ -28,18 +34,18 @@ public:
     void processRpc(int arg);
 
     template <typename T, typename C>
-    bool sendData(RequestHeader &hdr, T &body, C *channel, unsigned long long &seq);
+    bool sendData(RequestHeader &hdr, T &body, C *channel, uint64_t &seq);
 
     template <typename C>
-    bool sendData(RequestHeader &hdr, C *channel, unsigned long long &seq);
+    bool sendData(RequestHeader &hdr, C *channel, uint64_t &seq);
 
-    void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
+    void addLogChannel(const uint64_t &seq, ISerfLogListener *listener);
 
-    void addEventChannel(const unsigned long long &seq, ISerfEventListener *listener);
+    void addEventChannel(const uint64_t &seq, ISerfEventListener *listener);
 
-    void addQueryChannel(const unsigned long long &seq, ISerfQueryListener *listener);
+    void addQueryChannel(const uint64_t &seq, ISerfQueryListener *listener);
 
-    void removeChannel(const unsigned long long &seq);
+    void removeChannel(const uint64_t &seq);
 
 private:
     // I/O thread for receiving data from serf agent
@@ -55,18 +61,18 @@ private:
     std::string m_ipAddr;
 
     // Port of Serf Agent
-    short m_port;
+    int16_t m_port = 0;
 
     // Socket for the agent connection
-    int m_socket;
+    int m_socket = -1;
 
     // Sequence number for outgoing RPC messages
-    unsigned long long m_seq;
+    uint64_t m_seq = 0;
 
     // Flag to shutdown
-    bool m_shutdown;
+    bool m_shutdown = false;
 
-    std::map<unsigned long long, ChannelBase *> m_channels;
+    std::map<uint64_t, ChannelBase *> m_channels;
 };
 
 }  // namespace SerfCpp
