@@ -89,7 +89,7 @@ namespace SerfCpp {
     }
 
     void
-    SerfIoThread::processRpc(int arg)
+    SerfIoThread::processRpc(int)
     {
         while (!m_shutdown) {
             fd_set read_flags, write_flags;

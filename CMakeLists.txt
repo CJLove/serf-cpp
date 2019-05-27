@@ -82,12 +82,69 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}
                         ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  add_compile_options("-Wall")
+  add_compile_options("-Wextra")
+  add_compile_options("-Wconversion")
+  add_compile_options("-pedantic")
+  add_compile_options("-Wfatal-errors")
+             
+endif()
+
 #---------------------------------------------------------------------------------------
 # Dependencies
 #---------------------------------------------------------------------------------------
 find_package(Threads)
 find_package(GTest)
 find_package(MsgPackC 3.1.0 REQUIRED)
+
+#---------------------------------------------------------------------------------------
+# Sources, headers, directories and libs
+#---------------------------------------------------------------------------------------
+# From http://www.cmake.org/pipermail/cmake/2010-March/035992.html:
+# function to collect all the sources from sub-directories
+# into a single list
+function(add_sources)
+  get_property(is_defined GLOBAL PROPERTY SRCS_LIST DEFINED)
+  if(NOT is_defined)
+    define_property(GLOBAL PROPERTY SRCS_LIST
+      BRIEF_DOCS "List of source files"
+      FULL_DOCS "List of all source files in the entire project")
+  endif()
+  # make absolute paths
+  set(SRCS)
+  foreach(s IN LISTS ARGN)
+    if(NOT IS_ABSOLUTE "${s}")
+      get_filename_component(s "${s}" ABSOLUTE)
+    endif()
+    list(APPEND SRCS "${s}")
+  endforeach()
+  # append to global list
+  set_property(GLOBAL APPEND PROPERTY SRCS_LIST "${SRCS}")
+endfunction(add_sources)
+
+file(GLOB sources "src/[a-zA-Z]*.cpp")
+file(GLOB_RECURSE public_headers "include/serf-cpp/[a-zA-Z]*.h")
+file(GLOB private_headers "src/[a-zA-Z]*.h")
+file(GLOB examples "examples/[a-zA-Z]*.[ch]*")
+file(GLOB tests "test/[a-zA-Z]*.cpp")
+
+set(library_sources
+    ${sourcse}
+    ${public_headers}
+    ${private_headers}
+    ${examples}
+    ${tests}
+)
+add_sources(${library_sources})
+
+if(VERBOSE)
+    message(STATUS "sources: ${sources}")
+    message(STATUS "public_headers: ${public_headers}")
+    message(STATUS "private_headers: ${private_headers}")
+    message(STATUS "examples: ${examples}")
+    message(STATUS "tests: ${tests}")
+endif(VERBOSE)
 
 if (GTEST_FOUND)
   option (SERF_CPP_BUILD_TESTS "Build serf-cpp tests." ON)
@@ -111,3 +168,33 @@ endif (SERF_CPP_BUILD_TESTS)
 if (SERF_CPP_BUILD_EXAMPLE)
   add_subdirectory(example)
 endif (SERF_CPP_BUILD_EXAMPLE)
+
+#---------------------------------------------------------------------------------------
+# Addons
+#---------------------------------------------------------------------------------------
+# clang-tidy
+if(ENABLE_CLANG_TIDY)
+  find_program(CLANGTIDY clang-tidy)
+  if(CLANGTIDY)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
+  else()
+    message(SEND_ERROR "clang-tidy requested but executable not found")
+  endif()
+endif()
+
+# cppcheck
+if(ENABLE_CPPCHECK)
+  find_program(CPPCHECK cppcheck)
+  if(CPPCHECK)
+    set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=syntaxError --enable=all --inconclusive)
+  else()
+    message(SEND_ERROR "cppcheck requested but executable not found")
+  endif()
+endif()
+
+# Formatting
+get_property(all_sources GLOBAL PROPERTY SRCS_LIST)
+add_custom_target(format
+    COMMAND clang-format --style=file -i ${all_sources}
+    COMMENT "Running clang-format"
+    VERBATIM)

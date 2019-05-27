@@ -15,14 +15,14 @@ public:
     ~MyLogListener()
     {}
 
-    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record);
+    void onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record);
 
     int m_count;
     std::string m_log;
 };
 
 void
-MyLogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record)
+MyLogListener::onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record)
 {
     m_count++;
     m_log = record.Log;
@@ -48,19 +48,19 @@ public:
 };
 
 void
-MyEventListener::onUserEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::UserEventRecord &record)
+MyEventListener::onUserEventRecord(SerfCpp::ResponseHeader &, SerfCpp::UserEventRecord &)
 {
     m_userCount++;
 }
 
 void
-MyEventListener::onMemberEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::MemberEventRecord &record)
+MyEventListener::onMemberEventRecord(SerfCpp::ResponseHeader &, SerfCpp::MemberEventRecord &)
 {
 	m_memberCount++;
 }
 
 void
-MyEventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::QueryRecord &record)
+MyEventListener::onQueryEventRecord(SerfCpp::ResponseHeader &, SerfCpp::QueryRecord &)
 {
 	m_queryCount++;
 }
@@ -70,11 +70,11 @@ class MyQueryListener: public ISerfQueryListener
 public:
     MyQueryListener();
 
-    void onQueryAck(ResponseHeader &hdr, NodeAck &resp);
+    void onQueryAck(ResponseHeader &, NodeAck &);
 
-    void onQueryResponse(ResponseHeader &hdr, NodeResponse &resp);
+    void onQueryResponse(ResponseHeader &, NodeResponse &);
 
-    void onQueryComplete(ResponseHeader &hdr);
+    void onQueryComplete(ResponseHeader &);
 
 };
 
@@ -83,18 +83,18 @@ MyQueryListener::MyQueryListener()
 }
 
 void
-MyQueryListener::onQueryAck(ResponseHeader &hdr, NodeAck &resp)
+MyQueryListener::onQueryAck(ResponseHeader &, NodeAck &)
 {
 }
 
 
 void
-MyQueryListener::onQueryResponse(ResponseHeader &hdr, NodeResponse &resp)
+MyQueryListener::onQueryResponse(ResponseHeader &, NodeResponse &)
 {
 }
 
 void
-MyQueryListener::onQueryComplete(ResponseHeader &hdr)
+MyQueryListener::onQueryComplete(ResponseHeader &)
 {
 }
 

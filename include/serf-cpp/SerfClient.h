@@ -3,86 +3,79 @@
 
 namespace SerfCpp {
 
-    class ISerfLogListener;
-    class ISerfEventListener;
-    class ISerfQueryListener;
+class ISerfLogListener;
+class ISerfEventListener;
+class ISerfQueryListener;
 
-    class SerfClient {
-    public:
-        enum SerfResponse { SUCCESS, FAILURE, TIMEOUT };
-        
-        // Default ctor - configured to connect to localhost and default port
-        SerfClient();
+class SerfClient {
+public:
+    enum SerfResponse { SUCCESS, FAILURE, TIMEOUT };
 
-        // Dtor
-        ~SerfClient();
+    // Default ctor - configured to connect to localhost and default port
+    SerfClient();
 
-        // Connect to serf agent
-        SerfResponse Connect(const std::string &ipAddr = "127.0.0.1",
-                             const short &port = 7373);
+    // Dtor
+    ~SerfClient();
 
-        // Is the client connected to an agent?
-        bool IsConnected();
+    // Connect to serf agent
+    SerfResponse Connect(const std::string &ipAddr = "127.0.0.1", const short &port = 7373);
 
-        // Close the agent connection
-        SerfResponse Close();
+    // Is the client connected to an agent?
+    bool IsConnected();
 
-        //
-        // Serf Client RPC methods
-        //
-        SerfResponse Join(SerfStringArray &addrs,
-                          bool replay, int &nodeCount);
+    // Close the agent connection
+    SerfResponse Close();
 
-        SerfResponse Auth(std::string &authKey);
+    //
+    // Serf Client RPC methods
+    //
+    SerfResponse Join(SerfStringArray &addrs, bool replay, int &nodeCount);
 
-        SerfResponse InstallKey(std::string &key, KeyResponse &keys);
+    SerfResponse Auth(std::string &authKey);
 
-        SerfResponse UseKey(std::string &key);
+    SerfResponse InstallKey(std::string &key, KeyResponse &keys);
 
-        SerfResponse RemoveKey(std::string &key, KeyResponse &keys);
+    SerfResponse UseKey(std::string &key);
 
-        SerfResponse ListKeys(KeyListResponse &keys);
+    SerfResponse RemoveKey(std::string &key, KeyResponse &keys);
 
-        SerfResponse Members(MembersResponse &members);
+    SerfResponse ListKeys(KeyListResponse &keys);
 
-        SerfResponse MembersFiltered(const SerfStringMap & tags,
-                                     const std::string &status,
-                                     const std::string &name,
-                                     MembersResponse &members);
+    SerfResponse Members(MembersResponse &members);
 
-        SerfResponse Event(const std::string &name, const SerfPayload &payload, bool coalesce);
+    SerfResponse MembersFiltered(const SerfStringMap &tags, const std::string &status, const std::string &name,
+                                 MembersResponse &members);
 
-        SerfResponse ForceLeave(const std::string &nodeName);
+    SerfResponse Event(const std::string &name, const SerfPayload &payload, bool coalesce);
 
-        SerfResponse Tags(const SerfStringMap &tags,
-                          const SerfStringArray &deleteTags);
+    SerfResponse ForceLeave(const std::string &nodeName);
 
-        SerfResponse Leave();
+    SerfResponse Tags(const SerfStringMap &tags, const SerfStringArray &deleteTags);
 
-        SerfResponse Monitor(const std::string &level, ISerfLogListener *listener, unsigned long long &seq);
+    SerfResponse Leave();
 
-        SerfResponse Stream(const std::string &type, ISerfEventListener *listener, unsigned long long &seq);
+    SerfResponse Monitor(const std::string &level, ISerfLogListener *listener, unsigned long long &seq);
 
-        SerfResponse Stop(const unsigned long long &seq);
+    SerfResponse Stream(const std::string &type, ISerfEventListener *listener, unsigned long long &seq);
 
-        SerfResponse Stats(StatsResponse &stats);
+    SerfResponse Stop(const unsigned long long &seq);
 
-        SerfResponse Respond(const unsigned long long &id, const SerfPayload &payload);
+    SerfResponse Stats(StatsResponse &stats);
 
-        SerfResponse GetCoordinate(std::string node, CoordResponse &coordinate);
+    SerfResponse Respond(const unsigned long long &id, const SerfPayload &payload);
 
-        SerfResponse Query(const std::string &name, const SerfPayload &payload,
-                           ISerfQueryListener *listener,                           
-                           // Following args are optional
-                           bool requestAck = false, unsigned long long timeout = 15000000000ULL,
-                           SerfStringArray *filterNodes = NULL,
-                           SerfStringMap *filterTags = NULL);
+    SerfResponse GetCoordinate(std::string node, CoordResponse &coordinate);
 
-    private:
-        struct SerfClientImpl;
-        SerfClientImpl *m_pImpl;
-    };
+    SerfResponse Query(const std::string &name, const SerfPayload &payload, ISerfQueryListener *listener,
+                       // Following args are optional
+                       bool requestAck = false, unsigned long long timeout = 15000000000ULL,
+                       SerfStringArray *filterNodes = NULL, SerfStringMap *filterTags = NULL);
 
-    std::ostream &operator<<(std::ostream &os, const SerfClient::SerfResponse &r); 
+private:
+    struct SerfClientImpl;
+    SerfClientImpl *m_pImpl;
+};
 
-} 	// namespace SerfCpp
+std::ostream &operator<<(std::ostream &os, const SerfClient::SerfResponse &r);
+
+}  // namespace SerfCpp

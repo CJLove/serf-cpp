@@ -143,7 +143,6 @@ TEST(SerfChannelTest, MemberEventChannel)
 
 TEST(SerfChannelTest, ResultChannel)
 {
-    bool resp;
     ResultChannel<bool> channel;
     ResponseHeader hdr;    
 

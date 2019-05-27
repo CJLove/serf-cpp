@@ -8,65 +8,65 @@
 
 namespace SerfCpp {
 
-    class ISerfLogListener;
-    class ISerfEventListener;
-    class ISerfQueryListener;
-    class ChannelBase;
-    
-    class SerfIoThread {
-    public:
-        SerfIoThread();
+class ISerfLogListener;
+class ISerfEventListener;
+class ISerfQueryListener;
+class ChannelBase;
 
-        ~SerfIoThread();
+class SerfIoThread {
+public:
+    SerfIoThread();
 
-        bool Connect(const std::string &ipAddr, const short& port);
+    ~SerfIoThread();
 
-        bool IsConnected();
+    bool Connect(const std::string &ipAddr, const short &port);
 
-        bool Close();
+    bool IsConnected();
 
-        void processRpc(int arg);
+    bool Close();
 
-        template<typename T, typename C>
-            bool sendData(RequestHeader &hdr, T &body, C *channel, unsigned long long &seq);
+    void processRpc(int arg);
 
-        template<typename C>
-            bool sendData(RequestHeader &hdr, C* channel, unsigned long long &seq);
+    template <typename T, typename C>
+    bool sendData(RequestHeader &hdr, T &body, C *channel, unsigned long long &seq);
 
-        void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
+    template <typename C>
+    bool sendData(RequestHeader &hdr, C *channel, unsigned long long &seq);
 
-        void addEventChannel(const unsigned long long &seq, ISerfEventListener *listener);
+    void addLogChannel(const unsigned long long &seq, ISerfLogListener *listener);
 
-        void addQueryChannel(const unsigned long long &seq, ISerfQueryListener *listener);
+    void addEventChannel(const unsigned long long &seq, ISerfEventListener *listener);
 
-        void removeChannel(const unsigned long long &seq);
+    void addQueryChannel(const unsigned long long &seq, ISerfQueryListener *listener);
 
-    private:
-        // I/O thread for receiving data from serf agent
-        std::thread m_thread;
+    void removeChannel(const unsigned long long &seq);
 
-        // Mutex for sending data and channel data
-        std::mutex m_mutex;
+private:
+    // I/O thread for receiving data from serf agent
+    std::thread m_thread;
 
-        // Msgpack decoder
-        msgpack::unpacker m_unpacker;
+    // Mutex for sending data and channel data
+    std::mutex m_mutex;
 
-        // IP Address of Serf Agent
-        std::string m_ipAddr;
+    // Msgpack decoder
+    msgpack::unpacker m_unpacker;
 
-        // Port of Serf Agent
-        short m_port;
+    // IP Address of Serf Agent
+    std::string m_ipAddr;
 
-        // Socket for the agent connection
-        int m_socket;
+    // Port of Serf Agent
+    short m_port;
 
-        // Sequence number for outgoing RPC messages
-        unsigned long long m_seq;
+    // Socket for the agent connection
+    int m_socket;
 
-        // Flag to shutdown
-        bool m_shutdown;
+    // Sequence number for outgoing RPC messages
+    unsigned long long m_seq;
 
-        std::map<unsigned long long, ChannelBase*> m_channels;
-    };
+    // Flag to shutdown
+    bool m_shutdown;
 
-} // namespace SerfCpp
+    std::map<unsigned long long, ChannelBase *> m_channels;
+};
+
+}  // namespace SerfCpp

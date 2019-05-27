@@ -8,7 +8,7 @@ namespace SerfCpp {
     //
     // Generate hex dump of a "payload"
     //
-    static const void dumpPayload(std::ostream &os, const SerfPayload &p)
+    static void dumpPayload(std::ostream &os, const SerfPayload &p)
     {
         int count = 0;
         std::ios init(NULL);
