@@ -1,9 +1,10 @@
 2019-05-25 Chris Love <christopherlove68@gmail.com>
-  * Build against latest msgpack-c (3.1.0)
+  * Build against latest msgpack-c (3.1.1)
 	* Require newer CMake version
 	* Support building with clang
-	* Optionally build with gcc sanitizers as new build types: tsan asan lsan msan ubsan
+	* Optionally build with clang/gcc sanitizers as new build types: tsan asan lsan msan ubsan
 	* Test code fixes detected by sanitizers
+	* Code cleanups (compiler warnings, clang-tidy, etc.)
 
 2017-02-04  Chris Love  <chris_love@san.rr.com>
 	* SerfCpp 0.3.0 release

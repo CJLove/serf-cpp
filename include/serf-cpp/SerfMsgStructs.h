@@ -21,16 +21,16 @@ namespace SerfCpp {
 
 const int SerfApiVersion = 1;
 
-// Convenience typedefs for types used in Serf RPC messages
-typedef std::vector<char> SerfPayload;
-typedef std::vector<std::string> SerfStringArray;
-typedef std::map<std::string, std::string> SerfStringMap;
-typedef std::map<std::string, int> SerfStringIntMap;
+// Convenience types used in Serf RPC messages
+using SerfPayload = std::vector<char>;
+using SerfStringArray = std::vector<std::string>;
+using SerfStringMap = std::map<std::string, std::string>;
+using SerfStringIntMap = std::map<std::string, int>;
 
 // --------------------------
 struct RequestHeader {
     std::string Command;
-    unsigned long long Seq;
+    uint64_t Seq = 0;
     MSGPACK_DEFINE(Command, Seq)
 };
 inline bool operator==(RequestHeader const &lhs, RequestHeader const &rhs) {
@@ -39,7 +39,7 @@ inline bool operator==(RequestHeader const &lhs, RequestHeader const &rhs) {
 
 // --------------------------
 struct ResponseHeader {
-    unsigned long long Seq;
+    uint64_t Seq = 0;
     std::string Error;
     MSGPACK_DEFINE(Seq, Error)
 };
@@ -51,7 +51,7 @@ std::ostream &operator<<(std::ostream &os, const ResponseHeader &m);
 
 // --------------------------
 struct HandshakeRequest {
-    int Version;
+    int Version = 0;
     MSGPACK_DEFINE(Version)
 };
 inline bool operator==(HandshakeRequest const &lhs, HandshakeRequest const &rhs) { return (lhs.Version == rhs.Version); }
@@ -75,9 +75,9 @@ std::ostream &operator<<(std::ostream &os, const CoordRequest &m);
 
 struct Coordinate {
     std::vector<double> Vec;
-    double Error;
-    double Adjustment;
-    double Height;
+    double Error = 0.0;
+    double Adjustment = 0.0;
+    double Height = 0.0;
 
     MSGPACK_DEFINE(Adjustment, Error, Height, Vec)
     //        MSGPACK_DEFINE(Vec,Error,Adjustment,Height);
@@ -89,7 +89,7 @@ std::ostream &operator<<(std::ostream &os, const Coordinate &m);
 
 struct CoordResponse {
     Coordinate Coord;
-    bool Ok;
+    bool Ok = false;
     MSGPACK_DEFINE(Coord, Ok)
 };
 inline bool operator==(CoordResponse const &lhs, CoordResponse const &rhs) {
@@ -109,7 +109,7 @@ std::ostream &operator<<(std::ostream &os, const KeyRequest &m);
 
 // --------------------------
 struct RespondRequest {
-    unsigned long long ID;
+    uint64_t ID = 0;
     SerfPayload Payload;
     MSGPACK_DEFINE(ID, Payload)
 };
@@ -122,9 +122,9 @@ std::ostream &operator<<(std::ostream &os, const RespondRequest &m);
 // Used for install-key and remove-key responses
 struct KeyResponse {
     SerfStringMap Messages;
-    int NumErr;
-    int NumNodes;
-    int NumResp;
+    int NumErr = 0;
+    int NumNodes = 0;
+    int NumResp = 0;
     MSGPACK_DEFINE(Messages, NumErr, NumNodes, NumResp)
 };
 inline bool operator==(KeyResponse const &lhs, KeyResponse const &rhs) {
@@ -137,9 +137,9 @@ std::ostream &operator<<(std::ostream &os, const KeyResponse &m);
 struct KeyListResponse {
     SerfStringMap Messages;
     SerfStringIntMap Keys;
-    int NumErr;
-    int NumNodes;
-    int NumResp;
+    int NumErr = 0;
+    int NumNodes = 0;
+    int NumResp = 0;
     MSGPACK_DEFINE(Messages, Keys, NumErr, NumNodes, NumResp)
 };
 inline bool operator==(KeyListResponse const &lhs, KeyListResponse const &rhs) {
@@ -152,7 +152,7 @@ std::ostream &operator<<(std::ostream &os, const KeyListResponse &m);
 struct EventRequest {
     std::string Name;
     SerfPayload Payload;
-    bool Coalesce;
+    bool Coalesce = false;
     MSGPACK_DEFINE(Name, Payload, Coalesce)
 };
 inline bool operator==(EventRequest const &lhs, EventRequest const &rhs) {
@@ -163,8 +163,8 @@ inline bool operator==(EventRequest const &lhs, EventRequest const &rhs) {
 struct QueryRequest {
     SerfStringArray FilterNodes;
     SerfStringMap FilterTags;
-    bool RequestAck;
-    unsigned long long Timeout;
+    bool RequestAck = false;
+    uint64_t Timeout = 0;
     std::string Name;
     SerfPayload Payload;
     MSGPACK_DEFINE(FilterNodes, FilterTags, RequestAck, Timeout, Name, Payload)
@@ -184,7 +184,7 @@ inline bool operator==(ForceLeaveRequest const &lhs, ForceLeaveRequest const &rh
 // --------------------------
 struct JoinRequest {
     SerfStringArray Existing;
-    bool Replay;
+    bool Replay = false;
     MSGPACK_DEFINE(Existing, Replay)
 };
 inline bool operator==(JoinRequest const &lhs, JoinRequest const &rhs) {
@@ -193,7 +193,7 @@ inline bool operator==(JoinRequest const &lhs, JoinRequest const &rhs) {
 
 // --------------------------
 struct JoinResponse {
-    int Num;
+    int Num = 0;
     MSGPACK_DEFINE(Num)
 };
 inline bool operator==(JoinResponse const &lhs, JoinResponse const &rhs) { return (lhs.Num == rhs.Num); }
@@ -211,18 +211,17 @@ struct Member {
     // While 'char' is used to match the msgpack encoding, values should
     // be interpreted as unsigned char.
     std::vector<char> Addr;
-    int Port;
+    int Port = 0;
     SerfStringMap Tags;
     std::string Status;
-    unsigned char ProtocolMin;
-    unsigned char ProtocolMax;
-    unsigned char ProtocolCur;
-    unsigned char DelegateMin;
-    unsigned char DelegateMax;
-    unsigned char DelegateCur;
+    unsigned char ProtocolMin = 0;
+    unsigned char ProtocolMax = 0;
+    unsigned char ProtocolCur = 0;
+    unsigned char DelegateMin = 0;
+    unsigned char DelegateMax = 0;
+    unsigned char DelegateCur = 0;
 
-    MSGPACK_DEFINE(Name, Addr, Port, Tags, Status, ProtocolMin, ProtocolMax, ProtocolCur, DelegateMin, DelegateMax,
-                   DelegateCur)
+    MSGPACK_DEFINE(Name, Addr, Port, Tags, Status, ProtocolMin, ProtocolMax, ProtocolCur, DelegateMin, DelegateMax, DelegateCur)
 };
 inline bool operator==(Member const &lhs, Member const &rhs) {
     return ((lhs.Name == rhs.Name) && (lhs.Addr == rhs.Addr) && (lhs.Port == rhs.Port) && (lhs.Tags == rhs.Tags) &&
@@ -288,7 +287,7 @@ std::ostream &operator<<(std::ostream &os, const MonitorRequest &r);
 
 // --------------------------
 struct StopRequest {
-    unsigned long long Stop;
+    uint64_t Stop = 0;
     MSGPACK_DEFINE(Stop)
 };
 
@@ -309,10 +308,10 @@ std::ostream &operator<<(std::ostream &os, const LogRecord &r);
 // --------------------------
 struct UserEventRecord {
     std::string Event;
-    unsigned long long LTime;
+    uint64_t LTime = 0;
     std::string Name;
     SerfPayload Payload;
-    bool Coalesce;
+    bool Coalesce = false;
     MSGPACK_DEFINE(Event, LTime, Name, Payload, Coalesce)
 };
 
@@ -339,10 +338,10 @@ std::ostream &operator<<(std::ostream &os, const MemberEventRecord &m);
 // --------------------------
 struct QueryRecord {
     std::string Event;
-    unsigned long long ID;
+    uint64_t ID = 0;
     std::string Name;
     SerfPayload Payload;
-    unsigned long long LTime;
+    uint64_t LTime = 0;
     MSGPACK_DEFINE(Event, ID, Name, Payload, LTime)
 };
 

@@ -199,7 +199,7 @@ TEST(SerfChannelTest, ResultChannelType)
 TEST(SerfChannelTest, QueryChannel)
 {
     SerfIoThread io;
-    unsigned long long seq = 555;
+    uint64_t seq = 555;
 	NodeAck resp;
     resp.Type="ack";
     NodeResponse resp2;

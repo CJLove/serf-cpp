@@ -8,17 +8,8 @@ namespace SerfCpp {
     ChannelBase::ChannelBase(ChannelType type): m_type(type)
     {}
 
-    ChannelBase::~ChannelBase()
-    {
-    }
-
-
     LogChannel::LogChannel(ISerfLogListener* listener):
         ChannelBase(ChannelBase::LOG), m_listener(listener)
-    {
-    }
-
-    LogChannel::~LogChannel()
     {
     }
 
@@ -39,10 +30,6 @@ namespace SerfCpp {
     QueryChannel::QueryChannel(SerfIoThread &ioThread,
                                ISerfQueryListener* listener):
         ChannelBase(ChannelBase::QUERY), m_ioThread(ioThread), m_listener(listener)
-    {
-    }
-
-    QueryChannel::~QueryChannel()
     {
     }
 
@@ -81,10 +68,6 @@ namespace SerfCpp {
 
     EventChannel::EventChannel(ISerfEventListener* listener):
         ChannelBase(ChannelBase::EVENT), m_listener(listener)
-    {
-    }
-
-    EventChannel::~EventChannel()
     {
     }
 

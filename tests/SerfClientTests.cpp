@@ -142,7 +142,7 @@ TEST(SerfClientTests, Response)
 
     SerfCpp::SerfPayload payload;
 
-    unsigned long long id = 123ULL;
+    uint64_t id = 123ULL;
 
     SerfClient::SerfResponse resp = client.Respond(id, payload);
     
@@ -187,7 +187,7 @@ TEST(SerfClientTests, Monitor)
 {
     SerfClient client;
 
-    unsigned long long seq;
+    uint64_t seq;
 
     std::string level="debug";
 
@@ -218,7 +218,7 @@ TEST(SerfClientTests, Stream)
     EventListener listener;
 
     std::string type="all";
-    unsigned long long seq;
+    uint64_t seq;
 
     SerfClient::SerfResponse resp = client.Stream(type,&listener,seq);
     ASSERT_EQ(resp,SerfClient::FAILURE);    
@@ -228,7 +228,7 @@ TEST(SerfClientTests, Stop)
 {
     SerfClient client;
 
-    unsigned long long seq = 12345ULL;
+    uint64_t seq = 12345ULL;
 
     SerfClient::SerfResponse resp = client.Stop(seq);
     ASSERT_EQ(resp,SerfClient::FAILURE);    
