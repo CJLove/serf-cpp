@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
                 host = optarg;
                 break;
             case 'p':
-                port = static_cast<int16_t>(std::stoi(optarg));
+                port = static_cast<int16_t>(std::strtol(optarg,nullptr,10));
                 break;
             case '?':
             default:

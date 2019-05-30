@@ -25,7 +25,7 @@ namespace SerfCpp {
         m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
         if (m_socket != -1) {
-            struct sockaddr_in server {};
+            struct sockaddr_in server;
             server.sin_addr.s_addr=inet_addr(m_ipAddr.c_str());
             server.sin_family = AF_INET;
             server.sin_port=htons(m_port);
@@ -89,7 +89,7 @@ namespace SerfCpp {
     {
         while (!m_shutdown) {
             fd_set read_flags, write_flags;
-            struct timeval waitd {};
+            struct timeval waitd { 0, 0 };
             waitd.tv_sec = 0;
             waitd.tv_usec = 10000;
             
