@@ -85,7 +85,7 @@ namespace SerfCpp {
     }
 
     void
-    SerfIoThread::processRpc(int)
+    SerfIoThread::processRpc(int /* arg */)
     {
         while (!m_shutdown) {
             fd_set read_flags, write_flags;
@@ -138,8 +138,7 @@ namespace SerfCpp {
 
                         // std::cout << "Hdr:" << obj << std::endl;
 
-                        ChannelBase *channel = nullptr 
-        ;
+                        ChannelBase *channel = nullptr;
                         {
                             std::lock_guard<std::mutex> guard(m_mutex);
                             channel = m_channels[hdr.Seq];
