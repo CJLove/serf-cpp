@@ -1,5 +1,6 @@
 #pragma once
 #include "SerfMsgStructs.h"
+#include <memory>
 
 namespace SerfCpp {
 
@@ -84,7 +85,7 @@ public:
 
 private:
     struct SerfClientImpl;
-    SerfClientImpl *m_pImpl;
+    std::unique_ptr<SerfClientImpl> m_pImpl;
 };
 
 std::ostream &operator<<(std::ostream &os, const SerfClient::SerfResponse &r);

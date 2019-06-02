@@ -37,7 +37,6 @@ SerfClient::SerfClient() : m_pImpl(new SerfClientImpl(*this)) {}
 
 SerfClient::~SerfClient() {
     m_pImpl->m_serfThread.Close();
-    delete m_pImpl;
 }
 
 SerfClient::SerfResponse SerfClient::Connect(const std::string &ipAddr, const int16_t &port) {
@@ -415,7 +414,6 @@ SerfClient::SerfResponse SerfClient::Query(const std::string &name, const SerfPa
 
             if (resp == SerfClient::SUCCESS) {
                 m_pImpl->m_serfThread.addQueryChannel(channel.m_hdr.Seq, listener);
-                seq = channel.m_hdr.Seq;
             }
             return resp;
         } else {
