@@ -69,7 +69,7 @@ void EventListener::onQueryEventRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::Qu
         payload.push_back('T');
 
         SerfClient::SerfResponse resp = m_client.Respond(record.ID, payload);
-        std::cout << "\n==> Auto response: " << resp << std::endl;
+        std::cout << "\n==> Auto response: " << resp << "\n";
     }
 }
 
@@ -105,8 +105,8 @@ void QueryListener::onQueryResponse(SerfCpp::ResponseHeader &hdr, SerfCpp::NodeR
     m_responses++;
 }
 
-void QueryListener::onQueryComplete(SerfCpp::ResponseHeader &) {
-    std::cout << "\n==> Query Complete:  Acks: " << m_acks << " Responses: " << m_responses << std::endl;
+void QueryListener::onQueryComplete(SerfCpp::ResponseHeader & /* hdr */ ) {
+    std::cout << "\n==> Query Complete:  Acks: " << m_acks << " Responses: " << m_responses << "\n";
     m_acks = 0;
     m_responses = 0;
 }
@@ -126,7 +126,7 @@ public:
 };
 
 void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record) {
-    std::cout << "\n==> Log Record Seq: " << hdr.Seq << " " << record.Log << std::endl;
+    std::cout << "\n==> Log Record Seq: " << hdr.Seq << " " << record.Log << "\n";
 }
 
 int main(int argc, char **argv) {
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
     SerfClient::SerfResponse resp = client.Connect(host, port);
 
     if (resp != SerfClient::SUCCESS) {
-        std::cout << "Failed to connect to serf agent" << std::endl;
+        std::cout << "Failed to connect to serf agent" << "\n";
         exit(1);
     }
 
@@ -177,65 +177,88 @@ int main(int argc, char **argv) {
         if (command == "quit") {
             break;
         } else if (command == "help") {
-            std::cout << "Commands:" << std::endl
-                      << "    join <addr> <addr> <addr> ..." << std::endl
-                      << "    auth <key>" << std::endl
-                      << "    install <key>" << std::endl
-                      << "    use <key>" << std::endl
-                      << "    remove <key>" << std::endl
-                      << "    list" << std::endl
-                      << "    members" << std::endl
-                      << "    event <name> <payload>" << std::endl
-                      << "    force-leave" << std::endl
-                      << "    leave" << std::endl
-                      << "    coord <name>" << std::endl
-                      << "    stop <seq>" << std::endl
-                      << "    respond <id> <payload>" << std::endl
-                      << "    monitor" << std::endl
-                      << "    stream" << std::endl
-                      << "    query <name> <payload>" << std::endl
-                      << "    stats" << std::endl;
+            std::cout << "Commands:\n"
+                      << "    join <addr> <addr> <addr> ...\n"
+                      << "    auth <key>\n"
+                      << "    install <key>\n"
+                      << "    use <key>\n"
+                      << "    remove <key>\n"
+                      << "    list\n"
+                      << "    members\n"
+                      << "    event <name> <payload>\n"
+                      << "    force-leave\n"
+                      << "    leave\n"
+                      << "    coord <name>\n"
+                      << "    stop <seq>\n"
+                      << "    respond <id> <payload>\n"
+                      << "    monitor\n"
+                      << "    stream\n"
+                      << "    tag <tag>:value\n"
+                      << "    rmtag <tag>\n"
+                      << "    query <name> <payload>\n"
+                      << "    stats\n";
         } else if (command == "join") {
             int count = 0;
             resp = client.Join(args, false, count);
 
-            std::cout << "Join response:" << resp << std::endl << "Join node count: " << count << std::endl;
+            std::cout << "Join response:" << resp << "\nJoin node count: " << count << "\n";
 
         } else if (command == "auth") {
             std::string key = args[1];
 
             resp = client.Auth(key);
-            std::cout << "Auth response:" << resp << std::endl;
+            std::cout << "Auth response:" << resp << "\n";
         } else if (command == "use") {
             std::string key = args[1];
             resp = client.UseKey(key);
 
-            std::cout << "Use Key response:" << resp << std::endl;
+            std::cout << "Use Key response:" << resp << "\n";
         } else if (command == "install") {
             std::string key = args[1];
             KeyResponse keys;
             resp = client.InstallKey(key, keys);
 
-            std::cout << "Install response:" << resp << std::endl << keys << std::endl;
+            std::cout << "Install response:" << resp << "\n" << keys << "\n";
         } else if (command == "remove") {
             std::string key = args[1];
             KeyResponse keys;
             resp = client.RemoveKey(key, keys);
 
-            std::cout << "Remove response:" << resp << std::endl << keys << std::endl;
+            std::cout << "Remove response:" << resp << "\n" << keys << "\n";
         } else if (command == "list") {
             KeyListResponse keys;
 
             resp = client.ListKeys(keys);
 
-            std::cout << "List Keys response:" << resp << std::endl << keys << std::endl;
+            std::cout << "List Keys response:" << resp << "\n" << keys << "\n";
         } else if (command == "members") {
 
             MembersResponse members;
 
             resp = client.Members(members);
 
-            std::cout << "Members response:" << resp << std::endl << members << std::endl;
+            std::cout << "Members response:" << resp << "\n" << members << "\n";
+        } else if (command == "tag") {
+            std::string tagString = args[0];
+            SerfStringMap tags;
+            SerfStringArray rmtags;
+            size_t sep = tagString.find(':');
+            if (sep != std::string::npos) {
+                std::string tag = tagString.substr(0,sep);
+                std::string val = tagString.substr(sep+1);
+                tags[tag] = val;
+
+                resp = client.Tags(tags,rmtags);
+                std::cout << "Tags response:" << resp << "\n";
+            } else {
+                std::cerr << "Invalid tag specification\n";
+            }
+        } else if (command == "rmtag") {
+            SerfStringMap tags;
+            SerfStringArray rmtags;
+            rmtags.push_back(args[0]);
+            resp = client.Tags(tags,rmtags);
+            std::cout << "RmTags response: " << resp << "\n";
         } else if (command == "query") {
             std::string name = args[0];
             SerfPayload payload;
@@ -248,13 +271,13 @@ int main(int argc, char **argv) {
 
             // Expect acks, 120 second timeout
             resp = client.Query(name, payload, &queryListener, true, 120000000000ULL);
-            std::cout << "Query response:" << resp << std::endl;
+            std::cout << "Query response:" << resp << "\n";
         } else if (command == "coord") {
             std::string node = args[0];
             CoordResponse coord;
 
             resp = client.GetCoordinate(node, coord);
-            std::cout << "GetCoordinate response:" << resp << std::endl << coord << std::endl;
+            std::cout << "GetCoordinate response:" << resp << "\n" << coord << "\n";
         } else if (command == "event") {
             std::string name = args[0];
 
@@ -268,7 +291,7 @@ int main(int argc, char **argv) {
 
             resp = client.Event(name, payload, true);
 
-            std::cout << "Event response:" << resp << std::endl << "Event:" << name << std::endl;
+            std::cout << "Event response:" << resp << "\n" << "Event:" << name << "\n";
         } else if (command == "respond") {
             uint64_t id = strtoull(args[0].c_str(), nullptr, 10);
             SerfPayload payload;
@@ -279,27 +302,27 @@ int main(int argc, char **argv) {
                 }
             }
             resp = client.Respond(id, payload);
-            std::cout << "Respond response:" << resp << " for ID: " << id << std::endl;
+            std::cout << "Respond response:" << resp << " for ID: " << id << "\n";
 
         } else if (command == "force-leave") {
             std::string name = args[0];
 
             resp = client.ForceLeave(name);
 
-            std::cout << "ForceLeave response:" << resp << std::endl << "ForceLeave:" << name << std::endl;
+            std::cout << "ForceLeave response:" << resp << "\n" << "ForceLeave:" << name << "\n";
         } else if (command == "leave") {
 
             resp = client.Leave();
 
-            std::cout << "Leave result:" << resp << std::endl;
+            std::cout << "Leave result:" << resp << "\n";
         } else if (command == "stop") {
             uint64_t seq = strtoull(args[0].c_str(), nullptr, 10);
 
-            std::cout << "Stopping Monitor/Stream registration for Seq=" << seq << std::endl;
+            std::cout << "Stopping Monitor/Stream registration for Seq=" << seq << "\n";
 
             resp = client.Stop(seq);
 
-            std::cout << "Stop result: " << resp << std::endl;
+            std::cout << "Stop result: " << resp << "\n";
 
         } else if (command == "monitor") {
 
@@ -307,8 +330,9 @@ int main(int argc, char **argv) {
 
             resp = client.Monitor("Debug", &logListener, seq);
 
+            std::cout << "monitor result: " << resp << "\n";
             if (seq != 0) {
-                std::cout << "Listening to log records for Seq=" << seq << std::endl;
+                std::cout << "Listening to log records for Seq=" << seq << "\n";
             }
 
         } else if (command == "stream") {
@@ -316,20 +340,21 @@ int main(int argc, char **argv) {
 
             resp = client.Stream("*", &eventListener, seq);
 
+            std::cout << "stream result: " << resp << "\n";
             if (seq != 0) {
-                std::cout << "Listening to events for Seq=" << seq << std::endl;
+                std::cout << "Listening to events for Seq=" << seq << "\n";
             }
         } else if (command == "stats") {
             StatsResponse stats;
             resp = client.Stats(stats);
 
-            std::cout << "Stats result:" << resp << std::endl << stats;
+            std::cout << "Stats result:" << resp << "\n" << stats;
         }
     }
     // Close the connection
-    std::cout << "Closing socket connection to serf agent" << std::endl;
+    std::cout << "Closing socket connection to serf agent" << "\n";
     resp = client.Close();
-    std::cout << "Close result:" << resp << std::endl;
+    std::cout << "Close result:" << resp << "\n";
 
     exit(0);
 }
