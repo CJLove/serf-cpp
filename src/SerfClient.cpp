@@ -39,6 +39,12 @@ SerfClient::~SerfClient() {
     m_pImpl->m_serfThread.Close();
 }
 
+void SerfClient::Version(uint32_t &major, uint32_t &minor, uint32_t &patch) {
+    major = SERF_CPP_VERSION_MAJOR;
+    minor = SERF_CPP_VERSION_MINOR;
+    patch = SERF_CPP_VERSION_PATCH;
+}
+
 SerfClient::SerfResponse SerfClient::Connect(const std::string &ipAddr, const int16_t &port) {
     return (m_pImpl->m_serfThread.Connect(ipAddr, port)) ? SerfClient::SUCCESS : SerfClient::FAILURE;
 }
