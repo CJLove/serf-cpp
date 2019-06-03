@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SerfCpp)
 
-set(VERSION "0.4.0")
+set(VERSION "1.0.0")
 
 #---------------------------------------------------------------------------------------
 # Build Types including support for sanitizers

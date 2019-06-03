@@ -196,7 +196,12 @@ int main(int argc, char **argv) {
                       << "    tag <tag>:value\n"
                       << "    rmtag <tag>\n"
                       << "    query <name> <payload>\n"
-                      << "    stats\n";
+                      << "    stats\n"
+                      << "    version\n";
+        } else if (command == "version") {
+            uint32_t major = 0, minor = 0, patch = 0;
+            client.Version(major,minor,patch);
+            std::cout << "serf-cpp version " << major << "." << minor << "." << patch << "\n";
         } else if (command == "join") {
             int count = 0;
             resp = client.Join(args, false, count);

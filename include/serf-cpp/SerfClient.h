@@ -8,6 +8,10 @@ class ISerfLogListener;
 class ISerfEventListener;
 class ISerfQueryListener;
 
+#define SERF_CPP_VERSION_MAJOR 1
+#define SERF_CPP_VERSION_MINOR 0
+#define SERF_CPP_VERSION_PATCH 0
+
 class SerfClient {
 public:
     enum SerfResponse { SUCCESS, FAILURE, TIMEOUT };
@@ -83,6 +87,7 @@ public:
                         timeout = 15000000000ULL,
                        SerfStringArray *filterNodes = nullptr, SerfStringMap *filterTags = nullptr);
 
+    void Version(uint32_t &major, uint32_t &minor, uint32_t &patch);
 private:
     struct SerfClientImpl;
     std::unique_ptr<SerfClientImpl> m_pImpl;
