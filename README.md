@@ -16,7 +16,6 @@ no Boost dependency.  The cpp03 branch contains the last release built
 for C++03 using Boost for portable thread support.
 
 # Status
-See TODO for major functionality remaining and some longer term plans.
 See Commands.txt for status of individual RPC commands
 
 # Dependencies

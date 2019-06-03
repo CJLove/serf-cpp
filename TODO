@@ -1,9 +1,0 @@
-Short-term
-==========
-o Library versioning
-o Code cleanup; additional refactoring for methods in SerfClient class
-o Support different log levels
-o Clean up socket code in SerfIoThread class. 
-o More test code
-o Consider using exceptions for error returns rather than the
-  SerfResponse enum

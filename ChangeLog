@@ -1,3 +1,10 @@
+2019-06-05 Chris Love <christopherlove68@gmail.com>
+	* SerfCpp 1.0.0 release
+
+	* Add versioning support in SerfClient.h and new SerfClient::Version() method
+	* Update example code to show calling SerfClient::Tags() to add/remove Tags
+	* Additional code cleanups
+
 2019-05-25 Chris Love <christopherlove68@gmail.com>
   * Build against latest msgpack-c (3.1.1)
 	* Require newer CMake version
@@ -5,6 +12,7 @@
 	* Optionally build with clang/gcc sanitizers as new build types: tsan asan lsan msan ubsan
 	* Test code fixes detected by sanitizers
 	* Code cleanups (compiler warnings, clang-tidy, etc.)
+	* Travis-CI now testing wider range of compilers ranging from gcc4.9 to gcc8
 
 2017-02-04  Chris Love  <chris_love@san.rr.com>
 	* SerfCpp 0.3.0 release
