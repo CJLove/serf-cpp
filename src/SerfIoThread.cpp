@@ -118,14 +118,6 @@ namespace SerfCpp {
                     // Other error
                 }
 
-                //                char *cur = m_unpacker.buffer();
-                //                printf("Received:\n");
-                //                for (int i = 0; i < count; ++i) {
-                //                    printf("0x%02x,",(int)(*cur & 0xff));
-                //                    cur++;
-                //                }
-                //                printf("\n");
-
                 m_unpacker.buffer_consumed(count);
 
 
@@ -144,8 +136,7 @@ namespace SerfCpp {
                             channel = m_channels[hdr.Seq];
                         }
 
-                        if (channel != nullptr 
-        ) {
+                        if (channel != nullptr) {
                             // Request channels need to be removed from the channel map
                             if (channel->m_type == ChannelBase::REQUEST) {
                                 std::lock_guard<std::mutex> guard(m_mutex);
