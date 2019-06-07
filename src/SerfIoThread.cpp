@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#define RPC_BUFFER_SIZE 1024 * 1024 // 1MByte
 
 namespace SerfCpp {
 
@@ -76,7 +77,8 @@ namespace SerfCpp {
     {
         if (IsConnected()) {
             m_shutdown = true;
-            m_thread.join();
+            if(m_thread.joinable())
+              m_thread.join();
         }
 
         m_shutdown = false;
@@ -91,23 +93,40 @@ namespace SerfCpp {
             fd_set read_flags, write_flags;
             struct timeval waitd { 0, 0 };
             waitd.tv_sec = 0;
-            waitd.tv_usec = 10000;
-            
-            FD_ZERO(&read_flags);
-            FD_ZERO(&write_flags);
-            FD_SET(m_socket, &read_flags);
+            waitd.tv_usec = 50000;
+	    ssize_t count=0;
+            ssize_t bytesRead=0;
 
-            int sel = select(m_socket+1,&read_flags, &write_flags, nullptr ,&waitd);
-            if (sel < 0) {
-                continue;
-            }
+            while( true )
+             {
+              FD_ZERO(&read_flags);
+              FD_ZERO(&write_flags);
+              FD_SET(m_socket, &read_flags);
 
-            if (FD_ISSET(m_socket,&read_flags)) {
-                FD_CLR(m_socket,&read_flags);
+              if ( select(m_socket+1,&read_flags, &write_flags, NULL,&waitd) <= 0 )
+               break;
 
-                m_unpacker.reserve_buffer(4096);
-                ssize_t count = read(m_socket,m_unpacker.buffer(),
-                                     m_unpacker.buffer_capacity());
+              if (! FD_ISSET(m_socket,&read_flags))
+               break;
+
+              FD_CLR(m_socket,&read_flags);
+              m_unpacker.reserve_buffer(RPC_BUFFER_SIZE);
+
+              bytesRead=read(m_socket,m_unpacker.buffer() + count,
+                             RPC_BUFFER_SIZE - count);
+
+              if(bytesRead <= 0)
+               break;
+
+              count += bytesRead;
+             }
+
+             if(count <= 0)
+              continue;
+
+             if (RPC_BUFFER_SIZE - count < 0)
+              std::cout << "Error: RPC buffer size is too small for this response " << std::endl;
+
                 if (count <= 0) {
                     if (count == 0) {
                         // Connection closed
@@ -153,7 +172,7 @@ namespace SerfCpp {
                     }
                 }
             }
-        }
+
         // Close the socket and exit the thread
         close(m_socket);
     }
