@@ -1,3 +1,6 @@
+2019-06-07 Chris Love <christopherlove68@gmail.com>
+  * Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
+	
 2019-06-05 Chris Love <christopherlove68@gmail.com>
 	* SerfCpp 1.0.0 release
 
