@@ -10,7 +10,7 @@ class ISerfQueryListener;
 
 #define SERF_CPP_VERSION_MAJOR 1
 #define SERF_CPP_VERSION_MINOR 0
-#define SERF_CPP_VERSION_PATCH 0
+#define SERF_CPP_VERSION_PATCH 1
 
 /**
  * @brief The SerfClient class establishes an RPC connection to a serf agent in support
