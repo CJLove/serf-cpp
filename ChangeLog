@@ -1,5 +1,8 @@
+2019-06-16 Chris Love <christopherlove68@gmail.com>
+	* Add Jenkinsfile supporting multibranch pipeline in home dev environment
+
 2019-06-13 Chris Love <christopherlove68@gmail.com>
-        * SerfCpp 1.0.1 release
+        * SerfCpp 1.0.1 release prep
 
 2019-06-07 Chris Love <christopherlove68@gmail.com>
         * Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
