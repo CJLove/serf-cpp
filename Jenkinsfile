@@ -33,7 +33,7 @@ pipeline {
                         dir ("gcc831") {
                             sh 'cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -59,7 +59,7 @@ pipeline {
                         dir ("clang7") {
                             sh 'CC=clang CXX=clang++ cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -92,7 +92,7 @@ pipeline {
                         dir ("asan") {
                             sh 'cmake -DCMAKE_BUILD_TYPE=asan ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                     }
                 }
@@ -112,7 +112,7 @@ pipeline {
                         dir ("tsan") {
                             sh 'cmake -DCMAKE_BUILD_TYPE=tsan ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                     }
                 }
@@ -132,7 +132,7 @@ pipeline {
                         dir ("ubsan") {
                             sh 'cmake -DCMAKE_BUILD_TYPE=ubsan ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                     }
                 }
@@ -157,7 +157,7 @@ pipeline {
                         dir ("gcc910") {
                             sh 'cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -184,7 +184,7 @@ pipeline {
                         dir ("gcc740") {
                             sh 'cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -211,7 +211,7 @@ pipeline {
                         dir ("gcc650") {
                             sh 'cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -238,7 +238,7 @@ pipeline {
                         dir ("gcc530") {
                             sh 'CC=/usr/bin/gcc53 CXX=/usr/bin/g++53 cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -265,7 +265,7 @@ pipeline {
                         dir ("gcc493") {
                             sh 'CC=/usr/bin/gcc49 CXX=/usr/bin/g++49 cmake ..'
                             sh 'make'
-                            sh "./test/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }

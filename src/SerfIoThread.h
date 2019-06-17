@@ -11,7 +11,7 @@ namespace SerfCpp {
 class ISerfLogListener;
 class ISerfEventListener;
 class ISerfQueryListener;
-class ChannelBase;
+struct ChannelBase;
 
 class SerfIoThread {
 public:
