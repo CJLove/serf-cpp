@@ -100,7 +100,7 @@ TEST(SerfMsgStructTest, KeyResponse)
 TEST(SerfMsgStructTest, CoordRessponse)
 {
     CoordResponse resp;
-    resp.Ok="OK";
+    resp.Ok=false;
     resp.Coord.Vec.push_back(2.4);
     resp.Coord.Vec.push_back(4.8);
     resp.Coord.Error = 6.432;

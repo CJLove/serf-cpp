@@ -22,7 +22,7 @@ bool SerfIoThread::Connect(const std::string &ipAddr, const int16_t &port) {
         struct sockaddr_in server;
         server.sin_addr.s_addr = inet_addr(m_ipAddr.c_str());
         server.sin_family = AF_INET;
-        server.sin_port = htons(m_port);
+        server.sin_port = static_cast<uint16_t>(htons(m_port));
 
         if (connect(m_socket, reinterpret_cast<struct sockaddr *>(&server), sizeof(server)) == 0) {  // NOLINT clang-tidy ignore
             // Set to non-blocking
