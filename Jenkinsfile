@@ -156,8 +156,8 @@ pipeline {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 9.1.0"
                         dir ("gcc910") {
                             sh 'cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh 'LD_LIBRARY_PATH=/opt/gcc910/lib64 make'
+                            sh "LD_LIBRARY_PATH=/opt/gcc910/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
