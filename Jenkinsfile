@@ -182,9 +182,9 @@ pipeline {
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 7.4.0"
                         dir ("gcc740") {
-                            sh 'cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh 'CC=/opt/gcc740/bin/gcc CXX=/opt/gcc740/bin/g++ cmake ..'
+                            sh 'LD_LIBRARY_PATH=/opt/gcc740/lib64 make'
+                            sh "LD_LIBRARY_PATH=/opt/gcc740/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
@@ -209,9 +209,9 @@ pipeline {
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 6.5.0"
                         dir ("gcc650") {
-                            sh 'cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                            sh 'CC=/opt/gcc650/bin/gcc CXX=/opt/gcc650/bin/g++ cmake ..'
+                            sh 'LD_LIBRARY_PATH=/opt/gcc650/lib64 make'
+                            sh "LD_LIBRARY_PATH=/opt/gcc650/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
