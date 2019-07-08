@@ -151,7 +151,6 @@ TEST(SerfChannelTest, ResultChannel)
     channel.consume();
     EXPECT_EQ(channel.m_dataPending,false);    
 
-    std::stringstream ss;
     msgpack::unpacker unpacker;
     unpacker.reserve_buffer(4096);
 

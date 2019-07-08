@@ -118,8 +118,13 @@ endif()
 if(ENABLE_CPPCHECK)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)
-    message(STATUS "enabling cppcheck")
-    set(CMAKE_CXX_CPPCHECK "${CPPCHECK} --suppress=syntaxError --enable=all --inconclusive")
+    message(STATUS "Enabling cppcheck")
+    set(CMAKE_CXX_CPPCHECK "${CPPCHECK}")
+    list(
+      APPEND CMAKE_CXX_CPPCHECK
+          "--enable=warning,style"
+          "--suppressions-list=${CMAKE_SOURCE_DIR}/suppressions.txt"
+    )
   else()
     message(SEND_ERROR "cppcheck requested but executable not found")
   endif()

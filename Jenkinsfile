@@ -56,9 +56,10 @@ pipeline {
                         }
                     }
                     steps {
+                        // Enable cppcheck on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using clang 7"
                         dir ("clang7") {
-                            sh 'CC=clang CXX=clang++ cmake ..'
+                            sh 'CC=clang CXX=clang++ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE ..'
                             sh 'make'
                             sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }

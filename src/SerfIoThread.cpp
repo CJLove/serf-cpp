@@ -82,7 +82,6 @@ void SerfIoThread::processRpc(int /* arg */) {
         waitd.tv_sec = 0;
         waitd.tv_usec = 50000;
         ssize_t count = 0;
-        ssize_t bytesRead = 0;
 
         while (true) {
             FD_ZERO(&read_flags);
@@ -100,17 +99,13 @@ void SerfIoThread::processRpc(int /* arg */) {
             FD_CLR(m_socket, &read_flags);
             m_unpacker.reserve_buffer(RPC_BUFFER_SIZE);
 
-            bytesRead = read(m_socket, m_unpacker.buffer() + count, RPC_BUFFER_SIZE - count);
+            ssize_t bytesRead = read(m_socket, m_unpacker.buffer() + count, RPC_BUFFER_SIZE - count);
 
             if (bytesRead <= 0) {
                 break;
             }
 
             count += bytesRead;
-        }
-
-        if (count <= 0) {
-            continue;
         }
 
         if (RPC_BUFFER_SIZE - count < 0) {
