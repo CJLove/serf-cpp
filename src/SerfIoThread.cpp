@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define RPC_BUFFER_SIZE 1024 * 1024  // 1MByte
+static const ssize_t RPC_BUFFER_SIZE = 1024 * 1024;  // 1MByte
 
 namespace SerfCpp {
 
@@ -19,7 +19,7 @@ bool SerfIoThread::Connect(const std::string &ipAddr, const int16_t &port) {
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if (m_socket != -1) {
-        struct sockaddr_in server;
+        struct sockaddr_in server{};
         server.sin_addr.s_addr = inet_addr(m_ipAddr.c_str());
         server.sin_family = AF_INET;
         server.sin_port = static_cast<uint16_t>(htons(m_port));
@@ -252,7 +252,7 @@ void SerfIoThread::removeChannel(const uint64_t &seq) {
     // For dynamically allocated channels, delete the channel instance
     // as well
     if ((chan != nullptr) && chan->m_type != ChannelBase::REQUEST) {
-        delete chan;
+        delete chan; //NOLINT - chan requires deletion in non-REQUEST cases
     }
 }
 

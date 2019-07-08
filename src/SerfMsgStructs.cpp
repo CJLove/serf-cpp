@@ -79,9 +79,9 @@ namespace SerfCpp {
         return os;
     }
 
-    std::ostream &operator<<(std::ostream &os, const RespondRequest &m)
+    std::ostream &operator<<(std::ostream &os, const RespondRequest &r)
     {
-        os << "ID: " << m.ID << std::endl;
+        os << "ID: " << r.ID << std::endl;
         // TODO: payload        
         return os;
     }
@@ -102,83 +102,83 @@ namespace SerfCpp {
     //
     // Response message structs
     //
-    std::ostream &operator<<(std::ostream &os, const ResponseHeader &m)
+    std::ostream &operator<<(std::ostream &os, const ResponseHeader &r)
     {
-        os << "[ Seq: " << m.Seq << " Error: \"" << m.Error << "\"]" << std::endl;
+        os << "[ Seq: " << r.Seq << " Error: \"" << r.Error << "\"]" << std::endl;
         return os;
     }
 
-    std::ostream &operator<<(std::ostream &os, const KeyResponse &m)
+    std::ostream &operator<<(std::ostream &os, const KeyResponse &r)
     {
-        auto i = m.Messages.begin();
+        auto i = r.Messages.begin();
         os << "    Messages:" << std::endl;
-        for (; i != m.Messages.end(); ++i) {
+        for (; i != r.Messages.end(); ++i) {
             os << "      Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
         }
-        os << "    NumErr: " << m.NumErr 
-           << " NumNodes: " << m.NumNodes 
-           << " NumResp: " << m.NumResp << std::endl;
+        os << "    NumErr: " << r.NumErr 
+           << " NumNodes: " << r.NumNodes 
+           << " NumResp: " << r.NumResp << std::endl;
         return os;
     }
 
-    std::ostream &operator<<(std::ostream &os, const KeyListResponse &m)
+    std::ostream &operator<<(std::ostream &os, const KeyListResponse &r)
     {
-        auto i = m.Messages.begin();
+        auto i = r.Messages.begin();
         os << "    Messages:" << std::endl;
-        for (; i != m.Messages.end(); ++i) {
+        for (; i != r.Messages.end(); ++i) {
             os << "      Node: " << (*i).first << " Msg: " << (*i).second << std::endl;
         }
         os << "    Keys:" << std::endl;
-        auto ii = m.Keys.begin();
-        for (; ii != m.Keys.end(); ++ii) {
+        auto ii = r.Keys.begin();
+        for (; ii != r.Keys.end(); ++ii) {
             os << "      Key: " << (*ii).first << " : " << (*ii).second << std::endl;
         }
-        os << "    NumErr: " << m.NumErr 
-           << " NumNodes: " << m.NumNodes
-           << " NumResp: " << m.NumResp << std::endl;
+        os << "    NumErr: " << r.NumErr 
+           << " NumNodes: " << r.NumNodes
+           << " NumResp: " << r.NumResp << std::endl;
         return os;
     }
     
-    std::ostream &operator<<(std::ostream &os, const Member &m)
+    std::ostream &operator<<(std::ostream &os, const Member &r)
     {
-        os << std::setw(16) << m.Name << " ";
+        os << std::setw(16) << r.Name << " ";
         // Handle ipv4 vs ipv6 address in the Addr vector
-        size_t size = m.Addr.size();
-        if (size == 4 || (size == 16 && m.Addr[0] == 0x0)) {
+        size_t size = r.Addr.size();
+        if (size == 4 || (size == 16 && r.Addr[0] == 0x0)) {
             // IPv4 address has been observed to be in bytes 12-15
             // of a 16-byte vector or bytes 0-3 of 4-byte vector
             size_t offset = (size == 4) ? 0 : 12;
 
-            os << static_cast<unsigned>(m.Addr[offset] & 0xff) << "."
-               << static_cast<unsigned>(m.Addr[offset+1] & 0xff) << "."
-               << static_cast<unsigned>(m.Addr[offset+2] & 0xff) << "."
-               << static_cast<unsigned>(m.Addr[offset+3] & 0xff) << ":" << m.Port;
+            os << static_cast<unsigned>(r.Addr[offset] & 0xff) << "."
+               << static_cast<unsigned>(r.Addr[offset+1] & 0xff) << "."
+               << static_cast<unsigned>(r.Addr[offset+2] & 0xff) << "."
+               << static_cast<unsigned>(r.Addr[offset+3] & 0xff) << ":" << r.Port;
         } else {
-            auto i = m.Addr.begin();
+            auto i = r.Addr.begin();
             bool colon = false;
-            for (; i != m.Addr.end(); i++) {
+            for (; i != r.Addr.end(); i++) {
                 os << std::setw(2) << std::hex << std::setfill('0') << static_cast<int>((*i) & 0xff);
                 if (colon) {
                     os << ":";
                 }
                 colon = !colon;
             }
-            os << std::dec << std::setfill(' ') << m.Port;
+            os << std::dec << std::setfill(' ') << r.Port;
         }
-        os << " " << m.Status;
-        auto ii = m.Tags.begin();
-        for (; ii != m.Tags.end(); ++ii) {
+        os << " " << r.Status;
+        auto ii = r.Tags.begin();
+        for (; ii != r.Tags.end(); ++ii) {
             os << " " << (*ii).first << ":" << (*ii).second;
         }
         os << std::endl;
         return os;
     }
 
-    std::ostream &operator<<(std::ostream &os, const MembersResponse &m)
+    std::ostream &operator<<(std::ostream &os, const MembersResponse &r)
     {
-        auto i = m.Members.begin();
+        auto i = r.Members.begin();
         os << "    Members:" << std::endl;
-        for (; i != m.Members.end(); ++i) {
+        for (; i != r.Members.end(); ++i) {
             os << *i;
         }
         return os;

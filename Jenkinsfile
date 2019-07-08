@@ -29,9 +29,10 @@ pipeline {
                         }
                     }
                     steps {
+                        // Enable clang-tidy checks on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.3.1"
                         dir ("gcc831") {
-                            sh 'cmake ..'
+                            sh 'cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
                             sh 'make'
                             sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }

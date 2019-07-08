@@ -138,7 +138,7 @@ SerfClient::SerfResponse SerfClient::ListKeys(KeyListResponse &keys) {
     if (m_pImpl->m_serfThread.sendData(hdr, &channel, seq)) {
         channel.consume();
 
-        if (channel.m_dataPending == true) {
+        if (channel.m_dataPending) {
             keys = channel.m_data;
             return (channel.m_hdr.Error.empty()) ? SerfClient::SUCCESS : SerfClient::FAILURE;
         } else {

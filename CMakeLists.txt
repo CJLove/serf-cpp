@@ -79,6 +79,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(ENABLE_CLANG_TIDY "Enable testing with clang-tidy" FALSE)
+option(ENABLE_CPPCHECK "Enable testing with cppcheck" FALSE)
+
+
 set (CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}
                         ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
@@ -97,6 +101,29 @@ endif()
 find_package(Threads)
 find_package(GTest)
 find_package(MsgPackC 3.1.0 REQUIRED)
+
+# clang-tidy
+if(ENABLE_CLANG_TIDY)
+  find_program(CLANGTIDY clang-tidy)
+  if(CLANGTIDY)
+    message(STATUS "Using ${CLANGTIDY} for clang-tidy")
+    set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
+    configure_file(.clang-tidy .clang-tidy COPYONLY)
+  else()
+    message(SEND_ERROR "clang-tidy requested but executable not found")
+  endif()
+endif()
+
+# cppcheck
+if(ENABLE_CPPCHECK)
+  find_program(CPPCHECK cppcheck)
+  if(CPPCHECK)
+    message(STATUS "enabling cppcheck")
+    set(CMAKE_CXX_CPPCHECK "${CPPCHECK} --suppress=syntaxError --enable=all --inconclusive")
+  else()
+    message(SEND_ERROR "cppcheck requested but executable not found")
+  endif()
+endif()
 
 #---------------------------------------------------------------------------------------
 # Sources, headers, directories and libs
@@ -156,6 +183,10 @@ set(SERF_CPP_BUILD_COVERAGE false CACHE BOOL "Build for code coverage")
  
 add_subdirectory(src)
 
+if (SERF_CPP_BUILD_EXAMPLE)
+  add_subdirectory(example)
+endif (SERF_CPP_BUILD_EXAMPLE)
+
 if (SERF_CPP_BUILD_TESTS)
   if (SERF_CPP_BUILD_COVERAGE)
     include (CodeCoverage)
@@ -165,33 +196,11 @@ if (SERF_CPP_BUILD_TESTS)
   add_subdirectory(tests)
 endif (SERF_CPP_BUILD_TESTS)
 
-if (SERF_CPP_BUILD_EXAMPLE)
-  add_subdirectory(example)
-endif (SERF_CPP_BUILD_EXAMPLE)
+
 
 #---------------------------------------------------------------------------------------
 # Addons
 #---------------------------------------------------------------------------------------
-# clang-tidy
-if(ENABLE_CLANG_TIDY)
-  find_program(CLANGTIDY clang-tidy)
-  if(CLANGTIDY)
-    set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
-  else()
-    message(SEND_ERROR "clang-tidy requested but executable not found")
-  endif()
-endif()
-
-# cppcheck
-if(ENABLE_CPPCHECK)
-  find_program(CPPCHECK cppcheck)
-  if(CPPCHECK)
-    set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=syntaxError --enable=all --inconclusive)
-  else()
-    message(SEND_ERROR "cppcheck requested but executable not found")
-  endif()
-endif()
-
 # Formatting
 get_property(all_sources GLOBAL PROPERTY SRCS_LIST)
 add_custom_target(format

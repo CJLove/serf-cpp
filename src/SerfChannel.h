@@ -33,7 +33,7 @@ struct ChannelBase {
 };
 
 struct LogChannel : public ChannelBase {
-    explicit LogChannel(ISerfLogListener *);
+    explicit LogChannel(ISerfLogListener * /*listener*/);
 
     ~LogChannel() override = default;
 
@@ -49,7 +49,7 @@ struct LogChannel : public ChannelBase {
 };
 
 struct EventChannel : public ChannelBase {
-    explicit EventChannel(ISerfEventListener *);
+    explicit EventChannel(ISerfEventListener * /*listener*/);
 
     ~EventChannel() override = default;
 
@@ -65,7 +65,7 @@ struct EventChannel : public ChannelBase {
 };
 
 struct QueryChannel : public ChannelBase {
-    QueryChannel(SerfIoThread &, ISerfQueryListener *);
+    QueryChannel(SerfIoThread & /*iothread*/, ISerfQueryListener * /*listener*/);
 
     ~QueryChannel() override = default;
 
@@ -142,7 +142,7 @@ struct ResultChannel<bool> : ChannelBase {
 
     void consume() {
         std::unique_lock<std::mutex> lock(m_mutex);
-        while (m_dataPending == false) {
+        while (!m_dataPending) {
             if (m_condition.wait_for(lock, std::chrono::seconds(5)) == std::cv_status::timeout) {
                 // Timeout
                 break;
@@ -151,7 +151,7 @@ struct ResultChannel<bool> : ChannelBase {
         // Data is now available
     }
 
-    void produce(ResponseHeader &hdr, msgpack::unpacker &) override {
+    void produce(ResponseHeader &hdr, msgpack::unpacker & /*unpacker*/) override {
         {
             // No payload to unpack
             std::lock_guard<std::mutex> lock(m_mutex);

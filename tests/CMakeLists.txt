@@ -4,6 +4,10 @@ project (SerfCppTests)
 
 enable_testing()
 
+# Disable clang-tidy checks for unit test code
+set(CMAKE_CXX_CLANG_TIDY "")
+
+
 if (SERF_CPP_BUILD_COVERAGE)
   add_definitions( --coverage )
 endif (SERF_CPP_BUILD_COVERAGE)

@@ -1,3 +1,6 @@
+2019-07-07 Chris Love <christopherlove68@gmail.com>
+    * Additional clang-tidy fixes and support for enabling clang-tidy with CMake
+
 2019-06-25 Chris Love <christopherlove68@gmail.com>
 	* SerfCpp 1.0.1 release
 
@@ -5,10 +8,10 @@
 	* Add Jenkinsfile supporting multibranch pipeline in home dev environment
 
 2019-06-13 Chris Love <christopherlove68@gmail.com>
-        * SerfCpp 1.0.1 release prep
+    * SerfCpp 1.0.1 release prep
 
 2019-06-07 Chris Love <christopherlove68@gmail.com>
-        * Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
+    * Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
 	
 2019-06-05 Chris Love <christopherlove68@gmail.com>
 	* SerfCpp 1.0.0 release
@@ -18,7 +21,7 @@
 	* Additional code cleanups
 
 2019-05-25 Chris Love <christopherlove68@gmail.com>
-        * Build against latest msgpack-c (3.1.1)
+    * Build against latest msgpack-c (3.1.1)
 	* Require newer CMake version
 	* Support building with clang
 	* Optionally build with clang/gcc sanitizers as new build types: tsan asan lsan msan ubsan

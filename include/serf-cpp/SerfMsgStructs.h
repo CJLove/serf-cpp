@@ -47,7 +47,7 @@ inline bool operator==(ResponseHeader const &lhs, ResponseHeader const &rhs) {
     return ((lhs.Seq == rhs.Seq) && (lhs.Error == rhs.Error));
 }
 
-std::ostream &operator<<(std::ostream &os, const ResponseHeader &m);
+std::ostream &operator<<(std::ostream &os, const ResponseHeader &r);
 
 // --------------------------
 struct HandshakeRequest {
@@ -63,7 +63,7 @@ struct AuthRequest {
 };
 inline bool operator==(AuthRequest const &lhs, AuthRequest const &rhs) { return (lhs.AuthKey == rhs.AuthKey); }
 
-std::ostream &operator<<(std::ostream &os, const AuthRequest &m);
+std::ostream &operator<<(std::ostream &os, const AuthRequest &r);
 // --------------------------
 struct CoordRequest {
     std::string Node;
@@ -71,7 +71,7 @@ struct CoordRequest {
 };
 inline bool operator==(CoordRequest const &lhs, CoordRequest const &rhs) { return (lhs.Node == rhs.Node); }
 
-std::ostream &operator<<(std::ostream &os, const CoordRequest &m);
+std::ostream &operator<<(std::ostream &os, const CoordRequest &r);
 
 struct Coordinate {
     std::vector<double> Vec;
@@ -85,7 +85,7 @@ struct Coordinate {
 inline bool operator==(Coordinate const &lhs, Coordinate const &rhs) {
     return (lhs.Adjustment == rhs.Adjustment && lhs.Error == rhs.Error && lhs.Height == rhs.Height && lhs.Vec == rhs.Vec);
 }
-std::ostream &operator<<(std::ostream &os, const Coordinate &m);
+std::ostream &operator<<(std::ostream &os, const Coordinate &r);
 
 struct CoordResponse {
     Coordinate Coord;
@@ -95,7 +95,7 @@ struct CoordResponse {
 inline bool operator==(CoordResponse const &lhs, CoordResponse const &rhs) {
     return (lhs.Coord == rhs.Coord && lhs.Ok == rhs.Ok);
 }
-std::ostream &operator<<(std::ostream &os, const CoordResponse &m);
+std::ostream &operator<<(std::ostream &os, const CoordResponse &r);
 
 // --------------------------
 // Used for install-key, use-key, and remove-key requests
@@ -105,7 +105,7 @@ struct KeyRequest {
 };
 inline bool operator==(KeyRequest const &lhs, KeyRequest const &rhs) { return (lhs.Key == rhs.Key); }
 
-std::ostream &operator<<(std::ostream &os, const KeyRequest &m);
+std::ostream &operator<<(std::ostream &os, const KeyRequest &r);
 
 // --------------------------
 struct RespondRequest {
@@ -116,7 +116,7 @@ struct RespondRequest {
 inline bool operator==(RespondRequest const &lhs, RespondRequest const &rhs) {
     return (lhs.ID == rhs.ID && lhs.Payload == rhs.Payload);
 }
-std::ostream &operator<<(std::ostream &os, const RespondRequest &m);
+std::ostream &operator<<(std::ostream &os, const RespondRequest &r);
 
 // --------------------------
 // Used for install-key and remove-key responses
@@ -131,7 +131,7 @@ inline bool operator==(KeyResponse const &lhs, KeyResponse const &rhs) {
     return (lhs.Messages == rhs.Messages && lhs.NumErr == rhs.NumErr && lhs.NumNodes == rhs.NumNodes &&
             lhs.NumResp == rhs.NumResp);
 }
-std::ostream &operator<<(std::ostream &os, const KeyResponse &m);
+std::ostream &operator<<(std::ostream &os, const KeyResponse &r);
 
 // --------------------------
 struct KeyListResponse {
@@ -146,7 +146,7 @@ inline bool operator==(KeyListResponse const &lhs, KeyListResponse const &rhs) {
     return (lhs.Messages == rhs.Messages && lhs.Keys == rhs.Keys && lhs.NumErr == rhs.NumErr && lhs.NumNodes == rhs.NumNodes &&
             lhs.NumResp == rhs.NumResp);
 }
-std::ostream &operator<<(std::ostream &os, const KeyListResponse &m);
+std::ostream &operator<<(std::ostream &os, const KeyListResponse &r);
 
 // --------------------------
 struct EventRequest {
@@ -230,7 +230,7 @@ inline bool operator==(Member const &lhs, Member const &rhs) {
             (lhs.DelegateMax == rhs.DelegateMax) && (lhs.DelegateMin == rhs.DelegateMin));
 }
 
-std::ostream &operator<<(std::ostream &os, const Member &m);
+std::ostream &operator<<(std::ostream &os, const Member &r);
 
 // --------------------------
 struct MembersResponse {
@@ -238,7 +238,7 @@ struct MembersResponse {
     MSGPACK_DEFINE(Members)
 };
 inline bool operator==(MembersResponse const &lhs, MembersResponse const &rhs) { return (lhs.Members == rhs.Members); }
-std::ostream &operator<<(std::ostream &os, const MembersResponse &m);
+std::ostream &operator<<(std::ostream &os, const MembersResponse &r);
 
 // --------------------------
 struct MembersFilteredRequest {
@@ -251,7 +251,7 @@ inline bool operator==(MembersFilteredRequest const &lhs, MembersFilteredRequest
     return (lhs.Tags == rhs.Tags && lhs.Status == rhs.Status && lhs.Name == rhs.Name);
 }
 
-std::ostream &operator<<(std::ostream &os, const MembersFilteredRequest &m);
+std::ostream &operator<<(std::ostream &os, const MembersFilteredRequest &r);
 
 // --------------------------
 struct TagsRequest {
@@ -320,7 +320,7 @@ inline bool operator==(UserEventRecord const &lhs, UserEventRecord const &rhs) {
             lhs.Coalesce == rhs.Coalesce);
 }
 
-std::ostream &operator<<(std::ostream &os, const UserEventRecord &m);
+std::ostream &operator<<(std::ostream &os, const UserEventRecord &r);
 
 // --------------------------
 struct MemberEventRecord {
@@ -333,7 +333,7 @@ inline bool operator==(MemberEventRecord const &lhs, MemberEventRecord const &rh
     return (lhs.Event == rhs.Event && lhs.Members == rhs.Members);
 }
 
-std::ostream &operator<<(std::ostream &os, const MemberEventRecord &m);
+std::ostream &operator<<(std::ostream &os, const MemberEventRecord &r);
 
 // --------------------------
 struct QueryRecord {
@@ -350,7 +350,7 @@ inline bool operator==(QueryRecord const &lhs, QueryRecord const &rhs) {
             lhs.Payload == rhs.Payload);
 }
 
-std::ostream &operator<<(std::ostream &os, const QueryRecord &m);
+std::ostream &operator<<(std::ostream &os, const QueryRecord &r);
 
 // --------------------------
 // Response to query from individual node
@@ -371,7 +371,7 @@ struct NodeAck {
 
 inline bool operator==(NodeAck const &lhs, NodeAck const &rhs) { return (lhs.Type == rhs.Type && lhs.From == rhs.From); }
 
-std::ostream &operator<<(std::ostream &os, const NodeAck &m);
+std::ostream &operator<<(std::ostream &os, const NodeAck &r);
 
 struct NodeResponse {
     std::string Type;
@@ -384,7 +384,7 @@ inline bool operator==(NodeResponse const &lhs, NodeResponse const &rhs) {
     return (lhs.Type == rhs.Type && lhs.From == rhs.From && lhs.Payload == rhs.Payload);
 }
 
-std::ostream &operator<<(std::ostream &os, const NodeResponse &m);
+std::ostream &operator<<(std::ostream &os, const NodeResponse &r);
 
 // --------------------------
 struct RecordBase {

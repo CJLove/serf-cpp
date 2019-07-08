@@ -13,7 +13,7 @@
 #include "serf-cpp/SerfClient.h"
 #include "serf-cpp/SerfMsgStructs.h"
 
-using namespace SerfCpp;
+using namespace SerfCpp; // NOLINT - ignore since this is sample code
 
 static SerfStringArray split(const std::string &str, char delimiter) {
     SerfStringArray internal;
