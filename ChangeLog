@@ -1,5 +1,7 @@
+2020-04-21 Chris Love <christopherlove68@gmail.com>
+	* Merged PR #5 from Keith Shafer
 2019-07-07 Chris Love <christopherlove68@gmail.com>
-    * Additional clang-tidy fixes and support for enabling clang-tidy with CMake
+	* Additional clang-tidy fixes and support for enabling clang-tidy with CMake
 
 2019-06-25 Chris Love <christopherlove68@gmail.com>
 	* SerfCpp 1.0.1 release
@@ -8,10 +10,10 @@
 	* Add Jenkinsfile supporting multibranch pipeline in home dev environment
 
 2019-06-13 Chris Love <christopherlove68@gmail.com>
-    * SerfCpp 1.0.1 release prep
+	* SerfCpp 1.0.1 release prep
 
 2019-06-07 Chris Love <christopherlove68@gmail.com>
-    * Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
+	* Fix for Close() issue with multiple (> 80) clients.  Thanks to @CynnySpace
 	
 2019-06-05 Chris Love <christopherlove68@gmail.com>
 	* SerfCpp 1.0.0 release
