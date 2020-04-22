@@ -195,7 +195,7 @@ bool SerfIoThread::sendData(RequestHeader &hdr, T &body, C *channel, uint64_t &s
     bool result = (send(m_socket, ss.str().data(), ss.str().size(), 0) != -1);
     if (result) {
         m_channels[hdr.Seq] = channel;
-        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
+        // std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
         seq = hdr.Seq;
     }
 
@@ -213,7 +213,7 @@ bool SerfIoThread::sendData(RequestHeader &hdr, C *channel, uint64_t &seq) {
     bool result = (send(m_socket, ss.str().data(), ss.str().size(), 0) != -1);
     if (result) {
         m_channels[hdr.Seq] = channel;
-        std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
+        // std::cout << "sendData() with Seq=" << hdr.Seq << std::endl;
         seq = hdr.Seq;
     }
 
