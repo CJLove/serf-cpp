@@ -25,7 +25,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc831:latest"
                         }
                     }
                     steps {
@@ -52,7 +52,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc831:latest"
                         }
                     }
                     steps {
@@ -85,7 +85,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc831:latest"
                             args "--cap-add SYS_PTRACE"
                         }
                     }
@@ -106,7 +106,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc831:latest"
                         }
                     }
                     steps {
@@ -126,7 +126,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc831:latest"
                         }
                     }
                     steps {
@@ -151,7 +151,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc910:latest"
+                            image "localhost/serf-cpp-gcc910:latest"
                         }
                     }
                     steps {
@@ -178,7 +178,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc740:latest"
+                            image "localhost/serf-cpp-gcc740:latest"
                         }
                     }
                     steps {
@@ -205,7 +205,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc650:latest"
+                            image "localhost/serf-cpp-gcc650:latest"
                         }
                     }
                     steps {
@@ -232,7 +232,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc530:latest"
+                            image "localhost/serf-cpp-gcc530:latest"
                         }
                     }
                     steps {
@@ -259,7 +259,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "serf-cpp-gcc493:latest"
+                            image "localhost/serf-cpp-gcc493:latest"
                         }
                     }
                     steps {
