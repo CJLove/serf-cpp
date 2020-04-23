@@ -18,30 +18,30 @@ pipeline {
         stage('Parallel system compiler stages') {
             failFast true
             parallel {
-                stage('gcc8.3.1') {
+                stage('gcc8.4.0') {
                     when {
                         environment name: 'Use_gcc8', value: 'true'
                     }
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
                         // Enable clang-tidy checks on this build and expect clean results
-                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.3.1"
-                        dir ("gcc831") {
-                            sh 'cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
+                        dir ("gcc840") {
+                            sh 'CC=/opt/gcc840/bin/gcc CXX=/opt/gcc840/bin/g++ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
+                            sh 'LD_LIBRARY_PATH=/opt/gcc840/lib64 make'
+                            sh "LD_LIBRARY_PATH=/opt/gcc840/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
                 
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'gcc831/unittests.xml'
+                            junit allowEmptyResults: true, testResults: 'gcc840/unittests.xml'
                         }
                     }
                 }
@@ -52,7 +52,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
@@ -85,7 +85,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc840:latest"
                             args "--cap-add SYS_PTRACE"
                         }
                     }
@@ -106,7 +106,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
@@ -126,7 +126,7 @@ pipeline {
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc831:latest"
+                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
@@ -144,29 +144,29 @@ pipeline {
         stage('Parallel alternate compiler stages') {
             failFast true
             parallel {
-                stage('gcc9.1.0') {
+                stage('gcc9.3.1') {
                     when {
                         environment name: 'Use_gcc9', value: 'true'
                     }
                     agent {
                         docker {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc910:latest"
+                            image "localhost/serf-cpp-gcc931:latest"
                         }
                     }
                     steps {
-                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 9.1.0"
-                        dir ("gcc910") {
-                            sh 'CC=/opt/gcc910/bin/gcc CXX=/opt/gcc910/bin/g++ cmake ..'
-                            sh 'LD_LIBRARY_PATH=/opt/gcc910/lib64 make'
-                            sh "LD_LIBRARY_PATH=/opt/gcc910/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 9.3.1"
+                        dir ("gcc931") {
+                            sh 'cmake ..'
+                            sh 'make'
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
 
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'gcc910/unittests.xml'
+                            junit allowEmptyResults: true, testResults: 'gcc931/unittests.xml'
                         }
                     }
                 }
