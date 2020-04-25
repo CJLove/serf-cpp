@@ -14,14 +14,14 @@ public:
 
     ~MyLogListener() = default;
 
-    void onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record) override;
+    void onLogRecord(SerfCpp::ResponseHeader &, const SerfCpp::LogRecord &record) override;
 
     int m_count;
     std::string m_log;
 };
 
 void
-MyLogListener::onLogRecord(SerfCpp::ResponseHeader &, SerfCpp::LogRecord &record)
+MyLogListener::onLogRecord(SerfCpp::ResponseHeader &, const SerfCpp::LogRecord &record)
 {
     m_count++;
     m_log = record.Log;

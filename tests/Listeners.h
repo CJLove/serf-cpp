@@ -10,7 +10,7 @@ public:
     ~LogListener()
     {}
 
-    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record);
+    void onLogRecord(SerfCpp::ResponseHeader &hdr, const SerfCpp::LogRecord &record);
 
     int m_count;
     std::string m_log;

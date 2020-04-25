@@ -19,7 +19,7 @@ bool SerfIoThread::Connect(const std::string &ipAddr, const int16_t &port) {
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if (m_socket != -1) {
-        struct sockaddr_in server{};
+        struct sockaddr_in server = {0,0,0,0};  // Ensure all (4) fields are zero-initialized
         server.sin_addr.s_addr = inet_addr(m_ipAddr.c_str());
         server.sin_family = AF_INET;
         server.sin_port = static_cast<uint16_t>(htons(m_port));
@@ -74,13 +74,15 @@ bool SerfIoThread::Close() {
 }
 
 void SerfIoThread::processRpc(int /* arg */) {
+    const int64_t FIFTY_MS = 50000; 
     while (!m_shutdown) {
-        fd_set read_flags, write_flags;
+        fd_set read_flags;
+        fd_set write_flags;
         struct timeval waitd {
             0, 0
         };
         waitd.tv_sec = 0;
-        waitd.tv_usec = 50000;
+        waitd.tv_usec = FIFTY_MS;
         ssize_t count = 0;
 
         while (true) {

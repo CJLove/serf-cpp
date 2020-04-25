@@ -14,6 +14,8 @@ class ISerfEventListener;
 class ISerfQueryListener;
 class SerfIoThread;
 
+constexpr int TIMEOUT_SECONDS = 5;
+
 struct ChannelBase {
     enum ChannelType { REQUEST, LOG, EVENT, QUERY };
 
@@ -96,7 +98,7 @@ struct ResultChannel : ChannelBase {
     void consume() {
         std::unique_lock<std::mutex> lock(m_mutex);
         while (m_dataPending == false) {
-            if (m_condition.wait_for(lock, std::chrono::seconds(5)) == std::cv_status::timeout) {
+            if (m_condition.wait_for(lock, std::chrono::seconds(TIMEOUT_SECONDS)) == std::cv_status::timeout) {
                 // Timeout
                 break;
             }
@@ -143,7 +145,7 @@ struct ResultChannel<bool> : ChannelBase {
     void consume() {
         std::unique_lock<std::mutex> lock(m_mutex);
         while (!m_dataPending) {
-            if (m_condition.wait_for(lock, std::chrono::seconds(5)) == std::cv_status::timeout) {
+            if (m_condition.wait_for(lock, std::chrono::seconds(TIMEOUT_SECONDS)) == std::cv_status::timeout) {
                 // Timeout
                 break;
             }

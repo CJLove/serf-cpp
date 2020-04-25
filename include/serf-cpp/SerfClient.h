@@ -8,9 +8,13 @@ class ISerfLogListener;
 class ISerfEventListener;
 class ISerfQueryListener;
 
-#define SERF_CPP_VERSION_MAJOR 1
-#define SERF_CPP_VERSION_MINOR 0
-#define SERF_CPP_VERSION_PATCH 1
+constexpr int SERF_CPP_VERSION_MAJOR=1;
+constexpr int SERF_CPP_VERSION_MINOR=0;
+constexpr int SERF_CPP_VERSION_PATCH=1;
+
+static const char* SERF_CPP_LOCALHOST="127.0.0.1";
+constexpr int16_t SERF_PORT=7373;
+constexpr uint64_t SERF_CPP_DEFAULT_TIMEOUT=15000000000ULL;
 
 /**
  * @brief The SerfClient class establishes an RPC connection to a serf agent in support
@@ -58,7 +62,7 @@ public:
      * @param port
      * @return SerfResponse
      */
-    SerfResponse Connect(const std::string &ipAddr = "127.0.0.1", const int16_t &port = 7373);
+    SerfResponse Connect(const std::string &ipAddr = SERF_CPP_LOCALHOST, const int16_t &port = SERF_PORT);
 
     /**
      * @brief Return whether there is a connection established to a serf agent
@@ -252,7 +256,7 @@ public:
      */
     SerfResponse Query(const std::string &name, const SerfPayload &payload, ISerfQueryListener *listener,
                        // Following args are optional
-                       bool requestAck = false, uint64_t timeout = 15000000000ULL, SerfStringArray *filterNodes = nullptr,
+                       bool requestAck = false, uint64_t timeout = SERF_CPP_DEFAULT_TIMEOUT, SerfStringArray *filterNodes = nullptr,
                        SerfStringMap *filterTags = nullptr);
 
     /**

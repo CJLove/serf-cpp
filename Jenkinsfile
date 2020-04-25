@@ -3,7 +3,7 @@ pipeline {
 
 	parameters {
         // With fir's upgrade to Fedora 31 and podman the Jenkins `docker` agent is no longer supported
-        
+
         // Build on Fedora's default compiler as first parallel stages
         booleanParam name: 'Use_gcc9', defaultValue: true, description: 'Build/test using gcc9'
         booleanParam name: 'Use_clang9', defaultValue: true, description: 'Build/test using clang9'
@@ -32,12 +32,7 @@ pipeline {
                     steps {
                         // Enable clang-tidy checks on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
-                        dir ("gcc931") {
-                            sh 'cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
-                
+                        ./container.sh --image=serf-cpp-gcc931 --dir=gcc931 --cmake="-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE"
                     }
                 
                     post {
@@ -58,12 +53,7 @@ pipeline {
                     steps {
                         // Enable cppcheck on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using clang 9"
-                        dir ("clang9") {
-                            sh 'CC=clang CXX=clang++ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
-                
+                        ./container.sh --image=serf-cpp-gcc931 --dir=clang9 --cc=clang --cxx=clang++                
                     }
                 
                     post {
@@ -89,11 +79,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        dir ("asan") {
-                            sh 'cmake -DCMAKE_BUILD_TYPE=asan ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
+                        ./container.sh --podman="--cap-add SYS_PTRACE" --image=serf-cpp-gcc931 --dir=asan --cmake="-DCMAKE_BUILD_TYPE=asan"
                     }
                 }
 
@@ -108,11 +94,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        dir ("tsan") {
-                            sh 'cmake -DCMAKE_BUILD_TYPE=tsan ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
+                        ./container.sh --image=serf-cpp-gcc931 --dir=tsan --cmake="-DCMAKE_BUILD_TYPE=tsan"
                     }
                 }
 
@@ -127,11 +109,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        dir ("ubsan") {
-                            sh 'cmake -DCMAKE_BUILD_TYPE=ubsan ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
+                        ./container.sh --image=serf-cpp-gcc931 --dir=ubsan --cmake="-DCMAKE_BUILD_TYPE=ubsan"
                     }
                 }
             }
@@ -151,11 +129,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
-                        dir ("gcc840") {
-                            sh 'CC=/opt/gcc840/bin/gcc CXX=/opt/gcc840/bin/g++ cmake ..'
-                            sh 'LD_LIBRARY_PATH=/opt/gcc840/lib64 make'
-                            sh "LD_LIBRARY_PATH=/opt/gcc740/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
+                        ./container.sh --image=serf-cpp-gcc840 --dir=gcc840 -cc=/opt/gcc840/bin/gcc -cxx=/opt/gcc840/bin/g++
                 
                     }
 
@@ -177,12 +151,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 7.4.0"
-                        dir ("gcc740") {
-                            sh 'CC=/opt/gcc740/bin/gcc CXX=/opt/gcc740/bin/g++ cmake ..'
-                            sh 'LD_LIBRARY_PATH=/opt/gcc740/lib64 make'
-                            sh "LD_LIBRARY_PATH=/opt/gcc740/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
-                
+                        ./container.sh --image=serf-cpp-gcc840 --dir=gcc740 -cc=/opt/gcc740/bin/gcc -cxx=/opt/gcc740/bin/g++
                     }
 
                     post {
@@ -203,12 +172,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 6.5.0"
-                        dir ("gcc650") {
-                            sh 'CC=/opt/gcc650/bin/gcc CXX=/opt/gcc650/bin/g++ cmake ..'
-                            sh 'LD_LIBRARY_PATH=/opt/gcc650/lib64 make'
-                            sh "LD_LIBRARY_PATH=/opt/gcc650/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
-                
+                        ./container.sh --image=serf-cpp-gcc650 --dir=gcc650 -cc=/opt/gcc650/bin/gcc -cxx=/opt/gcc650/bin/g++
                     }
 
                     post {
@@ -229,11 +193,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 5.3.0"
-                        dir ("gcc530") {
-                            sh 'CC=/usr/bin/gcc53 CXX=/usr/bin/g++53 cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
+                        ./container.sh --image=serf-cpp-gcc530 --dir=gcc530 -cc=/usr/bin/gcc53 -cxx=/usr/bin/g++53
                 
                     }
 
@@ -255,12 +215,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 4.9.3"
-                        dir ("gcc493") {
-                            sh 'CC=/usr/bin/gcc49 CXX=/usr/bin/g++49 cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
-                        }
-                
+                        ./container.sh --image=serf-cpp-gcc493 --dir=gcc493 -cc=/usr/bin/gcc49 -cxx=/usr/bin/g++49
                     }
 
                     post {

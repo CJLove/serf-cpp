@@ -1,5 +1,5 @@
 ---
-Checks:          '*,-google-runtime-references,-fuchsia*,-readability-else-after-return,-readability-avoid-const-params-in-decls,-hicpp-signed-bitwise,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-vararg,-hicpp-vararg,-hicpp-no-assembler,-llvm-header-guard,-readability-static-accessed-through-instance,-google-readability-todo,-clang-diagnostic*'
+Checks:          '*,-google-runtime-references,-fuchsia*,-readability-else-after-return,-readability-avoid-const-params-in-decls,-hicpp-signed-bitwise,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-vararg,-hicpp-vararg,-hicpp-no-assembler,-llvm-header-guard,-readability-static-accessed-through-instance,-google-readability-todo,-clang-diagnostic*,-misc-non-private-member-variables-in-classes,-modernize-use-trailing-return-type,-readability-convert-member-functions-to-static,-readability-isolate-declaration,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false

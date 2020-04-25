@@ -122,10 +122,10 @@ public:
     void operator=(const LogListener &) = delete;
     void operator=(const LogListener &&) = delete;
 
-    void onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record) override;
+    void onLogRecord(SerfCpp::ResponseHeader &hdr, const SerfCpp::LogRecord &record) override;
 };
 
-void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, SerfCpp::LogRecord &record) {
+void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, const SerfCpp::LogRecord &record) {
     std::cout << "\n==> Log Record Seq: " << hdr.Seq << " " << record.Log << "\n";
 }
 

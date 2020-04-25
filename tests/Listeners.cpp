@@ -4,7 +4,7 @@ using namespace SerfCpp;
 
 
 void
-LogListener::onLogRecord(ResponseHeader &, LogRecord &record)
+LogListener::onLogRecord(ResponseHeader &, const LogRecord &record)
 {
     m_count++;
     m_log = record.Log;

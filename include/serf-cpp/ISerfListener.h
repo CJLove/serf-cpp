@@ -37,7 +37,7 @@ public:
      * @param hdr - RPC message header
      * @param record - log record
      */
-    virtual void onLogRecord(ResponseHeader &hdr, LogRecord &record) = 0;
+    virtual void onLogRecord(ResponseHeader &hdr, const LogRecord &record) = 0;
 };
 
 /**
