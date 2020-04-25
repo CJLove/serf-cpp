@@ -146,7 +146,7 @@ namespace SerfCpp {
         const size_t IPV4_SIZE = 4;
         const size_t IPV6_SIZE = 16;
         const size_t IPV4_OFFSET = 12;
-        const unsigned MAX_OCTET = 0xff;
+        const uint8_t MAX_OCTET = 0xff;
         const unsigned WIDTH = 16;
         os << std::setw(WIDTH) << r.Name << " ";
         // Handle ipv4 vs ipv6 address in the Addr vector

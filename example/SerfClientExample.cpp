@@ -132,7 +132,7 @@ void LogListener::onLogRecord(SerfCpp::ResponseHeader &hdr, const SerfCpp::LogRe
 int main(int argc, char **argv) {
     int c = 0;
     std::string host = "127.0.0.1";
-    int16_t port = 7373;
+    uint16_t port = 7373;
 
     while ((c = getopt(argc, argv, "h:p:?")) != EOF) {
         switch (c) {
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
                 host = optarg;
                 break;
             case 'p':
-                port = static_cast<int16_t>(std::strtol(optarg,nullptr,10));
+                port = static_cast<uint16_t>(std::strtoul(optarg,nullptr,10));
                 break;
             case '?':
             default:

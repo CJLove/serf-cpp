@@ -1,5 +1,11 @@
-2020-04-24 Chris Love <christopherlove68@gmail.com>
-	* clang-tidy fixes associated with gcc 9.3.1
+2020-04-25 Chris Love <christopherlove68@gmail.com>
+	* fixes associated with newer clang-tidy from Clang 9
+
+	* api fixes (adding const to certain parameters) based on compiling with gcc 9.3.1
+
+	* fixes based on compiling with clang 9
+
+	* Jenkinsfile - pipeline updates to run containerized builds with Podman rather than using 'docker' Jenkins agent.
 
 2020-04-21 Chris Love <christopherlove68@gmail.com>
 	* Merged PR #5 from Keith Shafer

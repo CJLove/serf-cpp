@@ -45,7 +45,7 @@ void SerfClient::Version(uint32_t &major, uint32_t &minor, uint32_t &patch) {
     patch = SERF_CPP_VERSION_PATCH;
 }
 
-SerfClient::SerfResponse SerfClient::Connect(const std::string &ipAddr, const int16_t &port) {
+SerfClient::SerfResponse SerfClient::Connect(const std::string &ipAddr, const uint16_t &port) {
     return (m_pImpl->m_serfThread.Connect(ipAddr, port)) ? SerfClient::SUCCESS : SerfClient::FAILURE;
 }
 

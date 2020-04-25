@@ -13,7 +13,7 @@ constexpr int SERF_CPP_VERSION_MINOR=0;
 constexpr int SERF_CPP_VERSION_PATCH=1;
 
 static const char* SERF_CPP_LOCALHOST="127.0.0.1";
-constexpr int16_t SERF_PORT=7373;
+constexpr uint16_t SERF_PORT=7373;
 constexpr uint64_t SERF_CPP_DEFAULT_TIMEOUT=15000000000ULL;
 
 /**
@@ -62,7 +62,7 @@ public:
      * @param port
      * @return SerfResponse
      */
-    SerfResponse Connect(const std::string &ipAddr = SERF_CPP_LOCALHOST, const int16_t &port = SERF_PORT);
+    SerfResponse Connect(const std::string &ipAddr = SERF_CPP_LOCALHOST, const uint16_t &port = SERF_PORT);
 
     /**
      * @brief Return whether there is a connection established to a serf agent

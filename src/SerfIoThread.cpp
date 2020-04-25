@@ -7,22 +7,22 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-static const ssize_t RPC_BUFFER_SIZE = 1024 * 1024;  // 1MByte
+static const size_t RPC_BUFFER_SIZE = 1024 * 1024;  // 1MByte
 
 namespace SerfCpp {
 
 SerfIoThread::~SerfIoThread() { Close(); }
 
-bool SerfIoThread::Connect(const std::string &ipAddr, const int16_t &port) {
+bool SerfIoThread::Connect(const std::string &ipAddr, const uint16_t &port) {
     m_ipAddr = ipAddr;
     m_port = port;
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if (m_socket != -1) {
-        struct sockaddr_in server = {0,0,0,0};  // Ensure all (4) fields are zero-initialized
+        struct sockaddr_in server = {0,0,{0},{0}};  // Ensure all (4) fields are zero-initialized
         server.sin_addr.s_addr = inet_addr(m_ipAddr.c_str());
         server.sin_family = AF_INET;
-        server.sin_port = static_cast<uint16_t>(htons(m_port));
+        server.sin_port = htons(m_port);
 
         if (connect(m_socket, reinterpret_cast<struct sockaddr *>(&server), sizeof(server)) == 0) {  // NOLINT clang-tidy ignore
             // Set to non-blocking
@@ -83,7 +83,7 @@ void SerfIoThread::processRpc(int /* arg */) {
         };
         waitd.tv_sec = 0;
         waitd.tv_usec = FIFTY_MS;
-        ssize_t count = 0;
+        size_t count = 0;
 
         while (true) {
             FD_ZERO(&read_flags);
@@ -107,10 +107,10 @@ void SerfIoThread::processRpc(int /* arg */) {
                 break;
             }
 
-            count += bytesRead;
+            count += static_cast<size_t>(bytesRead);
         }
 
-        if (RPC_BUFFER_SIZE - count < 0) {
+        if (count > RPC_BUFFER_SIZE) {
             std::cout << "Error: RPC buffer size is too small for this response " << std::endl;
         }
 

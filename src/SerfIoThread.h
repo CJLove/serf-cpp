@@ -25,7 +25,7 @@ public:
     void operator=(const SerfIoThread &) = delete;
     void operator=(const SerfIoThread &&) = delete;
 
-    bool Connect(const std::string &ipAddr, const int16_t &port);
+    bool Connect(const std::string &ipAddr, const uint16_t &port);
 
     bool IsConnected();
 
@@ -61,7 +61,7 @@ private:
     std::string m_ipAddr;
 
     // Port of Serf Agent
-    int16_t m_port = 0;
+    uint16_t m_port = 0;
 
     // Socket for the agent connection
     int m_socket = -1;
