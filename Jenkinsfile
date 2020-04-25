@@ -150,7 +150,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 7.4.0"
-                        sh './container.sh --image=serf-cpp-gcc840 --dir=gcc740 -cc=/opt/gcc740/bin/gcc -cxx=/opt/gcc740/bin/g++'
+                        sh './container.sh --image=serf-cpp-gcc740 --dir=gcc740 -cc=/opt/gcc740/bin/gcc -cxx=/opt/gcc740/bin/g++'
                     }
 
                     post {
