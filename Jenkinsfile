@@ -8,13 +8,13 @@ pipeline {
         booleanParam name: 'Use_gcc9', defaultValue: true, description: 'Build/test using gcc9'
         booleanParam name: 'Use_clang9', defaultValue: true, description: 'Build/test using clang9'
         // Sanitizer tests in parallel stages
-        booleanParam name: 'Run_sanitizers', defaultValue: false, description: 'Build/test using sanitizers'
+        booleanParam name: 'Run_sanitizers', defaultValue: true, description: 'Build/test using sanitizers'
         // Build alternative compilers in parallel stages
-        booleanParam name: 'Use_gcc4', defaultValue: false, description: 'Build/test using gcc4'
-        booleanParam name: 'Use_gcc5', defaultValue: false, description: 'Build/test using gcc5'
-        booleanParam name: 'Use_gcc6', defaultValue: false, description: 'Build/test using gcc6'
-        booleanParam name: 'Use_gcc7', defaultValue: false, description: 'Build/test using gcc7'
-        booleanParam name: 'Use_gcc8', defaultValue: false, description: 'Build/test using gcc8'
+        booleanParam name: 'Use_gcc4', defaultValue: true, description: 'Build/test using gcc4'
+        booleanParam name: 'Use_gcc5', defaultValue: true, description: 'Build/test using gcc5'
+        booleanParam name: 'Use_gcc6', defaultValue: true, description: 'Build/test using gcc6'
+        booleanParam name: 'Use_gcc7', defaultValue: true, description: 'Build/test using gcc7'
+        booleanParam name: 'Use_gcc8', defaultValue: true, description: 'Build/test using gcc8'
 	}
     stages {
         stage('Parallel system compiler stages') {
