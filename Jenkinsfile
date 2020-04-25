@@ -2,7 +2,7 @@ pipeline {
     agent none
 
 	parameters {
-        // With fir's upgrade to Fedora 31 and podman the Jenkins `docker` agent is no longer supported
+        // With the upgrade to Fedora 31 and podman the Jenkins docker agent is no longer supported
 
         // Build on Fedora's default compiler as first parallel stages
         booleanParam name: 'Use_gcc9', defaultValue: true, description: 'Build/test using gcc9'
@@ -32,7 +32,7 @@ pipeline {
                     steps {
                         // Enable clang-tidy checks on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
-                        ./container.sh --image=serf-cpp-gcc931 --dir=gcc931 --cmake="-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE"
+                        sh './container.sh --image=serf-cpp-gcc931 --dir=gcc931 --cmake="-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE"'
                     }
                 
                     post {
@@ -53,7 +53,7 @@ pipeline {
                     steps {
                         // Enable cppcheck on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using clang 9"
-                        ./container.sh --image=serf-cpp-gcc931 --dir=clang9 --cc=clang --cxx=clang++                
+                        sh './container.sh --image=serf-cpp-gcc931 --dir=clang9 --cc=clang --cxx=clang++'
                     }
                 
                     post {
@@ -79,7 +79,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        ./container.sh --podman="--cap-add SYS_PTRACE" --image=serf-cpp-gcc931 --dir=asan --cmake="-DCMAKE_BUILD_TYPE=asan"
+                        sh './container.sh --podman="--cap-add SYS_PTRACE" --image=serf-cpp-gcc931 --dir=asan --cmake="-DCMAKE_BUILD_TYPE=asan"'
                     }
                 }
 
@@ -94,7 +94,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        ./container.sh --image=serf-cpp-gcc931 --dir=tsan --cmake="-DCMAKE_BUILD_TYPE=tsan"
+                        sh './container.sh --image=serf-cpp-gcc931 --dir=tsan --cmake="-DCMAKE_BUILD_TYPE=tsan"'
                     }
                 }
 
@@ -109,7 +109,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} with asan"
-                        ./container.sh --image=serf-cpp-gcc931 --dir=ubsan --cmake="-DCMAKE_BUILD_TYPE=ubsan"
+                        sh './container.sh --image=serf-cpp-gcc931 --dir=ubsan --cmake="-DCMAKE_BUILD_TYPE=ubsan"'
                     }
                 }
             }
@@ -129,8 +129,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
-                        ./container.sh --image=serf-cpp-gcc840 --dir=gcc840 -cc=/opt/gcc840/bin/gcc -cxx=/opt/gcc840/bin/g++
-                
+                        sh './container.sh --image=serf-cpp-gcc840 --dir=gcc840 -cc=/opt/gcc840/bin/gcc -cxx=/opt/gcc840/bin/g++'                
                     }
 
                     post {
@@ -151,7 +150,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 7.4.0"
-                        ./container.sh --image=serf-cpp-gcc840 --dir=gcc740 -cc=/opt/gcc740/bin/gcc -cxx=/opt/gcc740/bin/g++
+                        sh './container.sh --image=serf-cpp-gcc840 --dir=gcc740 -cc=/opt/gcc740/bin/gcc -cxx=/opt/gcc740/bin/g++'
                     }
 
                     post {
@@ -172,7 +171,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 6.5.0"
-                        ./container.sh --image=serf-cpp-gcc650 --dir=gcc650 -cc=/opt/gcc650/bin/gcc -cxx=/opt/gcc650/bin/g++
+                        sh './container.sh --image=serf-cpp-gcc650 --dir=gcc650 -cc=/opt/gcc650/bin/gcc -cxx=/opt/gcc650/bin/g++'
                     }
 
                     post {
@@ -193,8 +192,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 5.3.0"
-                        ./container.sh --image=serf-cpp-gcc530 --dir=gcc530 -cc=/usr/bin/gcc53 -cxx=/usr/bin/g++53
-                
+                        sh './container.sh --image=serf-cpp-gcc530 --dir=gcc530 -cc=/usr/bin/gcc53 -cxx=/usr/bin/g++53'                
                     }
 
                     post {
@@ -215,7 +213,7 @@ pipeline {
                     }
                     steps {
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 4.9.3"
-                        ./container.sh --image=serf-cpp-gcc493 --dir=gcc493 -cc=/usr/bin/gcc49 -cxx=/usr/bin/g++49
+                        sh './container.sh --image=serf-cpp-gcc493 --dir=gcc493 -cc=/usr/bin/gcc49 -cxx=/usr/bin/g++49'
                     }
 
                     post {
