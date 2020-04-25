@@ -2,63 +2,63 @@ pipeline {
     agent none
 
 	parameters {
+        // With fir's upgrade to Fedora 31 and podman the Jenkins `docker` agent is no longer supported
+        
         // Build on Fedora's default compiler as first parallel stages
-        booleanParam name: 'Use_gcc8', defaultValue: true, description: 'Build/test using gcc8'
-        booleanParam name: 'Use_clang7', defaultValue: true, description: 'Build/test using clang7'
-        // Sanitizer tests in parallel stages
-        booleanParam name: 'Run_sanitizers', defaultValue: true, description: 'Build/test using sanitizers'
-        // Build alternative compilers in parallel stages
-        booleanParam name: 'Use_gcc4', defaultValue: true, description: 'Build/test using gcc4'
-        booleanParam name: 'Use_gcc5', defaultValue: true, description: 'Build/test using gcc5'
-        booleanParam name: 'Use_gcc6', defaultValue: true, description: 'Build/test using gcc6'
-        booleanParam name: 'Use_gcc7', defaultValue: true, description: 'Build/test using gcc7'
         booleanParam name: 'Use_gcc9', defaultValue: true, description: 'Build/test using gcc9'
+        booleanParam name: 'Use_clang9', defaultValue: true, description: 'Build/test using clang9'
+        // Sanitizer tests in parallel stages
+        booleanParam name: 'Run_sanitizers', defaultValue: false, description: 'Build/test using sanitizers'
+        // Build alternative compilers in parallel stages
+        booleanParam name: 'Use_gcc4', defaultValue: false, description: 'Build/test using gcc4'
+        booleanParam name: 'Use_gcc5', defaultValue: false, description: 'Build/test using gcc5'
+        booleanParam name: 'Use_gcc6', defaultValue: false, description: 'Build/test using gcc6'
+        booleanParam name: 'Use_gcc7', defaultValue: false, description: 'Build/test using gcc7'
+        booleanParam name: 'Use_gcc8', defaultValue: false, description: 'Build/test using gcc8'
 	}
     stages {
         stage('Parallel system compiler stages') {
             failFast true
             parallel {
-                stage('gcc8.4.0') {
+                stage('gcc9.3.1') {
                     when {
-                        environment name: 'Use_gcc8', value: 'true'
+                        environment name: 'Use_gcc9', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
                         // Enable clang-tidy checks on this build and expect clean results
                         echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
-                        dir ("gcc840") {
-                            sh 'CC=/opt/gcc840/bin/gcc CXX=/opt/gcc840/bin/g++ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
-                            sh 'LD_LIBRARY_PATH=/opt/gcc840/lib64 make'
-                            sh "LD_LIBRARY_PATH=/opt/gcc840/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                        dir ("gcc931") {
+                            sh 'cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CLANG_TIDY=TRUE ..'
+                            sh 'make'
+                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
                 
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'gcc840/unittests.xml'
+                            junit allowEmptyResults: true, testResults: 'gcc931/unittests.xml'
                         }
                     }
                 }
-                stage('clang7') {
+                stage('clang9') {
                     when {
-                        environment name: 'Use_clang7', value: 'true'
+                        environment name: 'Use_clang9', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
                         // Enable cppcheck on this build and expect clean results
-                        echo "building serf-cpp branch ${env.BRANCH_NAME} using clang 7"
-                        dir ("clang7") {
+                        echo "building serf-cpp branch ${env.BRANCH_NAME} using clang 9"
+                        dir ("clang9") {
                             sh 'CC=clang CXX=clang++ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DENABLE_CPPCHECK=TRUE ..'
                             sh 'make'
                             sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
@@ -68,7 +68,7 @@ pipeline {
                 
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'clang/unittests.xml'
+                            junit allowEmptyResults: true, testResults: 'clang9/unittests.xml'
                         }
                     }
                 }
@@ -83,10 +83,8 @@ pipeline {
                         environment name: 'Run_sanitizers', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc840:latest"
-                            args "--cap-add SYS_PTRACE"
                         }
                     }
                     steps {
@@ -104,9 +102,8 @@ pipeline {
                         environment name: 'Run_sanitizers', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
@@ -124,9 +121,8 @@ pipeline {
                         environment name: 'Run_sanitizers', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc840:latest"
                         }
                     }
                     steps {
@@ -144,29 +140,28 @@ pipeline {
         stage('Parallel alternate compiler stages') {
             failFast true
             parallel {
-                stage('gcc9.3.1') {
+                stage('gcc8.4.0') {
                     when {
-                        environment name: 'Use_gcc9', value: 'true'
+                        environment name: 'Use_gcc8', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc931:latest"
                         }
                     }
                     steps {
-                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 9.3.1"
-                        dir ("gcc931") {
-                            sh 'cmake ..'
-                            sh 'make'
-                            sh "./tests/SerfCppTests --gtest_output=xml:unittests.xml"
+                        echo "building serf-cpp branch ${env.BRANCH_NAME} using gcc 8.4.0"
+                        dir ("gcc840") {
+                            sh 'CC=/opt/gcc840/bin/gcc CXX=/opt/gcc840/bin/g++ cmake ..'
+                            sh 'LD_LIBRARY_PATH=/opt/gcc840/lib64 make'
+                            sh "LD_LIBRARY_PATH=/opt/gcc740/lib64 ./tests/SerfCppTests --gtest_output=xml:unittests.xml"
                         }
                 
                     }
 
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'gcc931/unittests.xml'
+                            junit allowEmptyResults: true, testResults: 'gcc840/unittests.xml'
                         }
                     }
                 }
@@ -176,9 +171,8 @@ pipeline {
                         environment name: 'Use_gcc7', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc740:latest"
                         }
                     }
                     steps {
@@ -203,9 +197,8 @@ pipeline {
                         environment name: 'Use_gcc6', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc650:latest"
                         }
                     }
                     steps {
@@ -230,9 +223,8 @@ pipeline {
                         environment name: 'Use_gcc5', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc530:latest"
                         }
                     }
                     steps {
@@ -257,9 +249,8 @@ pipeline {
                         environment name: 'Use_gcc4', value: 'true'
                     }
                     agent {
-                        docker {
+                        node {
                             label 'fir'
-                            image "localhost/serf-cpp-gcc493:latest"
                         }
                     }
                     steps {
