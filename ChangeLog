@@ -1,5 +1,9 @@
+2020-04-24 Chris Love <christopherlove68@gmail.com>
+	* clang-tidy fixes associated with gcc 9.3.1
+
 2020-04-21 Chris Love <christopherlove68@gmail.com>
 	* Merged PR #5 from Keith Shafer
+
 2019-07-07 Chris Love <christopherlove68@gmail.com>
 	* Additional clang-tidy fixes and support for enabling clang-tidy with CMake
 

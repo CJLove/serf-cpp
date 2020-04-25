@@ -86,7 +86,7 @@ public:
      * @param nodeCount - return number of nodes joined
      * @return SerfResponse
      */
-    SerfResponse Join(SerfStringArray &addrs, bool replay, int &nodeCount);
+    SerfResponse Join(const SerfStringArray &addrs, bool replay, int &nodeCount);
 
     /**
      * @brief Authentication command to send after a connection is established
@@ -94,7 +94,7 @@ public:
      * @param authKey - authentication token
      * @return SerfResponse
      */
-    SerfResponse Auth(std::string &authKey);
+    SerfResponse Auth(const std::string &authKey);
 
     /**
      * @brief Install a new authentication key
@@ -103,7 +103,7 @@ public:
      * @param keys - response after key is distributed to all nodes
      * @return SerfResponse
      */
-    SerfResponse InstallKey(std::string &key, KeyResponse &keys);
+    SerfResponse InstallKey(const std::string &key, KeyResponse &keys);
 
     /**
      * @brief Use a specific key from the key-ring for encrypting messages
@@ -111,7 +111,7 @@ public:
      * @param key
      * @return SerfResponse
      */
-    SerfResponse UseKey(std::string &key);
+    SerfResponse UseKey(const std::string &key);
 
     /**
      * @brief Remove a specific key from the key-ring
@@ -120,7 +120,7 @@ public:
      * @param keys - response after key is removed from all nodes
      * @return SerfResponse
      */
-    SerfResponse RemoveKey(std::string &key, KeyResponse &keys);
+    SerfResponse RemoveKey(const std::string &key, KeyResponse &keys);
 
     /**
      * @brief List keys from the key-ring

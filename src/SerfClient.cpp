@@ -55,7 +55,7 @@ SerfClient::SerfResponse SerfClient::Close() {
     return (m_pImpl->m_serfThread.Close()) ? SerfClient::SUCCESS : SerfClient::FAILURE;
 }
 
-SerfClient::SerfResponse SerfClient::Join(SerfStringArray &addrs, bool replay, int &nodeCount) {
+SerfClient::SerfResponse SerfClient::Join(const SerfStringArray &addrs, bool replay, int &nodeCount) {
     RequestHeader hdr;
     hdr.Command = "join";
     JoinRequest join;
@@ -80,7 +80,7 @@ SerfClient::SerfResponse SerfClient::Join(SerfStringArray &addrs, bool replay, i
     return SerfClient::FAILURE;
 }
 
-SerfClient::SerfResponse SerfClient::Auth(std::string &authKey) {
+SerfClient::SerfResponse SerfClient::Auth(const std::string &authKey) {
     RequestHeader hdr;
     hdr.Command = "auth";
     AuthRequest req;
@@ -103,7 +103,7 @@ SerfClient::SerfResponse SerfClient::Auth(std::string &authKey) {
     return SerfClient::FAILURE;
 }
 
-SerfClient::SerfResponse SerfClient::InstallKey(std::string &key, KeyResponse &keys) {
+SerfClient::SerfResponse SerfClient::InstallKey(const std::string &key, KeyResponse &keys) {
     RequestHeader hdr;
     hdr.Command = "install-key";
     KeyRequest req;
@@ -149,7 +149,7 @@ SerfClient::SerfResponse SerfClient::ListKeys(KeyListResponse &keys) {
     return SerfClient::FAILURE;
 }
 
-SerfClient::SerfResponse SerfClient::UseKey(std::string &key) {
+SerfClient::SerfResponse SerfClient::UseKey(const std::string &key) {
     RequestHeader hdr;
     hdr.Command = "use-key";
     KeyRequest req;
@@ -172,7 +172,7 @@ SerfClient::SerfResponse SerfClient::UseKey(std::string &key) {
     return SerfClient::FAILURE;
 }
 
-SerfClient::SerfResponse SerfClient::RemoveKey(std::string &key, KeyResponse &keys) {
+SerfClient::SerfResponse SerfClient::RemoveKey(const std::string &key, KeyResponse &keys) {
     RequestHeader hdr;
     hdr.Command = "remove-key";
     KeyRequest req;
