@@ -1,4 +1,6 @@
 2020-04-25 Chris Love <christopherlove68@gmail.com>
+	* Serf 1.1.0 release
+
 	* fixes associated with newer clang-tidy from Clang 9
 
 	* api fixes (adding const to certain parameters) based on compiling with gcc 9.3.1

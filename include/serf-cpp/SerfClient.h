@@ -9,8 +9,8 @@ class ISerfEventListener;
 class ISerfQueryListener;
 
 constexpr int SERF_CPP_VERSION_MAJOR=1;
-constexpr int SERF_CPP_VERSION_MINOR=0;
-constexpr int SERF_CPP_VERSION_PATCH=1;
+constexpr int SERF_CPP_VERSION_MINOR=1;
+constexpr int SERF_CPP_VERSION_PATCH=0;
 
 static const char* SERF_CPP_LOCALHOST="127.0.0.1";
 constexpr uint16_t SERF_PORT=7373;
