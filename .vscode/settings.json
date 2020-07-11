@@ -1,0 +1,15 @@
+{
+    "keyboard.dispatch": "keyCode",
+    "C_Cpp.configurationWarnings": "Disabled",
+    "files.associations": {
+        "vector": "cpp",
+        "iosfwd": "cpp"
+    },
+    "clangTidy.systemIncludePath": [
+        "/usr/include/c++"
+    ],
+    "clangTidy.extraCompilerArgs": [
+        "-Weverything",
+        "-I/home/love/Development/serf-cpp/include"
+    ]
+}

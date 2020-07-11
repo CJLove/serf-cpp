@@ -12,7 +12,7 @@ os:
   - linux
 
 sudo: required
-dist: trusty
+dist: xenial
 
 matrix:
   fast_finish: true
@@ -62,6 +62,15 @@ matrix:
       apt:
         sources: ['ubuntu-toolchain-r-test']
         packages: ['g++-8' ] 
+
+  - os: linux
+    compiler: gcc
+    env:
+      - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-9' ]
 
 
 before_install:
