@@ -4,7 +4,7 @@ if(MSGPACK_C_INCLUDE_DIRS)
     set(MSGPACK_C_FOUND TRUE)
 
 else(MSGPACK_C_INCLUDE_DIRS)
-    find_path(MSGPACK_C_INCLUDE_DIRS msgpack.h
+    find_path(MSGPACK_C_INCLUDE_DIRS msgpack.hpp
       /usr/include
       /usr/include/msgpack
       /usr/local/include/
