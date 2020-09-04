@@ -90,7 +90,7 @@ if [ -n "$PARAM_IMAGE" ]; then
 
     COMMAND="/root/work/container.sh $PARAM_DIR $PARAM_CC $PARAM_CXX $PARAM_CMAKE"
 
-    podman run --rm $PARAM_PODMAN -v $PWD:/root/work $PARAM_IMAGE bash -c "$COMMAND"
+    podman run --rm --pull always $PARAM_PODMAN -v $PWD:/root/work fir.local:3005/$PARAM_IMAGE:latest bash -c "$COMMAND"
 
     exit $?
 fi
