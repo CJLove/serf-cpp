@@ -5,11 +5,8 @@
         "vector": "cpp",
         "iosfwd": "cpp"
     },
-    "clangTidy.systemIncludePath": [
-        "/usr/include/c++"
-    ],
-    "clangTidy.extraCompilerArgs": [
-        "-Weverything",
-        "-I/home/love/Development/serf-cpp/include"
-    ]
+    "clangtidy.buildPath": "${workspaceFolder}/build",
+    "clangtidy.sourcePath": "${workspaceFolder}/src",
+    "clangtidy.checksPath": "${workspaceFolder}/.vscode",
+
 }
