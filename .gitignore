@@ -1,13 +1,6 @@
 # build directory
 build/*
 
-# CI build directories
-gcc*
-clang*
-asan*
-tsan*
-ubsan*
-
 # Xemacs backup files
 *~
 
