@@ -14,15 +14,26 @@ jobs:
     trigger: true
   - set_pipeline: serf-cpp
     file: serf-cpp-git/ci/pipeline.yml
-- name: build-matrix
+# Build using current gcc and clang and fail fast
+- name: build-current
   public: true
-  plan:  
+  plan:
   - get: serf-cpp-git
     passed: [ set-pipeline ]
     trigger: true
   - in_parallel:
     - task: gcc11_1_1
       file: serf-cpp-git/ci/gcc1111.yml
+    - task: clang
+      file: serf-cpp-git/ci/clang.yml
+
+- name: build-matrix
+  public: true
+  plan:  
+  - get: serf-cpp-git
+    passed: [ build-current ]
+    trigger: true
+  - in_parallel:
     - task: gcc10_3_0
       file: serf-cpp-git/ci/gcc1030.yml
     - task: gcc9_4_0
