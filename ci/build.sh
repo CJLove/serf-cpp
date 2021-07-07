@@ -16,6 +16,7 @@ BUILDDIR=build
 PARAM_CC=
 PARAM_CXX=
 PARAM_CMAKE=
+PARAM_COVER=0
 
 while test $# -gt 0; do
     param="$1"
@@ -44,6 +45,9 @@ while test $# -gt 0; do
     cmake=*)
         PARAM_CMAKE=$(echo $param|cut -f2- -d'=')
         ;;
+    cover)
+        PARAM_COVER=1
+        ;;
     help|h|?|-?)
         ShowUsage
         exit 0
@@ -56,10 +60,16 @@ while test $# -gt 0; do
     esac
 done
 
+if [ $PARAM_COVER -eq 1 ]; then
+    PARAM_CMAKE="$PARAM_CMAKE -DSERF_CPP_BUILD_COVERAGE=ON"
+fi
+
+
 echo "BUILDDIR=$BUILDDIR"
 echo "PARAM_CC=$PARAM_CC"
 echo "PARAM_CXX=$PARAM_CXX"
 echo "PARAM_CMAKE=$PARAM_CMAKE"
+echo "PARAM_COVER=$PARAM_COVER"
 
 [ ! -d ./serf-cpp-git ] && { echo "ERROR: repo not cloned!"; exit 1; }
 
@@ -85,11 +95,28 @@ make
 ret=$?
 [ $ret -ne 0 ] && exit $ret
 
-[ ! -x ./tests/SerfCppTests ] && { echo "ERROR: unit tests not built!"; exit 1; }
+if [ $PARAM_COVER -eq 1 ]; then
+    # Run SerfCppCoverage to get unit test report and code coverage info
+    make SerfCppCoverage
+    ret=$?
+    if [ $ret -eq 0 ]; then
+        # Generate unit test html report and post to artstore
+        junit2html unittests.xml index.html
+        curl -F filename=index.html -F item=@index.html http://fir.love.io:3004/artstore/serf-cpp/unit
 
-# Run unit tests
-./tests/SerfCppTests
-ret=$?
+        # Create code coverage tarball
+        cd SerfCppCoverage/ && tar zcvf ../coverage.tar.gz . && cd -
+        curl -F item=coverage.tar.gz http://fir.love.io:3004/artstore/serf-cpp/coverage
+    fi
+else
+
+    [ ! -x ./tests/SerfCppTests ] && { echo "ERROR: unit tests not built!"; exit 1; }
+
+    # Run unit tests
+    ./tests/SerfCppTests
+    ret=$?
+
+fi
 
 # Return result
 exit $ret

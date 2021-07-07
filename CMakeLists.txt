@@ -195,7 +195,7 @@ endif (SERF_CPP_BUILD_EXAMPLE)
 if (SERF_CPP_BUILD_TESTS)
   if (SERF_CPP_BUILD_COVERAGE)
     include (CodeCoverage)
-    setup_target_for_coverage( SerfCppCoverage tests/SerfCppTests coverage )
+    setup_target_for_coverage_gcovr_html( NAME SerfCppCoverage EXECUTABLE tests/SerfCppTests DEPENDENCIES SerfCppTests BASE_DIRECTORY "../" )
   endif (SERF_CPP_BUILD_COVERAGE)
 
   add_subdirectory(tests)
