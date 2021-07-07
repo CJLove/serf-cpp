@@ -103,11 +103,13 @@ if [ $PARAM_COVER -eq 1 ]; then
     if [ $ret -eq 0 ]; then
         # Generate unit test html report and post to artstore
         junit2html unittests.xml index.html
-        curl -F filename=index.html -F item=@index.html http://fir.love.io:3004/artstore/serf-cpp/unit
+        curl -F item=@index.html -F item=@index.html http://fir.love.io:3004/artstore/serf-cpp/unit
+        echo "Unit Test Report: http://fir.love.io:3004/dev/serf-cpp/unit/"
 
         # Create code coverage tarball
-        cd SerfCppCoverage/ && tar zcvf ../coverage.tar.gz . && cd -
-        curl -F item=coverage.tar.gz http://fir.love.io:3004/artstore/serf-cpp/coverage
+        cd SerfCppCoverage/ && tar zcf ../coverage.tar.gz . && cd -
+        curl -F item=@coverage.tar.gz http://fir.love.io:3004/artstore/serf-cpp/coverage
+        echo "Code Coverage: http://fir.love.io:3004/dev/serf-cpp/coverage/"
     fi
 else
 
