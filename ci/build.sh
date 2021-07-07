@@ -8,6 +8,7 @@ $(basename $0) options
     [--cxx=<path/to/cxx>]    - path for CXX environment variable
     [--cc=<path/to/cc>]      - path for CC env variable
     [--cmake=<options>]      - option string to pass to CMake
+    [--cover]                - generate unit test and code coverage reports
 EOT
     return 0    
 }
