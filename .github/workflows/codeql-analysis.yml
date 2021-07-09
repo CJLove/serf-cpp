@@ -64,11 +64,11 @@ jobs:
     #    uses a compiled language
 
     - run: |
-      wget https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz -O /tmp/msgpack-c.tar.gz
-      tar zxf /tmp/msgpack-c.tar.gz 
-      pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && sudo make install && popd
-      cmake -DCMAKE_BUILD_TYPE=Release -DSERF_CPP_BUILD_TESTS=OFF -DSERF_CPP_BUILD_EXAMPLE=OFF
-      make all
+       wget https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz -O /tmp/msgpack-c.tar.gz
+       tar zxf /tmp/msgpack-c.tar.gz 
+       pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && sudo make install && popd
+       cmake -DCMAKE_BUILD_TYPE=Release -DSERF_CPP_BUILD_TESTS=OFF -DSERF_CPP_BUILD_EXAMPLE=OFF
+       make all
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
