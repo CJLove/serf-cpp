@@ -96,6 +96,9 @@ before_install:
   - tar zxf /tmp/msgpack-c.tar.gz
   - pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && sudo make install && popd
 
+  # Install gcovr
+  - pip install --user gcovr
+
 script:
   - mkdir build
   - cd build

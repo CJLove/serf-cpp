@@ -1,3 +1,8 @@
+2021-07-08 Chris Love <christopherlove68@gmail.com>
+	* Change to using Concourse for local CI/CD, replacing Jenkins
+
+	* Migrate to travis-ci.com, install gcovr as part of travis config
+
 2020-09-04 Chris Love <christopherlove68@gmail.com>
     * Change `container.sh` to use images from private Docker registry
 
