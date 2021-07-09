@@ -53,8 +53,8 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    #- name: Autobuild
+    #  uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -63,9 +63,12 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - run: |
+      wget https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz -O /tmp/msgpack-c.tar.gz
+      tar zxf /tmp/msgpack-c.tar.gz 
+      pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && sudo make install && popd
+      cmake -DCMAKE_BUILD_TYPE=Release -DSERF_CPP_BUILD_TESTS=OFF -DSERF_CPP_BUILD_EXAMPLE=OFF
+      make all
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
