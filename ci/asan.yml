@@ -9,4 +9,4 @@ inputs:
       
 run:
   path: ./serf-cpp-git/ci/build.sh
-  args: [ "-builddir=asan", "--cmake=\"-DCMAKE_BUILD_TYPE=asan\"" ]   
+  args: [ "-builddir=asan", "--cmake=-DCMAKE_BUILD_TYPE=asan" ]   
