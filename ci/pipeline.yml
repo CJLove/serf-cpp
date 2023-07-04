@@ -61,8 +61,10 @@ jobs:
     trigger: true
   - in_parallel:
     - task: asan
+      privileged: true
       file: serf-cpp-git/ci/asan.yml
     - task: tsan
       file: serf-cpp-git/ci/tsan.yml
+      privileged: true
 
         
