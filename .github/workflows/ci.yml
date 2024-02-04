@@ -34,7 +34,7 @@ jobs:
           ./install-cmake.sh --prefix=/usr/local --skip-license
           curl -sSL https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz -o /tmp/msgpack-c.tar.gz
           tar zxf /tmp/msgpack-c.tar.gz 
-          pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && sudo make install && popd
+          pushd msgpack-3.1.1 && mkdir build && cd build && cmake .. && make install && popd
       - name: Setup Compiler
         if: matrix.config.compiler == 'clang'
         run: |
