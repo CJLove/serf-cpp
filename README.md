@@ -1,7 +1,4 @@
-[![Build Status](https://travis-ci.com/CJLove/serf-cpp.svg?branch=master)](https://travis-ci.com/CJLove/serf-cpp) 
-[![Coverage Status](https://coveralls.io/repos/github/CJLove/serf-cpp/badge.svg?branch=master)](https://coveralls.io/github/CJLove/serf-cpp?branch=master)
-![CodeQL](https://github.com/CJLove/serf-cpp/workflows/CodeQL/badge.svg)
-
+[![ci](https://github.com/CJLove/serf-cpp/actions/workflows/ci.yml/badge.svg)](https://github.com/CJLove/serf-cpp/actions/workflows/ci.yml)
 
 # serf-cpp
 C++ implementation of serf client (http://www.serfdom.io)
