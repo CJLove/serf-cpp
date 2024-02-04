@@ -8,5 +8,5 @@ inputs:
 - name: serf-cpp-git
       
 run:
-  path: ./serf-cpp-git/ci/build.sh
-  args: [ "-builddir=tsan", "--cmake=-DCMAKE_BUILD_TYPE=tsan" ]   
+  path: ./serf-cpp-git/build.sh
+  args: [ "-concourse", "-builddir=tsan", "--cmake=-DCMAKE_BUILD_TYPE=tsan" ]   

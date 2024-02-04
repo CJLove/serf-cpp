@@ -8,5 +8,5 @@ inputs:
 - name: serf-cpp-git
       
 run:
-  path: ./serf-cpp-git/ci/build.sh
-  args: [ "-builddir=build", "-cc=/opt/gcc740/bin/gcc", "-cxx=/opt/gcc740/bin/g++" ]   
+  path: ./serf-cpp-git/build.sh
+  args: [ "-concourse", "-builddir=build", "-cc=/opt/gcc740/bin/gcc", "-cxx=/opt/gcc740/bin/g++" ]   

@@ -8,5 +8,5 @@ inputs:
 - name: serf-cpp-git
       
 run:
-  path: ./serf-cpp-git/ci/build.sh
+  path: ./serf-cpp-git/build.sh
   args: [ "-builddir=build", "-cover" ]   

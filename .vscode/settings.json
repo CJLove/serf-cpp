@@ -8,5 +8,6 @@
     "clangtidy.buildPath": "${workspaceFolder}/build",
     "clangtidy.sourcePath": "${workspaceFolder}/src",
     "clangtidy.checksPath": "${workspaceFolder}/.vscode",
+    "cmake.configureOnOpen": false,
 
 }
