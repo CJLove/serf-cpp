@@ -21,7 +21,7 @@ jobs:
           - { name: clang16, image: fir.love.io:3005/amd64/serf-cpp-gcc1311, cc: /usr/bin/clang, cxx: /usr/bin/clang++, build_type: Debug, cppstd: 11 }
           - { name: clang16, image: fir.love.io:3005/amd64/serf-cpp-gcc1311, cc: /usr/bin/clang, cxx: /usr/bin/clang++, build_type: Release, cppstd: 11 }
           - { name: asan, image: fir.love.io:3005/amd64/serf-cpp-gcc1311, cc: /usr/bin/gcc, cxx: /usr/bin/g++, build_type: asan, cppstd: 11 }
-          - { name: tsan, image: fir.love.io:3005/amd64/serf-cpp-gcc13111, cc: /usr/bin/gcc, cxx: /usr/bin/g++, build_type: tsan, cppstd: 11 }
+          - { name: tsan, image: fir.love.io:3005/amd64/serf-cpp-gcc1311, cc: /usr/bin/gcc, cxx: /usr/bin/g++, build_type: tsan, cppstd: 11 }
           - { name: g++8.4.0, image: fir.love.io:3005/amd64/serf-cpp-gcc840, cc: /opt/gcc840/bin/gcc, cxx: /opt/gcc840/bin/g++, build_type: Debug, cppstd: 11 }
           - { name: g++8.4.0, image: fir.love.io:3005/amd64/serf-cpp-gcc840, cc: /opt/gcc840/bin/gcc, cxx: /opt/gcc840/bin/g++, build_type: Debug, cppstd: 11 }
           - { name: g++10.3.0, image: fir.love.io:3005/amd64/serf-cpp-gcc1030, cc: /opt/gcc1030/bin/gcc, cxx: /opt/gcc1030/bin/g++, build_type: Debug, cppstd: 11 }
