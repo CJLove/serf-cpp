@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         config:
-          - { compiler: gcc, version: 4, build_type: Debug, cppstd: 11 }
-          - { compiler: gcc, version: 5, build_type: Debug, cppstd: 11 }
-          - { compiler: gcc, version: 6, build_type: Debug, cppstd: 11 }
+        #  - { compiler: gcc, version: 4, build_type: Debug, cppstd: 11 }
+        #  - { compiler: gcc, version: 5, build_type: Debug, cppstd: 11 }
+        #  - { compiler: gcc, version: 6, build_type: Debug, cppstd: 11 }
           - { compiler: gcc, version: 7, build_type: Debug, cppstd: 11 }
           - { compiler: gcc, version: 8, build_type: Debug, cppstd: 11 }
           - { compiler: gcc, version: 9, build_type: Debug, cppstd: 11 }
