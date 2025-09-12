@@ -23,7 +23,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src )
 
 add_executable( SerfCppTests Listeners.cpp SerfMsgStructTests.cpp SerfChannelTests.cpp SerfIoThreadTests.cpp SerfClientTests.cpp )
 
-target_link_libraries( SerfCppTests gtest gtest_main Threads::Threads )
+target_link_libraries( SerfCppTests GTest::gtest GTest::gtest_main Threads::Threads )
 target_link_libraries( SerfCppTests SerfCpp )
 target_link_libraries( SerfCppTests pthread m )
 if ( SERF_CPP_BUILD_COVERAGE )
