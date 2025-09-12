@@ -75,7 +75,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 #---------------------------------------------------------------------------------------
 # compiler config
 #---------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -100,7 +100,7 @@ endif()
 #---------------------------------------------------------------------------------------
 find_package(Threads)
 find_package(GTest)
-find_package(MsgPackC 3.1.0 REQUIRED)
+find_package(msgpack-cxx REQUIRED)
 
 # clang-tidy
 if(ENABLE_CLANG_TIDY)
@@ -178,11 +178,8 @@ if(VERBOSE)
     message(STATUS "tests: ${tests}")
 endif(VERBOSE)
 
-if (GTEST_FOUND)
-  option (SERF_CPP_BUILD_TESTS "Build serf-cpp tests." ON)
-endif (GTEST_FOUND)
-
-option (SERF_CPP_BUILD_EXAMPLE "Build example test driver" ON)
+option (SERF_CPP_BUILD_TESTS "Build serf-cpp tests." OFF)
+option (SERF_CPP_BUILD_EXAMPLE "Build example test driver" OFF)
 
 set(SERF_CPP_BUILD_COVERAGE false CACHE BOOL "Build for code coverage")
  

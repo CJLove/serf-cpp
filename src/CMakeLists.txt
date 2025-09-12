@@ -20,6 +20,7 @@ set (SerfCpp_SRCS
 
 
 add_library (SerfCpp SHARED ${SerfCpp_SRCS})
+target_link_libraries( SerfCpp PUBLIC msgpack-cxx)
 if (SERF_CPP_BUILD_COVERAGE)
   target_link_libraries( SerfCpp gcov )
 endif (SERF_CPP_BUILD_COVERAGE)
