@@ -41,7 +41,7 @@ jobs:
           run: |
             cd ${{ gitea.workspace }}
             export VCPKG_DEFAULT_BINARY_CACHE=/home/vcpkg
-            ./build.sh -cc=${{ matrix.config.cc }} --cxx=${{ matrix.config.cxx }} --cmake="-DCMAKE_BUILD_TYPE=${{ matrix.config.cppstd }} -DCMAKE_CXX_STD=${{ matrix.config.cppstd }} -DSERF_CPP_BUILD_TESTS=ON -DSERF_CPP_BUILD_EXAMPLE=ON"
+            ./build.sh -cc=${{ matrix.config.cc }} --cxx=${{ matrix.config.cxx }} --vcpkg --cmake="-DCMAKE_BUILD_TYPE=${{ matrix.config.cppstd }} -DCMAKE_CXX_STD=${{ matrix.config.cppstd }} -DSERF_CPP_BUILD_TESTS=ON -DSERF_CPP_BUILD_EXAMPLE=ON"
 
   results:
     runs-on: ubuntu-latest
